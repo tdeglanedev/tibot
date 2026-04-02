@@ -54,7 +54,7 @@ export default async function handler(req) {
       Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
     },
     body: JSON.stringify({
-      from: "TiBot <tibot@tdeglane.com>", // domaine vérifié dans Resend
+      from: "TiBot <tibot@ask.niels.guide>", // domaine vérifié dans Resend
       to: ["hello@tdeglane.com"],
       subject,
       html,
