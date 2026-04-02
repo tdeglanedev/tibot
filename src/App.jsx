@@ -176,7 +176,6 @@ const CONTENT = {
       actions: [],
     },
     placeholder: "Ask something about Thibault...",
-    hint: "Powered by Claude · ",
     you: "You",
     suggestions: [
       "What makes Thibault different from other senior designers?",
@@ -202,7 +201,6 @@ const CONTENT = {
       actions: [],
     },
     placeholder: "Posez une question sur Thibault...",
-    hint: "Propulsé par Claude · ",
     you: "Vous",
     suggestions: [
       "Qu'est-ce qui distingue Thibault des autres designers senior ?",
@@ -401,29 +399,29 @@ export default function TiBot() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap');
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         :root {
           --bg: #0e0e0e; --surface: #161616; --surface-2: #1e1e1e;
           --border: rgba(255,255,255,0.07); --border-hover: rgba(255,255,255,0.14);
           --text: #f0ede8; --text-muted: rgba(240,237,232,0.45);
           --accent: #c8b89a; --accent-dim: rgba(200,184,154,0.12);
-          --green: #4caf7d; --red: #e05c5c; --radius: 4px;
+          --green: #4caf7d; --red: #e05c5c; --radius: 4px; --radius-full: 9999px;
         }
         html, body { height: 100%; }
-        body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-weight: 300; font-size: 15px; line-height: 1.65; -webkit-font-smoothing: antialiased; }
+        body { background: var(--bg); color: var(--text); font-family: 'Poppins', sans-serif; font-weight: 300; font-size: 15px; line-height: 1.65; -webkit-font-smoothing: antialiased; }
         #root { height: 100%; display: flex; flex-direction: column; }
         .app { display: flex; flex-direction: column; height: 100%; max-width: 720px; margin: 0 auto; width: 100%; padding: 0 20px; }
 
         /* HEADER */
         .header { display: flex; align-items: center; justify-content: space-between; padding: 28px 0 24px; border-bottom: 1px solid var(--border); flex-shrink: 0; gap: 12px; }
         .header-left { display: flex; align-items: center; gap: 14px; }
-        .avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--surface-2); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: 'DM Serif Display', serif; font-size: 14px; color: var(--accent); flex-shrink: 0; }
-        .header-title { font-family: 'DM Serif Display', serif; font-size: 17px; color: var(--text); letter-spacing: -0.01em; }
+        .avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--surface-2); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 18px; line-height: 1; flex-shrink: 0; }
+        .header-title { font-family: 'Poppins', sans-serif; font-size: 17px; color: var(--text); letter-spacing: -0.01em; }
         .header-sub { font-size: 11px; color: var(--text-muted); margin-top: 1px; font-weight: 300; letter-spacing: 0.04em; text-transform: uppercase; }
         .header-right { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
-        .lang-toggle { display: flex; align-items: center; background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
-        .lang-btn { background: transparent; border: none; color: var(--text-muted); font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; padding: 6px 10px; cursor: pointer; transition: all 0.15s; line-height: 1; }
+        .lang-toggle { display: flex; align-items: center; background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-full); overflow: hidden; }
+        .lang-btn { background: transparent; border: none; color: var(--text-muted); font-family: 'Poppins', sans-serif; font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; padding: 6px 10px; cursor: pointer; transition: all 0.15s; line-height: 1; }
         .lang-btn.active { background: var(--accent); color: #0e0e0e; }
         .lang-btn:not(.active):hover { color: var(--text); background: rgba(255,255,255,0.04); }
         .header-link { font-size: 11px; color: var(--text-muted); text-decoration: none; letter-spacing: 0.04em; text-transform: uppercase; transition: color 0.2s; font-weight: 400; white-space: nowrap; }
@@ -436,7 +434,7 @@ export default function TiBot() {
         .msg { display: flex; gap: 14px; animation: fadeUp 0.25s ease; }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         .msg-avatar { width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0; margin-top: 2px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; }
-        .msg-avatar.assistant { background: var(--surface-2); border: 1px solid var(--border); color: var(--accent); font-family: 'DM Serif Display', serif; font-size: 12px; }
+        .msg-avatar.assistant { background: var(--surface-2); border: 1px solid var(--border); font-size: 15px; line-height: 1; }
         .msg-avatar.user { background: var(--accent-dim); border: 1px solid rgba(200,184,154,0.2); color: var(--accent); }
         .msg-body { flex: 1; min-width: 0; }
         .msg-name { font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
@@ -445,24 +443,24 @@ export default function TiBot() {
 
         /* ACTION BUTTONS */
         .msg-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
-        .action-btn { background: transparent; border: 1px solid var(--border); color: var(--accent); font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 400; padding: 6px 12px; border-radius: var(--radius); cursor: pointer; transition: all 0.2s; text-align: left; line-height: 1.4; letter-spacing: 0.01em; }
+        .action-btn { background: transparent; border: 1px solid var(--border); color: var(--accent); font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 400; padding: 6px 12px; border-radius: var(--radius-full); cursor: pointer; transition: all 0.2s; text-align: left; line-height: 1.4; letter-spacing: 0.01em; }
         .action-btn:hover { border-color: var(--accent); background: var(--accent-dim); }
 
         /* SUGGESTIONS */
         .suggestions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; animation: fadeUp 0.3s ease 0.1s both; }
-        .suggestion { background: transparent; border: 1px solid var(--border); color: var(--text-muted); font-family: 'DM Sans', sans-serif; font-size: 12.5px; font-weight: 300; padding: 7px 13px; border-radius: var(--radius); cursor: pointer; transition: all 0.2s; text-align: left; line-height: 1.4; }
+        .suggestion { background: transparent; border: 1px solid var(--border); color: var(--text-muted); font-family: 'Poppins', sans-serif; font-size: 12.5px; font-weight: 300; padding: 7px 13px; border-radius: var(--radius-full); cursor: pointer; transition: all 0.2s; text-align: left; line-height: 1.4; }
         .suggestion:hover { border-color: var(--border-hover); color: var(--text); background: var(--surface-2); }
 
         /* CONTACT FORM */
         .contact-form { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-top: 14px; animation: fadeUp 0.2s ease; }
         .contact-title { font-size: 12px; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 14px; }
-        .contact-input, .contact-textarea { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 300; padding: 10px 12px; margin-bottom: 10px; outline: none; transition: border-color 0.2s; resize: none; }
+        .contact-input, .contact-textarea { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-full); color: var(--text); font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 300; padding: 10px 12px; margin-bottom: 10px; outline: none; transition: border-color 0.2s; resize: none; }
         .contact-input:focus, .contact-textarea:focus { border-color: var(--border-hover); }
         .contact-input::placeholder, .contact-textarea::placeholder { color: var(--text-muted); }
         .contact-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 4px; }
-        .contact-cancel { background: transparent; border: 1px solid var(--border); color: var(--text-muted); font-family: 'DM Sans', sans-serif; font-size: 12px; padding: 7px 14px; border-radius: var(--radius); cursor: pointer; transition: all 0.2s; }
+        .contact-cancel { background: transparent; border: 1px solid var(--border); color: var(--text-muted); font-family: 'Poppins', sans-serif; font-size: 12px; padding: 7px 14px; border-radius: var(--radius-full); cursor: pointer; transition: all 0.2s; }
         .contact-cancel:hover { color: var(--text); border-color: var(--border-hover); }
-        .contact-send { background: var(--accent); border: none; color: #0e0e0e; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; padding: 7px 14px; border-radius: var(--radius); cursor: pointer; transition: opacity 0.2s; }
+        .contact-send { background: var(--accent); border: none; color: #0e0e0e; font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 500; padding: 7px 14px; border-radius: var(--radius-full); cursor: pointer; transition: opacity 0.2s; }
         .contact-send:disabled { opacity: 0.35; cursor: not-allowed; }
         .contact-send:not(:disabled):hover { opacity: 0.85; }
         .contact-success { color: var(--green); font-size: 13px; padding: 8px 0; }
@@ -478,17 +476,13 @@ export default function TiBot() {
 
         /* INPUT */
         .input-area { padding: 20px 0 32px; flex-shrink: 0; border-top: 1px solid var(--border); }
-        .input-wrap { display: flex; align-items: flex-end; gap: 10px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; transition: border-color 0.2s; }
+        .input-wrap { display: flex; align-items: flex-end; gap: 10px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-full); padding: 12px 14px; transition: border-color 0.2s; }
         .input-wrap:focus-within { border-color: var(--border-hover); }
-        .input-field { flex: 1; background: transparent; border: none; outline: none; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14.5px; font-weight: 300; line-height: 1.5; resize: none; min-height: 22px; max-height: 120px; overflow-y: auto; }
+        .input-field { flex: 1; background: transparent; border: none; outline: none; color: var(--text); font-family: 'Poppins', sans-serif; font-size: 14.5px; font-weight: 300; line-height: 1.5; resize: none; min-height: 22px; max-height: 120px; overflow-y: auto; }
         .input-field::placeholder { color: var(--text-muted); }
-        .send-btn { background: var(--accent); border: none; border-radius: var(--radius); width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; transition: opacity 0.2s; color: #0e0e0e; }
+        .send-btn { background: var(--accent); border: none; border-radius: var(--radius-full); width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; transition: opacity 0.2s; color: #0e0e0e; }
         .send-btn:disabled { opacity: 0.3; cursor: not-allowed; }
         .send-btn:not(:disabled):hover { opacity: 0.85; }
-        .input-hint { font-size: 11px; color: var(--text-muted); margin-top: 10px; text-align: center; letter-spacing: 0.02em; }
-        .input-hint a { color: var(--accent); text-decoration: none; }
-        .input-hint a:hover { text-decoration: underline; }
-
         @media (max-width: 480px) {
           .app { padding: 0 16px; }
           .header { padding: 20px 0 18px; flex-wrap: wrap; }
@@ -501,7 +495,7 @@ export default function TiBot() {
         {/* HEADER */}
         <header className="header">
           <div className="header-left">
-            <div className="avatar">T</div>
+            <div className="avatar" aria-hidden>🧠</div>
             <div>
               <div className="header-title">TiBot</div>
               <div className="header-sub">{c.agentSub}</div>
@@ -525,8 +519,8 @@ export default function TiBot() {
 
             return (
               <div key={`${lang}-${i}`} className="msg">
-                <div className={`msg-avatar ${msg.role}`}>
-                  {isAssistant ? "T" : "→"}
+                <div className={`msg-avatar ${msg.role}`} aria-hidden>
+                  {isAssistant ? "🧠" : "→"}
                 </div>
                 <div className="msg-body">
                   <div className="msg-name">{isAssistant ? "TiBot" : c.you}</div>
@@ -567,7 +561,7 @@ export default function TiBot() {
 
           {loading && (
             <div className="typing">
-              <div className="msg-avatar assistant">T</div>
+              <div className="msg-avatar assistant" aria-hidden>🧠</div>
               <div className="msg-body">
                 <div className="msg-name">TiBot</div>
                 <div className="typing-dots">
@@ -602,7 +596,6 @@ export default function TiBot() {
               </svg>
             </button>
           </div>
-          <div className="input-hint">{c.hint}<a href="https://www.tdeglane.com">tdeglane.com</a></div>
         </div>
       </div>
     </>

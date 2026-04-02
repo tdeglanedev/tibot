@@ -35,7 +35,7 @@ export default async function handler(req) {
       : `Message via TiBot — ${name}`;
 
   const html = `
-    <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #1a1a1a;">
+    <div style="font-family: 'Poppins', sans-serif; max-width: 600px; margin: 0 auto; color: #1a1a1a;">
       <p style="font-size: 12px; color: #999; text-transform: uppercase; letter-spacing: 0.05em;">Message reçu via TiBot · tdeglane.com</p>
       <hr style="border: none; border-top: 1px solid #eee; margin: 16px 0;" />
       <p><strong>De :</strong> ${name}</p>
