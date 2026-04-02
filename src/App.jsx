@@ -399,7 +399,7 @@ export default function TiBot() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         :root {
           --bg: #0e0e0e; --surface: #161616; --surface-2: #1e1e1e;
@@ -417,12 +417,12 @@ export default function TiBot() {
         .header { display: flex; align-items: center; justify-content: space-between; padding: 28px 0 24px; border-bottom: 1px solid var(--border); flex-shrink: 0; gap: 12px; }
         .header-left { display: flex; align-items: center; gap: 14px; }
         .avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--surface-2); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 18px; line-height: 1; flex-shrink: 0; }
-        .header-title { font-family: 'Poppins', sans-serif; font-size: 17px; color: var(--text); letter-spacing: -0.01em; }
+        .header-title { font-family: 'Poppins', sans-serif; font-size: 17px; font-weight: 600; color: var(--text); letter-spacing: -0.01em; }
         .header-sub { font-size: 11px; color: var(--text-muted); margin-top: 1px; font-weight: 300; letter-spacing: 0.04em; text-transform: uppercase; }
         .header-right { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
         .lang-toggle { display: flex; align-items: center; background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-full); overflow: hidden; }
         .lang-btn { background: transparent; border: none; color: var(--text-muted); font-family: 'Poppins', sans-serif; font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; padding: 6px 10px; cursor: pointer; transition: all 0.15s; line-height: 1; }
-        .lang-btn.active { background: var(--accent); color: #0e0e0e; }
+        .lang-btn.active { background: rgba(200, 184, 154, 1); color: #0e0e0e; }
         .lang-btn:not(.active):hover { color: var(--text); background: rgba(255,255,255,0.04); }
         .header-link { font-size: 11px; color: var(--text-muted); text-decoration: none; letter-spacing: 0.04em; text-transform: uppercase; transition: color 0.2s; font-weight: 400; white-space: nowrap; }
         .header-link:hover { color: var(--accent); }
@@ -438,7 +438,7 @@ export default function TiBot() {
         .msg-avatar.user { background: var(--accent-dim); border: 1px solid rgba(200,184,154,0.2); color: var(--accent); }
         .msg-body { flex: 1; min-width: 0; }
         .msg-name { font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
-        .msg-text { color: var(--text); line-height: 1.7; white-space: pre-wrap; word-break: break-word; }
+        .msg-text { color: rgba(255, 255, 255, 1); line-height: 1.7; white-space: pre-wrap; word-break: break-word; }
         .msg-text.user-text { color: rgba(240,237,232,0.8); }
 
         /* ACTION BUTTONS */
