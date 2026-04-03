@@ -1,5 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 
+const BRAND_LOGO_SRC = "/Logo%20Thibault.png";
+const BRAND_DISPLAY_NAME = ".Thibault Deglane";
+
 // ─── SYSTEM PROMPT ────────────────────────────────────────────────────────────
 
 const SYSTEM_PROMPT = `You are TiBot — the AI agent of Thibault Deglane, a senior strategic designer based in the Paris region with 23 years of experience across advertising agencies, digital product studios, and SaaS building.
@@ -169,7 +172,7 @@ BEHAVIOUR:
 
 const CONTENT = {
   en: {
-    agentSub: "Thibault Deglane · AI Agent",
+    agentSub: "AI Agent",
     backLink: "← Portfolio",
     greeting: {
       message: "Hey — I'm TiBot, Thibault's AI agent.\n\nI know his work, his thinking, and how he operates. Ask me anything — about his projects, his approach, or whether he could be the right fit for your context.\n\nWho are you, and what brought you here?",
@@ -194,7 +197,7 @@ const CONTENT = {
     contactCancel: "Cancel",
   },
   fr: {
-    agentSub: "Thibault Deglane · Agent IA",
+    agentSub: "Agent IA",
     backLink: "← Portfolio",
     greeting: {
       message: "Bonjour — je suis TiBot, l'agent IA de Thibault.\n\nJe connais son travail, sa façon de penser et sa manière d'opérer. Posez-moi n'importe quelle question — sur ses projets, son approche, ou pour savoir s'il correspond à votre contexte.\n\nQui êtes-vous, et qu'est-ce qui vous amène ici ?",
@@ -415,8 +418,10 @@ export default function TiBot() {
 
         /* HEADER */
         .header { display: flex; align-items: center; justify-content: space-between; padding: 28px 0 24px; border-bottom: 1px solid var(--border); flex-shrink: 0; gap: 12px; }
-        .header-left { display: flex; align-items: center; gap: 14px; }
-        .avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--surface-2); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 18px; line-height: 1; flex-shrink: 0; }
+        .header-left { display: flex; align-items: center; gap: 4px; }
+        .header-left-text { line-height: 18px; }
+        .avatar { width: 48px; height: 48px; border-radius: 50%; background: var(--surface-2); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; padding: 5px; }
+        .avatar img { width: 100%; height: 100%; object-fit: contain; display: block; }
         .header-title { font-family: 'Poppins', sans-serif; font-size: 17px; font-weight: 600; color: var(--text); letter-spacing: -0.01em; }
         .header-sub { font-size: 11px; color: var(--text-muted); margin-top: 1px; font-weight: 300; letter-spacing: 0.04em; text-transform: uppercase; }
         .header-right { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
@@ -434,7 +439,8 @@ export default function TiBot() {
         .msg { display: flex; gap: 14px; animation: fadeUp 0.25s ease; }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         .msg-avatar { width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0; margin-top: 2px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; }
-        .msg-avatar.assistant { background: var(--surface-2); border: 1px solid var(--border); font-size: 15px; line-height: 1; }
+        .msg-avatar.assistant { background: var(--surface-2); border: 1px solid var(--border); overflow: hidden; padding: 4px; line-height: 0; }
+        .msg-avatar.assistant img { width: 100%; height: 100%; object-fit: contain; display: block; }
         .msg-avatar.user { background: var(--accent-dim); border: 1px solid rgba(200,184,154,0.2); color: var(--accent); }
         .msg-body { flex: 1; min-width: 0; }
         .msg-name { font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
@@ -495,9 +501,11 @@ export default function TiBot() {
         {/* HEADER */}
         <header className="header">
           <div className="header-left">
-            <div className="avatar" aria-hidden>🧠</div>
-            <div>
-              <div className="header-title">TiBot</div>
+            <div className="avatar" aria-hidden>
+              <img src={BRAND_LOGO_SRC} alt="" />
+            </div>
+            <div className="header-left-text">
+              <div className="header-title">{BRAND_DISPLAY_NAME}</div>
               <div className="header-sub">{c.agentSub}</div>
             </div>
           </div>
@@ -520,10 +528,10 @@ export default function TiBot() {
             return (
               <div key={`${lang}-${i}`} className="msg">
                 <div className={`msg-avatar ${msg.role}`} aria-hidden>
-                  {isAssistant ? "🧠" : "→"}
+                  {isAssistant ? <img src={BRAND_LOGO_SRC} alt="" /> : "→"}
                 </div>
                 <div className="msg-body">
-                  <div className="msg-name">{isAssistant ? "TiBot" : c.you}</div>
+                  <div className="msg-name">{isAssistant ? BRAND_DISPLAY_NAME : c.you}</div>
                   <div className={`msg-text ${!isAssistant ? "user-text" : ""}`}>{message}</div>
 
                   {/* Suggestions (premier message uniquement) */}
@@ -561,9 +569,11 @@ export default function TiBot() {
 
           {loading && (
             <div className="typing">
-              <div className="msg-avatar assistant" aria-hidden>🧠</div>
+              <div className="msg-avatar assistant" aria-hidden>
+                <img src={BRAND_LOGO_SRC} alt="" />
+              </div>
               <div className="msg-body">
-                <div className="msg-name">TiBot</div>
+                <div className="msg-name">{BRAND_DISPLAY_NAME}</div>
                 <div className="typing-dots">
                   <div className="dot" /><div className="dot" /><div className="dot" />
                 </div>
