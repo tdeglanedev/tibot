@@ -28,8 +28,20 @@ export default async function handler(req) {
       "Content-Type": "application/json",
       "x-api-key": process.env.ANTHROPIC_API_KEY,
       "anthropic-version": "2023-06-01",
+      "anthropic-beta": "prompt-caching-2024-07-31",
     },
-    body: JSON.stringify(body),
+    body: JSON.stringify({
+      model: body.model,
+      max_tokens: body.max_tokens,
+      system: [
+        {
+          type: "text",
+          text: body.system,
+          cache_control: { type: "ephemeral" },
+        },
+      ],
+      messages: body.messages,
+    }),
   });
 
   const data = await response.json();
