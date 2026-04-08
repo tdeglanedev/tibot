@@ -159,12 +159,101 @@ or in French:
 5. Portfolio home:
 { "type": "link", "label": "→ View portfolio", "url": "https://www.tdeglane.com" }
 
+6. Project card (expandable visual card):
+{
+  "type": "project_card",
+  "slug": "askniels",
+  "title": "AskNiels",
+  "tagline": "Building the operating system of a methodology",
+  "category": "AI · UX · UI · React",
+  "metrics": ["−54% time to delivery", "57 activities", "97 Lighthouse"],
+  "problem": "The Niels methodology had no home. Every project started with the same blank page.",
+  "solution": "A multi-tenant SaaS with a drag-and-drop Plan Builder and a context-aware AI assistant embedded in the workspace.",
+  "url": "https://www.tdeglane.com/projects/askniels-project"
+}
+
+PROJECT CARD SLUGS AND IMAGES:
+- askniels → /projects/askniels.jpg
+- nike-fff → /projects/nike-fff.jpg
+- boucheron → /projects/boucheron.jpg
+- olympique-de-marseille → /projects/olympique-de-marseille.jpg
+- pierre-hardy → /projects/pierre-hardy.jpg
+- celio → /projects/celio.jpg
+- micromania → /projects/micromania.jpg
+
+PROJECT CARD REFERENCE DATA (use exactly these fields/values):
+
+ASKNIELS:
+slug: askniels, title: AskNiels
+tagline: Building the operating system of a methodology
+category: AI · UX · UI · React
+metrics: ["−54% time to delivery", "57 structured activities", "97 Lighthouse score"]
+problem: The Niels methodology had no home. Coaches had knowledge but not structure. Every project started with the same blank page.
+solution: A multi-tenant SaaS live in production. Plan Builder drag-and-drop canvas + context-aware AI assistant embedded in the workspace. Teams self-onboard without a coach.
+url: https://www.tdeglane.com/projects/askniels-project
+
+NIKE x FFF:
+slug: nike-fff, title: Nike x FFF
+tagline: Spreading football fever in France
+category: UI/UX
+metrics: ["+40% direct orders", "12,000+ clubs onboarded", "4.2/5 satisfaction"]
+problem: FFF wanted to give amateur clubs direct access to Nike equipment — moving from a fragmented paper-based process to a first-of-its-kind direct digital B2B platform.
+solution: A ready-to-use B2B platform with custom outfit configuration tool. Post-COVID redesign fed entirely by customer insights, not assumptions.
+url: https://www.tdeglane.com/projects/nikefff
+
+BOUCHERON:
+slug: boucheron, title: Boucheron Vendorama
+tagline: Digitizing the 160th anniversary of the luxury house
+category: Strategic Design · Phygital
+metrics: ["16 days sold out", "10,000+ visitors", "#1 luxury activation of the year"]
+problem: Making 160 years of Boucheron heritage visceral for an audience that had never set foot inside a jewellery house.
+solution: Three interconnected digital touchpoints in 2 months: AR app guided by Wladimir (Boucheron's cat), interactive multi-touch table, three interactive books. Nothing could feel like a tech demo.
+url: https://www.tdeglane.com/projects/boucheron-vendorama
+
+OLYMPIQUE DE MARSEILLE:
+slug: olympique-de-marseille, title: Olympique de Marseille
+tagline: A legendary club in full digital transformation
+category: Strategic Design
+metrics: ["+45% app engagement", "+60% hospitality conversion", "3 touchpoints unified"]
+problem: OM had one of the most passionate fan bases in Europe but no digital infrastructure to turn that passion into a relationship outside the stadium.
+solution: Redesigned website + mobile app with live predictions, polls, gamification, OM Prime loyalty. Full omnichannel: stadium, shop, partners unified.
+url: https://www.tdeglane.com/projects/olympique-de-marseille
+
+PIERRE HARDY:
+slug: pierre-hardy, title: Pierre Hardy
+tagline: Creating an experience in the image of a great name
+category: UI/UX
+metrics: ["+65% online revenue", "+38% returning customers", "−30% checkout drop-off"]
+problem: Luxury doesn't translate to digital by default. The brief: brand content and commerce coexisting without compromise, mobile first.
+solution: Co-design process with client teams from day one. Atomic design for pixel-perfect execution. 3 months, on time, on budget.
+url: https://www.tdeglane.com/projects/pierrehardy
+
+CELIO:
+slug: celio, title: Célio
+tagline: One brand, two touchpoints, zero friction
+category: UI/UX · Omnichannel
+metrics: ["550 stores unified", "85–90% reservation-to-store", "+3x click & collect"]
+problem: E-commerce at 5% of revenue vs. 15% target. Online and in-store operating in parallel, not together.
+solution: Overhauled e-commerce platform + in-store seller tablet with real-time stock across 550 stores, customer history, omnichannel checkout on the shop floor.
+url: https://www.tdeglane.com/projects/celio
+
+MICROMANIA:
+slug: micromania, title: Micromania-Zing
+tagline: When video games meet pop culture
+category: UI/UX
+metrics: ["140+ screens", "430 stores unified", "4,000+ catalogue references"]
+problem: Two brands, two audiences, one platform. Two thirds of visits were web-to-store — a conventional e-commerce approach would have solved the wrong problem.
+solution: 8 design sprints over 7 months. Platform designed around the full decision journey, not cart conversion. Navigation handling 4,000+ references across radically different browsing behaviours.
+url: https://www.tdeglane.com/projects/micromania
+
 WHEN TO ADD ACTIONS — use good judgment:
 - After discussing a specific project → add a link to that project
+- When discussing a specific project in detail → add a project_card action for that project (in addition to or instead of a simple link)
 - After discussing Thibault's background, career, or skills → add About + CV links
 - When a visitor seems interested, is a recruiter, or mentions hiring → add contact action
 - At the end of a satisfying exchange → offer contact
 - Never add more than 3 actions per response
+- Never add more than one project_card per response
 - Never add actions that are not relevant to what was just discussed
 
 BEHAVIOUR:
@@ -229,6 +318,58 @@ const CONTENT = {
     contactCancel: "Annuler",
   },
 };
+
+// ─── PROJECT CARD ─────────────────────────────────────────────────────────────
+
+function ProjectCard({ action, lang }) {
+  const [expanded, setExpanded] = useState(false);
+  const labels = lang === "fr"
+    ? { problem: "Problème", solution: "Solution", view: "Voir le projet →" }
+    : { problem: "Problem", solution: "Solution", view: "View project →" };
+
+  return (
+    <div className="project-card">
+      <img
+        className="project-card-image"
+        src={`/projects/${action.slug}.jpg`}
+        alt={action.title}
+      />
+      <div className="project-card-body">
+        <div className="project-card-category">{action.category}</div>
+        <div className="project-card-title">{action.title}</div>
+        <div className="project-card-tagline">{action.tagline}</div>
+
+        <div className="project-card-separator" />
+
+        <div className="project-card-metrics">
+          {(action.metrics || []).slice(0, 3).map((metric, i) => (
+            <span key={i} className="project-card-metric">{metric}</span>
+          ))}
+        </div>
+
+        <button className="project-card-toggle" onClick={() => setExpanded((v) => !v)}>
+          {labels.problem} / {labels.solution}
+        </button>
+
+        {expanded && (
+          <div className="project-card-details">
+            <div className="project-card-label">{labels.problem}</div>
+            <div className="project-card-text">{action.problem}</div>
+            <div className="project-card-label">{labels.solution}</div>
+            <div className="project-card-text">{action.solution}</div>
+          </div>
+        )}
+
+        <button
+          className="project-card-cta"
+          onClick={() => window.open(action.url, "_blank", "noopener")}
+        >
+          {labels.view}
+        </button>
+      </div>
+    </div>
+  );
+}
 
 // ─── CONTACT FORM ─────────────────────────────────────────────────────────────
 
@@ -442,6 +583,7 @@ ${ragData.chunks.map((c) => c.content).join("\n\n---\n\n")}
     <>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap');
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         :root {
           --bg: #0e0e0e; --surface: #161616; --surface-2: #1e1e1e;
@@ -511,6 +653,25 @@ ${ragData.chunks.map((c) => c.content).join("\n\n---\n\n")}
         .contact-success { color: var(--green); font-size: 13px; padding: 8px 0; }
         .contact-error { color: var(--red); font-size: 12px; margin-bottom: 8px; }
 
+        /* PROJECT CARD */
+        .project-card { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius); margin-top: 14px; animation: fadeUp 0.25s ease; max-width: 420px; overflow: hidden; }
+        .project-card-image { width: 100%; height: 160px; object-fit: cover; border-radius: var(--radius) var(--radius) 0 0; display: block; }
+        .project-card-body { padding: 16px; }
+        .project-card-category { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; text-align: left; }
+        .project-card-title { font-family: "DM Serif Display", serif; font-size: 18px; color: var(--text); margin-top: 4px; line-height: 1.2; }
+        .project-card-tagline { font-size: 13px; color: var(--text-muted); margin-top: 6px; line-height: 1.45; }
+        .project-card-separator { border-top: 1px solid var(--border); margin: 12px 0; }
+        .project-card-metrics { display: flex; flex-wrap: wrap; gap: 8px; }
+        .project-card-metric { background: var(--accent-dim); border: 1px solid rgba(200,184,154,0.2); color: var(--accent); font-size: 11px; padding: 4px 10px; border-radius: 20px; line-height: 1.3; }
+        .project-card-toggle { margin-top: 12px; width: 100%; background: transparent; border: 1px solid var(--border); color: var(--text); font-family: 'Poppins', sans-serif; font-size: 12px; padding: 8px 10px; border-radius: var(--radius); cursor: pointer; transition: all 0.2s; }
+        .project-card-toggle:hover { border-color: var(--border-hover); background: rgba(255,255,255,0.03); }
+        .project-card-details { margin-top: 10px; background: var(--surface); padding: 12px; border-radius: var(--radius); }
+        .project-card-label { color: var(--accent); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 5px; }
+        .project-card-text { font-size: 13px; color: var(--text); line-height: 1.6; margin-bottom: 10px; }
+        .project-card-text:last-child { margin-bottom: 0; }
+        .project-card-cta { margin-top: 12px; width: 100%; background: var(--accent); border: none; color: #0e0e0e; font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 500; padding: 10px; border-radius: var(--radius); cursor: pointer; transition: opacity 0.2s; }
+        .project-card-cta:hover { opacity: 0.85; }
+
         /* TYPING */
         .typing { display: flex; gap: 14px; animation: fadeUp 0.25s ease; }
         .typing-dots { display: flex; align-items: center; gap: 5px; padding: 6px 0; margin-top: 2px; }
@@ -533,6 +694,7 @@ ${ragData.chunks.map((c) => c.content).join("\n\n---\n\n")}
           .header { padding: 20px 0 18px; flex-wrap: wrap; }
           .header-sub { display: none; }
           .suggestion { font-size: 12px; padding: 6px 11px; }
+          .project-card { max-width: 100%; }
         }
       `}</style>
 
@@ -586,9 +748,13 @@ ${ragData.chunks.map((c) => c.content).join("\n\n---\n\n")}
                   {isAssistant && actions.length > 0 && (
                     <div className="msg-actions">
                       {actions.map((action, j) => (
-                        <button key={j} className="action-btn" onClick={() => handleAction(action)}>
-                          {action.label}
-                        </button>
+                        action.type === "project_card" ? (
+                          <ProjectCard key={j} action={action} lang={lang} />
+                        ) : (
+                          <button key={j} className="action-btn" onClick={() => handleAction(action)}>
+                            {action.label}
+                          </button>
+                        )
                       ))}
                     </div>
                   )}
