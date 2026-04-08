@@ -371,6 +371,36 @@ function ProjectCard({ action, lang }) {
   );
 }
 
+function AnimatedGreeting({ text, onDone }) {
+  const [displayed, setDisplayed] = useState("");
+  const [done, setDone] = useState(false);
+
+  useEffect(() => {
+    let i = 0;
+    const interval = setInterval(() => {
+      if (i < text.length) {
+        setDisplayed(text.slice(0, i + 1));
+        i++;
+      } else {
+        setDone(true);
+        clearInterval(interval);
+      }
+    }, 18);
+    return () => clearInterval(interval);
+  }, [text]);
+
+  useEffect(() => {
+    if (done) onDone?.();
+  }, [done, onDone]);
+
+  return (
+    <span className={`animated-greeting ${done ? "done" : ""}`}>
+      {displayed}
+      {!done && <span className="cursor-blink">▋</span>}
+    </span>
+  );
+}
+
 // ─── CONTACT FORM ─────────────────────────────────────────────────────────────
 
 function ContactForm({ lang, onClose, onSuccess }) {
@@ -454,6 +484,10 @@ export default function TiBot() {
   const [loading, setLoading] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState({ en: true, fr: true });
   const [contactOpen, setContactOpen] = useState(false);
+  const [greetingAnimated, setGreetingAnimated] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return window.sessionStorage.getItem("tibot-greeting-animated") === "1";
+  });
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -579,21 +613,28 @@ ${ragData.chunks.map((c) => c.content).join("\n\n---\n\n")}
     }
   };
 
+  const markGreetingAnimated = () => {
+    if (greetingAnimated) return;
+    setGreetingAnimated(true);
+    if (typeof window !== "undefined") {
+      window.sessionStorage.setItem("tibot-greeting-animated", "1");
+    }
+  };
+
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap');
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         :root {
-          --bg: #0e0e0e; --surface: #161616; --surface-2: #1e1e1e;
+          --bg: #0f0e0d; --surface: #161616; --surface-2: #1e1e1e;
           --border: rgba(255,255,255,0.07); --border-hover: rgba(255,255,255,0.14);
           --text: #f0ede8; --text-muted: rgba(240,237,232,0.45);
           --accent: #c8b89a; --accent-dim: rgba(200,184,154,0.12);
           --green: #4caf7d; --red: #e05c5c; --radius: 4px; --radius-full: 9999px;
         }
         html, body { height: 100%; }
-        body { background: var(--bg); color: var(--text); font-family: 'Poppins', sans-serif; font-weight: 300; font-size: 15px; line-height: 1.65; -webkit-font-smoothing: antialiased; }
+        body { background: var(--bg); background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E"); background-size: 256px 256px; color: var(--text); font-family: 'Poppins', sans-serif; font-weight: 300; font-size: 15px; line-height: 1.65; -webkit-font-smoothing: antialiased; }
         #root { height: 100%; display: flex; flex-direction: column; }
         .app { display: flex; flex-direction: column; height: 100%; max-width: 720px; margin: 0 auto; width: 100%; padding: 0 20px; }
 
@@ -603,15 +644,15 @@ ${ragData.chunks.map((c) => c.content).join("\n\n---\n\n")}
         .header-left-text { line-height: 18px; }
         .avatar { width: 48px; height: 48px; border-radius: 50%; background: var(--surface-2); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; padding: 5px; }
         .avatar img { width: 100%; height: 100%; object-fit: contain; display: block; }
-        .header-title { font-family: 'Poppins', sans-serif; font-size: 17px; font-weight: 600; color: var(--text); letter-spacing: -0.01em; }
-        .header-sub { font-size: 11px; color: var(--text-muted); margin-top: 1px; font-weight: 300; letter-spacing: 0.04em; text-transform: uppercase; }
+        .header-title { font-family: 'Poppins', sans-serif; font-size: 17px; font-weight: 500; color: var(--text); letter-spacing: -0.01em; }
+        .header-sub { font-size: 11px; color: var(--text-muted); margin-top: 1px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; }
         .header-right { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
         .lang-toggle { display: flex; align-items: center; background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-full); overflow: hidden; }
-        .lang-btn { background: transparent; border: none; color: var(--text-muted); font-family: 'Poppins', sans-serif; font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; padding: 6px 10px; cursor: pointer; transition: all 0.15s; line-height: 1; }
+        .lang-btn { background: transparent; border: none; color: var(--text-muted); font-family: 'Poppins', sans-serif; font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; padding: 6px 10px; cursor: pointer; transition: all 0.15s; line-height: 1; border-radius: 9999px; }
         .lang-btn.active { background: rgba(200, 184, 154, 1); color: #0e0e0e; }
         .lang-btn:not(.active):hover { color: var(--text); background: rgba(255,255,255,0.04); }
-        .header-link { font-size: 11px; color: var(--text-muted); text-decoration: none; letter-spacing: 0.04em; text-transform: uppercase; transition: color 0.2s; font-weight: 400; white-space: nowrap; }
-        .header-link:hover { color: var(--accent); }
+        .header-link { font-size: 12px; color: var(--accent); text-decoration: none; letter-spacing: 0.04em; font-weight: 500; border: 1px solid rgba(200,184,154,0.4); padding: 6px 16px; border-radius: 9999px; transition: all 0.2s; white-space: nowrap; }
+        .header-link:hover { background: var(--accent-dim); border-color: var(--accent); }
 
         /* MESSAGES */
         .messages { flex: 1; overflow-y: auto; padding: 32px 0; display: flex; flex-direction: column; gap: 28px; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
@@ -626,26 +667,27 @@ ${ragData.chunks.map((c) => c.content).join("\n\n---\n\n")}
         .msg-body { flex: 1; min-width: 0; }
         .msg-name { font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
         .msg-text { color: rgba(255, 255, 255, 1); line-height: 1.7; white-space: pre-wrap; word-break: break-word; }
+        .msg-text.hero { font-family: 'Poppins', sans-serif; font-size: 15px; font-weight: 300; line-height: 1.7; letter-spacing: normal; color: var(--text); }
         .msg-text.user-text { color: rgba(240,237,232,0.8); }
 
         /* ACTION BUTTONS */
         .msg-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
-        .action-btn { background: transparent; border: 1px solid var(--border); color: var(--accent); font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 400; padding: 6px 12px; border-radius: var(--radius-full); cursor: pointer; transition: all 0.2s; text-align: left; line-height: 1.4; letter-spacing: 0.01em; }
+        .action-btn { background: transparent; border: 1px solid var(--border); color: var(--accent); font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 500; padding: 6px 12px; border-radius: var(--radius-full); cursor: pointer; transition: all 0.2s; text-align: left; line-height: 1.4; letter-spacing: 0.01em; }
         .action-btn:hover { border-color: var(--accent); background: var(--accent-dim); }
 
         /* SUGGESTIONS */
         .suggestions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; animation: fadeUp 0.3s ease 0.1s both; }
-        .suggestion { background: transparent; border: 1px solid var(--border); color: var(--text-muted); font-family: 'Poppins', sans-serif; font-size: 12.5px; font-weight: 300; padding: 7px 13px; border-radius: var(--radius-full); cursor: pointer; transition: all 0.2s; text-align: left; line-height: 1.4; }
+        .suggestion { background: transparent; border: 1px solid var(--border); color: var(--text-muted); font-family: 'Poppins', sans-serif; font-size: 12.5px; font-weight: 500; padding: 7px 13px; border-radius: var(--radius-full); cursor: pointer; transition: all 0.2s; text-align: left; line-height: 1.4; }
         .suggestion:hover { border-color: var(--border-hover); color: var(--text); background: var(--surface-2); }
 
         /* CONTACT FORM */
         .contact-form { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-top: 14px; animation: fadeUp 0.2s ease; }
-        .contact-title { font-size: 12px; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 14px; }
-        .contact-input, .contact-textarea { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-full); color: var(--text); font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 300; padding: 10px 12px; margin-bottom: 10px; outline: none; transition: border-color 0.2s; resize: none; }
+        .contact-title { font-size: 12px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 14px; }
+        .contact-input, .contact-textarea { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 300; padding: 10px 12px; margin-bottom: 10px; outline: none; transition: border-color 0.2s; resize: none; }
         .contact-input:focus, .contact-textarea:focus { border-color: var(--border-hover); }
         .contact-input::placeholder, .contact-textarea::placeholder { color: var(--text-muted); }
         .contact-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 4px; }
-        .contact-cancel { background: transparent; border: 1px solid var(--border); color: var(--text-muted); font-family: 'Poppins', sans-serif; font-size: 12px; padding: 7px 14px; border-radius: var(--radius-full); cursor: pointer; transition: all 0.2s; }
+        .contact-cancel { background: transparent; border: 1px solid var(--border); color: var(--text-muted); font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 500; padding: 7px 14px; border-radius: var(--radius-full); cursor: pointer; transition: all 0.2s; }
         .contact-cancel:hover { color: var(--text); border-color: var(--border-hover); }
         .contact-send { background: var(--accent); border: none; color: #0e0e0e; font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 500; padding: 7px 14px; border-radius: var(--radius-full); cursor: pointer; transition: opacity 0.2s; }
         .contact-send:disabled { opacity: 0.35; cursor: not-allowed; }
@@ -657,19 +699,22 @@ ${ragData.chunks.map((c) => c.content).join("\n\n---\n\n")}
         .project-card { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius); margin-top: 14px; animation: fadeUp 0.25s ease; max-width: 420px; overflow: hidden; }
         .project-card-image { width: 100%; height: 160px; object-fit: cover; border-radius: var(--radius) var(--radius) 0 0; display: block; }
         .project-card-body { padding: 16px; }
-        .project-card-category { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; text-align: left; }
-        .project-card-title { font-family: "DM Serif Display", serif; font-size: 18px; color: var(--text); margin-top: 4px; line-height: 1.2; }
+        .project-card-category { font-size: 11px; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; text-align: left; }
+        .project-card-title { font-family: "Poppins", sans-serif; font-size: 18px; font-weight: 600; color: var(--text); margin-top: 4px; line-height: 1.2; }
         .project-card-tagline { font-size: 13px; color: var(--text-muted); margin-top: 6px; line-height: 1.45; }
         .project-card-separator { border-top: 1px solid var(--border); margin: 12px 0; }
         .project-card-metrics { display: flex; flex-wrap: wrap; gap: 8px; }
-        .project-card-metric { background: var(--accent-dim); border: 1px solid rgba(200,184,154,0.2); color: var(--accent); font-size: 11px; padding: 4px 10px; border-radius: 20px; line-height: 1.3; }
-        .project-card-toggle { margin-top: 12px; width: 100%; background: transparent; border: 1px solid var(--border); color: var(--text); font-family: 'Poppins', sans-serif; font-size: 12px; padding: 8px 10px; border-radius: var(--radius); cursor: pointer; transition: all 0.2s; }
+        .project-card-metric { background: var(--accent-dim); border: 1px solid rgba(200,184,154,0.2); color: var(--accent); font-size: 11px; padding: 4px 10px; border-radius: 9999px; line-height: 1.3; }
+        .project-card-toggle { margin-top: 12px; width: 100%; background: transparent; border: 1px solid var(--border); color: var(--text); font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 500; padding: 8px 10px; border-radius: 9999px; cursor: pointer; transition: all 0.2s; }
         .project-card-toggle:hover { border-color: var(--border-hover); background: rgba(255,255,255,0.03); }
         .project-card-details { margin-top: 10px; background: var(--surface); padding: 12px; border-radius: var(--radius); }
-        .project-card-label { color: var(--accent); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 5px; }
+        .project-card-label { color: var(--accent); font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 5px; }
         .project-card-text { font-size: 13px; color: var(--text); line-height: 1.6; margin-bottom: 10px; }
         .project-card-text:last-child { margin-bottom: 0; }
-        .project-card-cta { margin-top: 12px; width: 100%; background: var(--accent); border: none; color: #0e0e0e; font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 500; padding: 10px; border-radius: var(--radius); cursor: pointer; transition: opacity 0.2s; }
+        .project-card-cta { margin-top: 12px; width: 100%; background: var(--accent); border: none; color: #0e0e0e; font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 500; padding: 10px; border-radius: 9999px; cursor: pointer; transition: opacity 0.2s; }
+
+        .cursor-blink { display: inline-block; color: var(--accent); animation: blink 0.7s step-end infinite; font-size: 0.85em; margin-left: 1px; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
         .project-card-cta:hover { opacity: 0.85; }
 
         /* TYPING */
@@ -682,7 +727,7 @@ ${ragData.chunks.map((c) => c.content).join("\n\n---\n\n")}
 
         /* INPUT */
         .input-area { padding: 20px 0 32px; flex-shrink: 0; border-top: 1px solid var(--border); }
-        .input-wrap { display: flex; align-items: flex-end; gap: 10px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-full); padding: 12px 14px; transition: border-color 0.2s; }
+        .input-wrap { display: flex; align-items: flex-end; gap: 10px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; transition: border-color 0.2s; }
         .input-wrap:focus-within { border-color: var(--border-hover); }
         .input-field { flex: 1; background: transparent; border: none; outline: none; color: var(--text); font-family: 'Poppins', sans-serif; font-size: 14.5px; font-weight: 300; line-height: 1.5; resize: none; min-height: 22px; max-height: 120px; overflow-y: auto; }
         .input-field::placeholder { color: var(--text-muted); }
@@ -733,7 +778,13 @@ ${ragData.chunks.map((c) => c.content).join("\n\n---\n\n")}
                 </div>
                 <div className="msg-body">
                   <div className="msg-name">{isAssistant ? BRAND_DISPLAY_NAME : c.you}</div>
-                  <div className={`msg-text ${!isAssistant ? "user-text" : ""}`}>{message}</div>
+                  <div className={`msg-text ${i === 0 && isAssistant ? "hero" : ""} ${!isAssistant ? "user-text" : ""}`}>
+                    {i === 0 && isAssistant && !greetingAnimated ? (
+                      <AnimatedGreeting text={message} onDone={markGreetingAnimated} />
+                    ) : (
+                      message
+                    )}
+                  </div>
 
                   {/* Suggestions (premier message uniquement) */}
                   {i === 0 && showSuggestions[lang] && (
