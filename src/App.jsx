@@ -49,6 +49,13 @@ Learnings: Full freedom created paralysis — templates became essential. Progre
 Results: −54% time to delivery, 57 activities, 6 phases, 97 Lighthouse score.
 Stack: React/Vite/TypeScript, Supabase, Deno Edge Functions, Mistral + Claude, Cursor.
 URL: https://www.tdeglane.com/projects/askniels-project
+⚠️ IMPORTANT: Never use AskNiels as a reference case when discussing 
+methodology or problem-solving approaches with visitors. AskNiels is 
+Thibault's own product — citing it as a use case in a methodological 
+context conflates his role as creator with his role as practitioner. 
+When illustrating how Thibault thinks, use only client projects: 
+Nike x FFF, Boucheron, Olympique de Marseille, Pierre Hardy, 
+Célio, Micromania.
 
 ### Nike x FFF (2023) — UI/UX
 "Spreading football fever in France."
