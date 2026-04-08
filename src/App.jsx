@@ -333,6 +333,17 @@ export default function TiBot() {
     }
   };
 
+  const isMethodological = (text) => {
+    const keywords = [
+      "method", "niels", "approach", "framework", "process",
+      "strateg", "workshop", "facilit", "design thinking",
+      "méthode", "approche", "démarche", "atelier", "stratégie",
+      "comment", "how", "phase", "outil", "tool", "activit",
+      "demonstrate", "show me", "exemple", "example", "montrer",
+    ];
+    return keywords.some((k) => text.toLowerCase().includes(k));
+  };
+
   const sendMessage = async (text) => {
     const content = text || input.trim();
     if (!content || loading) return;
@@ -346,10 +357,31 @@ export default function TiBot() {
     setSessions((prev) => ({ ...prev, [lang]: newMessages }));
     setLoading(true);
 
+    let ragContext = "";
+    if (isMethodological(content)) {
+      try {
+        const ragRes = await fetch("/api/rag", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query: content }),
+        });
+        const ragData = await ragRes.json();
+        if (ragData.chunks && ragData.chunks.length > 0) {
+          ragContext = `[METHODOLOGICAL CONTEXT FROM NIELS KNOWLEDGE BASE]
+${ragData.chunks.map((c) => c.content).join("\n\n---\n\n")}
+[END CONTEXT]
+
+`;
+        }
+      } catch {
+        // RAG échoue silencieusement — ne bloque pas l'envoi
+      }
+    }
+
     const apiMessages = newMessages.map((m, i) => ({
       role: m.role,
       content: m.role === "user" && i === newMessages.length - 1
-        ? `${c.langInstruction}\n\n${m.parsed.message}`
+        ? `${c.langInstruction}\n\n${ragContext}${m.parsed.message}`
         : m.parsed.message,
     }));
 
