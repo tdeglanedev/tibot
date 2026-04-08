@@ -182,7 +182,7 @@ const CONTENT = {
     agentSub: "AI Agent",
     backLink: "← Portfolio",
     greeting: {
-      message: "Hey — I'm TiBot, Thibault's AI agent.\n\nI know his work, his thinking, and how he operates. Ask me anything — about his projects, his approach, or whether he could be the right fit for your context.\n\nWho are you, and what brought you here?",
+      message: "Most portfolios make you do the work. This one talks back.\n\nAsk me anything about Thibault, his projects, or whether he could be the right fit for what you're building.",
       actions: [],
     },
     placeholder: "Ask something about Thibault...",
@@ -207,7 +207,7 @@ const CONTENT = {
     agentSub: "Agent IA",
     backLink: "← Portfolio",
     greeting: {
-      message: "Bonjour — je suis TiBot, l'agent IA de Thibault.\n\nJe connais son travail, sa façon de penser et sa manière d'opérer. Posez-moi n'importe quelle question — sur ses projets, son approche, ou pour savoir s'il correspond à votre contexte.\n\nQui êtes-vous, et qu'est-ce qui vous amène ici ?",
+      message: "La plupart des portfolios vous font faire le travail. Celui-ci vous répond.\n\nPosez-moi n'importe quelle question sur Thibault, ses projets, ou ce qu'il pourrait apporter à ce que vous construisez.",
       actions: [],
     },
     placeholder: "Posez une question sur Thibault...",
