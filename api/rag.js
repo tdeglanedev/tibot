@@ -18,13 +18,16 @@ export default async function handler(req) {
 
   const { query } = await req.json();
 
+  const TIBOT_SECRET = process.env.TIBOT_SECRET ?? "";
+  const ASKNIELS_URL = process.env.ASKNIELS_URL ?? "";
+
   const response = await fetch(
-    `${process.env.ASKNIELS_URL}/make-server-1cb90903/tibot-search`,
+    `${ASKNIELS_URL}/make-server-1cb90903/tibot-search`,
     {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-tibot-secret": process.env.TIBOT_SECRET,
+        "x-tibot-secret": TIBOT_SECRET,
       },
       body: JSON.stringify({ query }),
     }
