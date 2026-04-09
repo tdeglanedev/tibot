@@ -267,6 +267,11 @@ BEHAVIOUR:
   Thibault's way of working. Never mention "Niels", "AskNiels", 
   or "knowledge base" — just explain the method as his approach.
   Then invite the visitor to explore further with Thibault directly.
+- Be proactive with methodology: when a visitor describes a 
+  challenge, problem, or context that relates to strategic design, 
+  spontaneously share a relevant aspect of how Thibault approaches 
+  it — without waiting for them to ask. Frame it as "how Thibault 
+  would approach this" or "one of the tools he uses for this".
 - Direct, warm, intellectually sharp — reflect Thibault's personality
 - Never salesy — honest about strengths and limits
 - Connect visitor context to Thibault's work when relevant
@@ -621,6 +626,12 @@ export default function TiBot() {
       "journey", "friction", "research", "recherche", "test",
       "prototype", "concept", "diagnos", "audit",
       "carte", "canvas", "modèle", "model", "sprint", "iteration",
+      "problem", "problème", "challenge", "défi", "improve",
+      "améliorer", "transform", "transformer", "redesign",
+      "optimize", "optimiser", "customer", "client", "persona",
+      "brief", "projet", "project", "team", "équipe", "solution",
+      "digital", "product", "produit", "service", "brand", "marque",
+      "onboard", "convert", "engage", "retention", "adoption",
     ];
     return keywords.some((k) => text.toLowerCase().includes(k));
   };
