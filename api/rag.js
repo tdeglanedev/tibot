@@ -26,6 +26,7 @@ export default async function handler(req) {
         headers: {
           "Content-Type": "application/json",
           "x-tibot-secret": process.env.TIBOT_SECRET,
+        "Authorization": `Bearer ${process.env.SUPABASE_ANON_KEY}`,
         },
         body: JSON.stringify({ query }),
       }
