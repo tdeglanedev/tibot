@@ -395,6 +395,22 @@ const PANEL_PROJECTS = [
 
 // ─── PROJECT CARD ─────────────────────────────────────────────────────────────
 
+function parseMarkdown(text) {
+  return text
+    // Gras : **texte** → <strong>texte</strong>
+    .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+    // Italique : *texte* → <em>texte</em>
+    .replace(/(?<!\*)\*(?!\*)(.*?)(?<!\*)\*(?!\*)/g, "<em>$1</em>")
+    // Listes : lignes commençant par - ou • → <li>
+    .replace(/^[-•]\s+(.+)$/gm, "<li>$1</li>")
+    // Wrap les blocs de <li> dans <ul>
+    .replace(/(<li>.*<\/li>)/gs, "<ul>$1</ul>")
+    // Sauts de ligne doubles → paragraphes
+    .replace(/\n\n/g, "</p><p>")
+    // Sauts de ligne simples → <br>
+    .replace(/\n/g, "<br/>");
+}
+
 function ProjectCard({ action, lang }) {
   const [expanded, setExpanded] = useState(false);
   const labels = lang === "fr"
@@ -814,6 +830,11 @@ ${ragData.chunks.map((c) => c.content).join("\n\n---\n\n")}
         .msg-name { font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
         .msg-text { color: rgba(255, 255, 255, 1); line-height: 1.7; white-space: pre-wrap; word-break: break-word; }
         .msg-text.user-text { color: rgba(240,237,232,0.8); }
+        .msg-text strong { font-weight: 600; color: var(--text); }
+        .msg-text em { font-style: italic; color: var(--text-muted); }
+        .msg-text ul { margin: 8px 0 8px 16px; list-style: disc; }
+        .msg-text li { margin-bottom: 4px; line-height: 1.6; }
+        .msg-text p { margin-bottom: 8px; }
 
         /* ACTION BUTTONS */
         .msg-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
@@ -941,15 +962,24 @@ ${ragData.chunks.map((c) => c.content).join("\n\n---\n\n")}
                     </div>
                     <div className="msg-body">
                       <div className="msg-name">{isAssistant ? BRAND_DISPLAY_NAME : c.you}</div>
-                      <div className={`msg-text ${!isAssistant ? "user-text" : ""}`}>
-                        {isAssistant && shouldAnimate ? (
-                          <AnimatedText
-                            text={message}
-                            lang={lang}
-                            onDone={() => animatedIds.current.add(msg.id)}
-                          />
-                        ) : (
-                          message
+                      <div
+                        className={`msg-text ${!isAssistant ? "user-text" : ""}`}
+                        dangerouslySetInnerHTML={
+                          isAssistant && animatedIds.current.has(msg.id)
+                            ? { __html: parseMarkdown(message) }
+                            : undefined
+                        }
+                      >
+                        {!(isAssistant && animatedIds.current.has(msg.id)) && (
+                          isAssistant && !animatedIds.current.has(msg.id) ? (
+                            <AnimatedText
+                              text={message}
+                              onDone={() => animatedIds.current.add(msg.id)}
+                              lang={lang}
+                            />
+                          ) : (
+                            message
+                          )
                         )}
                       </div>
 
