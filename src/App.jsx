@@ -964,26 +964,24 @@ ${ragData.chunks.map((c) => c.content).join("\n\n---\n\n")}
                     </div>
                     <div className="msg-body">
                       <div className="msg-name">{isAssistant ? BRAND_DISPLAY_NAME : c.you}</div>
-                      <div
-                        className={`msg-text ${!isAssistant ? "user-text" : ""}`}
-                        dangerouslySetInnerHTML={
-                          isAssistant && animatedIds.current.has(msg.id)
-                            ? { __html: parseMarkdown(message) }
-                            : undefined
-                        }
-                      >
-                        {!(isAssistant && animatedIds.current.has(msg.id)) && (
-                          isAssistant && !animatedIds.current.has(msg.id) ? (
+                      {isAssistant ? (
+                        animatedIds.current.has(msg.id) ? (
+                          <div
+                            className="msg-text"
+                            dangerouslySetInnerHTML={{ __html: parseMarkdown(message) }}
+                          />
+                        ) : (
+                          <div className="msg-text">
                             <AnimatedText
                               text={message}
                               onDone={() => animatedIds.current.add(msg.id)}
                               lang={lang}
                             />
-                          ) : (
-                            message
-                          )
-                        )}
-                      </div>
+                          </div>
+                        )
+                      ) : (
+                        <div className="msg-text user-text">{message}</div>
+                      )}
 
                       {/* Suggestions (premier message uniquement) */}
                       {i === 0 && showSuggestions[lang] && (
