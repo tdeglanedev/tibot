@@ -740,9 +740,11 @@ ${ragData.chunks.map((c) => c.content).join("\n\n---\n\n")}
   };
 
   const handlePanelProject = (project) => {
-    if (typeof window !== "undefined" && window.matchMedia("(max-width: 768px)").matches) {
+    // Ferme le panneau sur mobile uniquement
+    if (window.innerWidth <= 768) {
       setPanelOpen(false);
     }
+    // Déclenche la conversation — ne navigue jamais ailleurs
     sendMessage(lang === "fr" ? project.question_fr : project.question_en);
   };
 
