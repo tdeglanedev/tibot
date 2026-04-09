@@ -582,7 +582,7 @@ function ContactForm({ lang, onClose, onSuccess }) {
 // ─── MAIN APP ─────────────────────────────────────────────────────────────────
 
 export default function TiBot() {
-  const [lang, setLang] = useState("en");
+  const [lang, setLang] = useState("fr");
   const [sessions, setSessions] = useState({
     en: [{ role: "assistant", parsed: CONTENT.en.greeting, id: 0 }],
     fr: [{ role: "assistant", parsed: CONTENT.fr.greeting, id: 1 }],
