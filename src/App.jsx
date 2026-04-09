@@ -269,7 +269,7 @@ BEHAVIOUR:
 const CONTENT = {
   en: {
     agentSub: "AI Agent",
-    backLink: "← Portfolio",
+    backLink: "Portfolio",
     greeting: {
       message: "Most portfolios make you do the work. This one talks back.\n\nAsk me anything about Thibault, his projects, or whether he could be the right fit for what you're building.",
       actions: [],
@@ -294,7 +294,7 @@ const CONTENT = {
   },
   fr: {
     agentSub: "Agent IA",
-    backLink: "← Portfolio",
+    backLink: "Portfolio",
     greeting: {
       message: "La plupart des portfolios vous font faire le travail. Celui-ci vous répond.\n\nPosez-moi n'importe quelle question sur Thibault, ses projets, ou ce qu'il pourrait apporter à ce que vous construisez.",
       actions: [],
@@ -318,6 +318,65 @@ const CONTENT = {
     contactCancel: "Annuler",
   },
 };
+
+const PANEL_PROJECTS = [
+  {
+    slug: "askniels",
+    title: "AskNiels",
+    category: "AI · UX · UI · React",
+    question_en: "Tell me about the AskNiels project",
+    question_fr: "Parle-moi du projet AskNiels",
+    url: "https://www.tdeglane.com/projects/askniels-project",
+  },
+  {
+    slug: "nike-fff",
+    title: "Nike x FFF",
+    category: "UI/UX",
+    question_en: "Tell me about the Nike x FFF project",
+    question_fr: "Parle-moi du projet Nike x FFF",
+    url: "https://www.tdeglane.com/projects/nikefff",
+  },
+  {
+    slug: "boucheron",
+    title: "Boucheron Vendorama",
+    category: "Strategic Design · Phygital",
+    question_en: "Tell me about the Boucheron Vendorama project",
+    question_fr: "Parle-moi du projet Boucheron Vendorama",
+    url: "https://www.tdeglane.com/projects/boucheron-vendorama",
+  },
+  {
+    slug: "olympique-de-marseille",
+    title: "Olympique de Marseille",
+    category: "Strategic Design",
+    question_en: "Tell me about the Olympique de Marseille project",
+    question_fr: "Parle-moi du projet Olympique de Marseille",
+    url: "https://www.tdeglane.com/projects/olympique-de-marseille",
+  },
+  {
+    slug: "pierre-hardy",
+    title: "Pierre Hardy",
+    category: "UI/UX",
+    question_en: "Tell me about the Pierre Hardy project",
+    question_fr: "Parle-moi du projet Pierre Hardy",
+    url: "https://www.tdeglane.com/projects/pierrehardy",
+  },
+  {
+    slug: "celio",
+    title: "Célio",
+    category: "UI/UX · Omnichannel",
+    question_en: "Tell me about the Célio project",
+    question_fr: "Parle-moi du projet Célio",
+    url: "https://www.tdeglane.com/projects/celio",
+  },
+  {
+    slug: "micromania",
+    title: "Micromania-Zing",
+    category: "UI/UX",
+    question_en: "Tell me about the Micromania project",
+    question_fr: "Parle-moi du projet Micromania",
+    url: "https://www.tdeglane.com/projects/micromania",
+  },
+];
 
 // ─── PROJECT CARD ─────────────────────────────────────────────────────────────
 
@@ -371,32 +430,49 @@ function ProjectCard({ action, lang }) {
   );
 }
 
-function AnimatedGreeting({ text, onDone }) {
+function AnimatedText({ text, lang, onDone }) {
   const [displayed, setDisplayed] = useState("");
   const [done, setDone] = useState(false);
+  const intervalRef = useRef(null);
+
+  const skip = () => {
+    if (done) return;
+    clearInterval(intervalRef.current);
+    setDisplayed(text);
+    setDone(true);
+    onDone?.();
+  };
 
   useEffect(() => {
+    setDisplayed("");
+    setDone(false);
     let i = 0;
-    const interval = setInterval(() => {
+    intervalRef.current = setInterval(() => {
       if (i < text.length) {
         setDisplayed(text.slice(0, i + 1));
         i++;
       } else {
         setDone(true);
-        clearInterval(interval);
+        clearInterval(intervalRef.current);
+        onDone?.();
       }
-    }, 18);
-    return () => clearInterval(interval);
+    }, 12);
+    return () => clearInterval(intervalRef.current);
   }, [text]);
 
-  useEffect(() => {
-    if (done) onDone?.();
-  }, [done, onDone]);
-
   return (
-    <span className={`animated-greeting ${done ? "done" : ""}`}>
+    <span
+      className={`animated-text ${done ? "done" : "playing"}`}
+      onClick={skip}
+      style={{ cursor: done ? "default" : "pointer" }}
+    >
       {displayed}
-      {!done && <span className="cursor-blink">▋</span>}
+      {!done && (
+        <>
+          <span className="cursor-blink">▋</span>
+          <span className="skip-hint">{lang === "fr" ? "cliquer pour passer" : "click to skip"}</span>
+        </>
+      )}
     </span>
   );
 }
@@ -477,17 +553,15 @@ function ContactForm({ lang, onClose, onSuccess }) {
 export default function TiBot() {
   const [lang, setLang] = useState("en");
   const [sessions, setSessions] = useState({
-    en: [{ role: "assistant", parsed: CONTENT.en.greeting }],
-    fr: [{ role: "assistant", parsed: CONTENT.fr.greeting }],
+    en: [{ role: "assistant", parsed: CONTENT.en.greeting, id: 0 }],
+    fr: [{ role: "assistant", parsed: CONTENT.fr.greeting, id: 1 }],
   });
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState({ en: true, fr: true });
   const [contactOpen, setContactOpen] = useState(false);
-  const [greetingAnimated, setGreetingAnimated] = useState(() => {
-    if (typeof window === "undefined") return false;
-    return window.sessionStorage.getItem("tibot-greeting-animated") === "1";
-  });
+  const [panelOpen, setPanelOpen] = useState(false);
+  const animatedIds = useRef(new Set());
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -497,6 +571,16 @@ export default function TiBot() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading, lang]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    const isMobile = window.matchMedia("(max-width: 768px)").matches;
+    if (!isMobile) return undefined;
+    document.body.style.overflow = panelOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [panelOpen]);
 
   const switchLang = (newLang) => {
     if (newLang === lang) return;
@@ -522,6 +606,11 @@ export default function TiBot() {
       "méthode", "approche", "démarche", "atelier", "stratégie",
       "comment", "how", "phase", "outil", "tool", "activit",
       "demonstrate", "show me", "exemple", "example", "montrer",
+      "experience", "expérience", "emotion", "emotional", "map",
+      "score", "insight", "user", "utilisateur", "parcours",
+      "journey", "friction", "research", "recherche", "test",
+      "prototype", "concept", "diagnos", "audit",
+      "carte", "canvas", "modèle", "model", "sprint", "iteration",
     ];
     return keywords.some((k) => text.toLowerCase().includes(k));
   };
@@ -534,7 +623,7 @@ export default function TiBot() {
     setContactOpen(false);
     setShowSuggestions((prev) => ({ ...prev, [lang]: false }));
 
-    const userMsg = { role: "user", parsed: { message: content, actions: [] } };
+    const userMsg = { role: "user", parsed: { message: content, actions: [] }, id: Date.now() + 1 };
     const newMessages = [...messages, userMsg];
     setSessions((prev) => ({ ...prev, [lang]: newMessages }));
     setLoading(true);
@@ -585,12 +674,12 @@ ${ragData.chunks.map((c) => c.content).join("\n\n---\n\n")}
 
       setSessions((prev) => ({
         ...prev,
-        [lang]: [...newMessages, { role: "assistant", parsed }],
+        [lang]: [...newMessages, { role: "assistant", parsed, id: Date.now() }],
       }));
     } catch {
       setSessions((prev) => ({
         ...prev,
-        [lang]: [...newMessages, { role: "assistant", parsed: { message: "Connection issue. Please try again.", actions: [] } }],
+        [lang]: [...newMessages, { role: "assistant", parsed: { message: "Connection issue. Please try again.", actions: [] }, id: Date.now() }],
       }));
     } finally {
       setLoading(false);
@@ -613,12 +702,11 @@ ${ragData.chunks.map((c) => c.content).join("\n\n---\n\n")}
     }
   };
 
-  const markGreetingAnimated = () => {
-    if (greetingAnimated) return;
-    setGreetingAnimated(true);
-    if (typeof window !== "undefined") {
-      window.sessionStorage.setItem("tibot-greeting-animated", "1");
+  const handlePanelProject = (project) => {
+    if (typeof window !== "undefined" && window.matchMedia("(max-width: 768px)").matches) {
+      setPanelOpen(false);
     }
+    sendMessage(lang === "fr" ? project.question_fr : project.question_en);
   };
 
   return (
@@ -636,7 +724,11 @@ ${ragData.chunks.map((c) => c.content).join("\n\n---\n\n")}
         html, body { height: 100%; }
         body { background: var(--bg); background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E"); background-size: 256px 256px; color: var(--text); font-family: 'Poppins', sans-serif; font-weight: 300; font-size: 15px; line-height: 1.65; -webkit-font-smoothing: antialiased; }
         #root { height: 100%; display: flex; flex-direction: column; }
-        .app { display: flex; flex-direction: column; height: 100%; max-width: 720px; margin: 0 auto; width: 100%; padding: 0 20px; }
+        .app { display: flex; flex-direction: column; height: 100%; max-width: 1120px; margin: 0 auto; width: 100%; padding: 0 20px; }
+        .main-layout { display: flex; flex: 1; min-height: 0; justify-content: center; gap: 0; }
+        .main-layout.panel-open { gap: 20px; }
+        .conversation-column { flex: 1; min-width: 0; max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; }
+        .main-layout.panel-open .conversation-column { margin: 0; }
 
         /* HEADER */
         .header { display: flex; align-items: center; justify-content: space-between; padding: 28px 0 24px; border-bottom: 1px solid var(--border); flex-shrink: 0; gap: 12px; }
@@ -653,6 +745,39 @@ ${ragData.chunks.map((c) => c.content).join("\n\n---\n\n")}
         .lang-btn:not(.active):hover { color: var(--text); background: rgba(255,255,255,0.04); }
         .header-link { font-size: 12px; color: var(--accent); text-decoration: none; letter-spacing: 0.04em; font-weight: 500; border: 1px solid rgba(200,184,154,0.4); padding: 6px 16px; border-radius: 9999px; transition: all 0.2s; white-space: nowrap; }
         .header-link:hover { background: var(--accent-dim); border-color: var(--accent); }
+        .explore-btn { background: transparent; border: 1px solid rgba(200,184,154,0.4); color: var(--accent); font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 0.04em; padding: 6px 16px; border-radius: 9999px; transition: all 0.2s; cursor: pointer; white-space: nowrap; }
+        .explore-btn:hover { background: var(--accent-dim); border-color: var(--accent); }
+        .explore-btn.open { border-color: var(--accent); }
+
+        /* SIDE PANEL */
+        .side-panel { width: 0; overflow: hidden; transition: width 0.3s ease; flex-shrink: 0; background: var(--surface); border-left: 1px solid transparent; pointer-events: none; }
+        .side-panel.open { width: 360px; border-left-color: var(--border); }
+        .side-panel.open { pointer-events: auto; }
+        .side-panel-content { width: 360px; height: 100%; display: flex; flex-direction: column; }
+        .side-panel-header { padding: 20px 20px 16px; border-bottom: 1px solid var(--border); }
+        .side-panel-title { font-size: 14px; font-weight: 500; color: var(--text); }
+        .side-panel-subtitle { margin-top: 4px; font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 500; }
+        .side-panel-top-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+        .side-panel-mini-btn { background: transparent; border: 1px solid var(--border); color: var(--text-muted); font-family: 'Poppins', sans-serif; font-size: 11px; font-weight: 500; padding: 5px 12px; border-radius: 9999px; cursor: pointer; transition: all 0.2s; }
+        .side-panel-mini-btn:hover { color: var(--text); border-color: var(--border-hover); }
+        .side-panel-cv-links { display: flex; gap: 16px; margin-top: 10px; }
+        .side-panel-cv-link { font-size: 11px; color: var(--accent); text-decoration: none; }
+        .side-panel-cv-link:hover { text-decoration: underline; }
+        .side-panel-projects { padding: 16px 20px; overflow-y: auto; flex: 1; }
+        .side-panel-section-label { font-size: 10px; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.08em; font-weight: 500; margin-bottom: 10px; }
+        .panel-project-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); cursor: pointer; transition: all 0.15s; }
+        .panel-project-item:last-child { border-bottom: none; }
+        .panel-project-item:hover .panel-project-title { color: var(--accent); }
+        .panel-project-item:hover .panel-project-arrow { color: var(--accent); transform: translateX(3px); }
+        .panel-project-thumb { width: 48px; height: 36px; object-fit: cover; border-radius: 4px; flex-shrink: 0; opacity: 0.85; }
+        .panel-project-info { min-width: 0; }
+        .panel-project-title { font-size: 13px; font-weight: 400; color: var(--text); transition: color 0.15s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .panel-project-category { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; margin-top: 2px; font-weight: 500; }
+        .panel-project-arrow { margin-left: auto; color: var(--text-muted); font-size: 12px; transition: all 0.15s; flex-shrink: 0; }
+        .side-panel-footer { padding: 16px 20px; border-top: 1px solid var(--border); }
+        .side-panel-contact-btn { width: 100%; background: var(--accent); color: #0e0e0e; border: none; font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 500; padding: 10px; border-radius: 9999px; cursor: pointer; transition: opacity 0.2s; }
+        .side-panel-contact-btn:hover { opacity: 0.85; }
+        .mobile-panel-overlay { display: none; }
 
         /* MESSAGES */
         .messages { flex: 1; overflow-y: auto; padding: 32px 0; display: flex; flex-direction: column; gap: 28px; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
@@ -667,7 +792,6 @@ ${ragData.chunks.map((c) => c.content).join("\n\n---\n\n")}
         .msg-body { flex: 1; min-width: 0; }
         .msg-name { font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
         .msg-text { color: rgba(255, 255, 255, 1); line-height: 1.7; white-space: pre-wrap; word-break: break-word; }
-        .msg-text.hero { font-family: 'Poppins', sans-serif; font-size: 15px; font-weight: 300; line-height: 1.7; letter-spacing: normal; color: var(--text); }
         .msg-text.user-text { color: rgba(240,237,232,0.8); }
 
         /* ACTION BUTTONS */
@@ -712,10 +836,10 @@ ${ragData.chunks.map((c) => c.content).join("\n\n---\n\n")}
         .project-card-text { font-size: 13px; color: var(--text); line-height: 1.6; margin-bottom: 10px; }
         .project-card-text:last-child { margin-bottom: 0; }
         .project-card-cta { margin-top: 12px; width: 100%; background: var(--accent); border: none; color: #0e0e0e; font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 500; padding: 10px; border-radius: 9999px; cursor: pointer; transition: opacity 0.2s; }
-
-        .cursor-blink { display: inline-block; color: var(--accent); animation: blink 0.7s step-end infinite; font-size: 0.85em; margin-left: 1px; }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
         .project-card-cta:hover { opacity: 0.85; }
+        .cursor-blink { display: inline-block; color: var(--accent); animation: blink 0.7s step-end infinite; font-size: 0.85em; margin-left: 1px; }
+        .skip-hint { display: block; font-size: 10px; color: var(--text-muted); opacity: 0.4; margin-top: 6px; letter-spacing: 0.04em; font-style: italic; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
         /* TYPING */
         .typing { display: flex; gap: 14px; animation: fadeUp 0.25s ease; }
@@ -734,6 +858,15 @@ ${ragData.chunks.map((c) => c.content).join("\n\n---\n\n")}
         .send-btn { background: var(--accent); border: none; border-radius: var(--radius-full); width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; transition: opacity 0.2s; color: #0e0e0e; }
         .send-btn:disabled { opacity: 0.3; cursor: not-allowed; }
         .send-btn:not(:disabled):hover { opacity: 0.85; }
+        @media (max-width: 768px) {
+          .main-layout { display: block; }
+          .conversation-column { max-width: 100%; }
+          .side-panel { position: fixed; left: 0; right: 0; bottom: 0; width: auto; height: 75vh; transform: translateY(100%); transition: transform 0.3s ease; border-radius: 16px 16px 0 0; background: var(--surface); border-top: 1px solid var(--border); border-left: none; z-index: 100; overflow-y: auto; }
+          .side-panel.open { width: auto; transform: translateY(0); }
+          .side-panel-content { width: 100%; height: auto; min-height: 100%; }
+          .mobile-panel-overlay { display: block; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; }
+        }
+
         @media (max-width: 480px) {
           .app { padding: 0 16px; }
           .header { padding: 20px 0 18px; flex-wrap: wrap; }
@@ -761,109 +894,172 @@ ${ragData.chunks.map((c) => c.content).join("\n\n---\n\n")}
               <button className={`lang-btn ${lang === "fr" ? "active" : ""}`} onClick={() => switchLang("fr")}>FR</button>
             </div>
             <a href="https://www.tdeglane.com" className="header-link">{c.backLink}</a>
+            <button
+              className={`explore-btn ${panelOpen ? "open" : ""}`}
+              onClick={() => setPanelOpen((v) => !v)}
+            >
+              {panelOpen ? (lang === "fr" ? "Fermer ✕" : "Close ✕") : (lang === "fr" ? "Explorer ☰" : "Explore ☰")}
+            </button>
           </div>
         </header>
 
-        {/* MESSAGES */}
-        <div className="messages">
-          {messages.map((msg, i) => {
-            const { message, actions = [] } = msg.parsed;
-            const isAssistant = msg.role === "assistant";
-            const isLast = i === messages.length - 1;
+        <div className={`main-layout ${panelOpen ? "panel-open" : ""}`}>
+          <div className="conversation-column">
+            {/* MESSAGES */}
+            <div className="messages">
+              {messages.map((msg, i) => {
+                const { message, actions = [] } = msg.parsed;
+                const isAssistant = msg.role === "assistant";
+                const isLast = i === messages.length - 1;
+                const shouldAnimate = isAssistant && !animatedIds.current.has(msg.id);
 
-            return (
-              <div key={`${lang}-${i}`} className="msg">
-                <div className={`msg-avatar ${msg.role}`} aria-hidden>
-                  {isAssistant ? <img src={BRAND_LOGO_SRC} alt="" /> : "→"}
-                </div>
-                <div className="msg-body">
-                  <div className="msg-name">{isAssistant ? BRAND_DISPLAY_NAME : c.you}</div>
-                  <div className={`msg-text ${i === 0 && isAssistant ? "hero" : ""} ${!isAssistant ? "user-text" : ""}`}>
-                    {i === 0 && isAssistant && !greetingAnimated ? (
-                      <AnimatedGreeting text={message} onDone={markGreetingAnimated} />
-                    ) : (
-                      message
-                    )}
-                  </div>
-
-                  {/* Suggestions (premier message uniquement) */}
-                  {i === 0 && showSuggestions[lang] && (
-                    <div className="suggestions">
-                      {c.suggestions.map((q, j) => (
-                        <button key={j} className="suggestion" onClick={() => sendMessage(q)}>{q}</button>
-                      ))}
+                return (
+                  <div key={`${lang}-${i}`} className="msg">
+                    <div className={`msg-avatar ${msg.role}`} aria-hidden>
+                      {isAssistant ? <img src={BRAND_LOGO_SRC} alt="" /> : "→"}
                     </div>
-                  )}
-
-                  {/* Action buttons */}
-                  {isAssistant && actions.length > 0 && (
-                    <div className="msg-actions">
-                      {actions.map((action, j) => (
-                        action.type === "project_card" ? (
-                          <ProjectCard key={j} action={action} lang={lang} />
+                    <div className="msg-body">
+                      <div className="msg-name">{isAssistant ? BRAND_DISPLAY_NAME : c.you}</div>
+                      <div className={`msg-text ${!isAssistant ? "user-text" : ""}`}>
+                        {isAssistant && shouldAnimate ? (
+                          <AnimatedText
+                            text={message}
+                            lang={lang}
+                            onDone={() => animatedIds.current.add(msg.id)}
+                          />
                         ) : (
-                          <button key={j} className="action-btn" onClick={() => handleAction(action)}>
-                            {action.label}
-                          </button>
-                        )
-                      ))}
+                          message
+                        )}
+                      </div>
+
+                      {/* Suggestions (premier message uniquement) */}
+                      {i === 0 && showSuggestions[lang] && (
+                        <div className="suggestions">
+                          {c.suggestions.map((q, j) => (
+                            <button key={j} className="suggestion" onClick={() => sendMessage(q)}>{q}</button>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Action buttons */}
+                      {isAssistant && actions.length > 0 && !shouldAnimate && (
+                        <div className="msg-actions">
+                          {actions.map((action, j) => (
+                            action.type === "project_card" ? (
+                              <ProjectCard key={j} action={action} lang={lang} />
+                            ) : (
+                              <button key={j} className="action-btn" onClick={() => handleAction(action)}>
+                                {action.label}
+                              </button>
+                            )
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Contact form inline (dernier message assistant) */}
+                      {isAssistant && isLast && contactOpen && (
+                        <ContactForm
+                          lang={lang}
+                          onClose={() => setContactOpen(false)}
+                          onSuccess={() => {}}
+                        />
+                      )}
                     </div>
-                  )}
+                  </div>
+                );
+              })}
 
-                  {/* Contact form inline (dernier message assistant) */}
-                  {isAssistant && isLast && contactOpen && (
-                    <ContactForm
-                      lang={lang}
-                      onClose={() => setContactOpen(false)}
-                      onSuccess={() => {}}
-                    />
-                  )}
+              {loading && (
+                <div className="typing">
+                  <div className="msg-avatar assistant" aria-hidden>
+                    <img src={BRAND_LOGO_SRC} alt="" />
+                  </div>
+                  <div className="msg-body">
+                    <div className="msg-name">{BRAND_DISPLAY_NAME}</div>
+                    <div className="typing-dots">
+                      <div className="dot" /><div className="dot" /><div className="dot" />
+                    </div>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              )}
+              <div ref={messagesEndRef} />
+            </div>
 
-          {loading && (
-            <div className="typing">
-              <div className="msg-avatar assistant" aria-hidden>
-                <img src={BRAND_LOGO_SRC} alt="" />
-              </div>
-              <div className="msg-body">
-                <div className="msg-name">{BRAND_DISPLAY_NAME}</div>
-                <div className="typing-dots">
-                  <div className="dot" /><div className="dot" /><div className="dot" />
-                </div>
+            {/* INPUT */}
+            <div className="input-area">
+              <div className="input-wrap">
+                <textarea
+                  ref={inputRef}
+                  className="input-field"
+                  placeholder={c.placeholder}
+                  value={input}
+                  onChange={(e) => {
+                    setInput(e.target.value);
+                    e.target.style.height = "auto";
+                    e.target.style.height = Math.min(e.target.scrollHeight, 120) + "px";
+                  }}
+                  onKeyDown={handleKey}
+                  rows={1}
+                  disabled={loading}
+                />
+                <button className="send-btn" onClick={() => sendMessage()} disabled={!input.trim() || loading} aria-label="Send">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                    <path d="M7 12V2M7 2L2 7M7 2L12 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </button>
               </div>
             </div>
-          )}
-          <div ref={messagesEndRef} />
-        </div>
-
-        {/* INPUT */}
-        <div className="input-area">
-          <div className="input-wrap">
-            <textarea
-              ref={inputRef}
-              className="input-field"
-              placeholder={c.placeholder}
-              value={input}
-              onChange={(e) => {
-                setInput(e.target.value);
-                e.target.style.height = "auto";
-                e.target.style.height = Math.min(e.target.scrollHeight, 120) + "px";
-              }}
-              onKeyDown={handleKey}
-              rows={1}
-              disabled={loading}
-            />
-            <button className="send-btn" onClick={() => sendMessage()} disabled={!input.trim() || loading} aria-label="Send">
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                <path d="M7 12V2M7 2L2 7M7 2L12 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </button>
           </div>
+
+          <aside className={`side-panel ${panelOpen ? "open" : ""}`}>
+            <div className="side-panel-content">
+              <div className="side-panel-header">
+                <div className="side-panel-title">Thibault Deglane</div>
+                <div className="side-panel-subtitle">Senior Strategic Designer · Paris</div>
+                <div className="side-panel-top-actions">
+                  <button className="side-panel-mini-btn" onClick={() => window.open("https://www.tdeglane.com/about", "_blank", "noopener")}>
+                    About & CV
+                  </button>
+                  <button className="side-panel-mini-btn" onClick={() => window.open("https://www.tdeglane.com", "_blank", "noopener")}>
+                    Portfolio →
+                  </button>
+                </div>
+                <div className="side-panel-cv-links">
+                  <a className="side-panel-cv-link" href="https://drive.google.com/file/d/1waRu0E8tjhUK10XP7rsa2K_valTy-U4T/view?usp=share_link" target="_blank" rel="noopener noreferrer">↓ CV EN</a>
+                  <a className="side-panel-cv-link" href="https://drive.google.com/file/d/1wZinQ0tr2SBp3_f_BWMW7kXpC6rZFagD/view?usp=share_link" target="_blank" rel="noopener noreferrer">↓ CV FR</a>
+                </div>
+              </div>
+
+              <div className="side-panel-projects">
+                <div className="side-panel-section-label">{lang === "fr" ? "Projets" : "Projects"}</div>
+                {PANEL_PROJECTS.map((project) => (
+                  <div key={project.slug} className="panel-project-item" onClick={() => handlePanelProject(project)}>
+                    <img src={`/projects/${project.slug}.jpg`} className="panel-project-thumb" alt={project.title} />
+                    <div className="panel-project-info">
+                      <div className="panel-project-title">{project.title}</div>
+                      <div className="panel-project-category">{project.category}</div>
+                    </div>
+                    <span className="panel-project-arrow">→</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="side-panel-footer">
+                <button
+                  className="side-panel-contact-btn"
+                  onClick={() => {
+                    setPanelOpen(false);
+                    setContactOpen(true);
+                  }}
+                >
+                  {lang === "fr" ? "→ Envoyer un message à Thibault" : "→ Send Thibault a message"}
+                </button>
+              </div>
+            </div>
+          </aside>
         </div>
       </div>
+      {panelOpen && <div className="mobile-panel-overlay" onClick={() => setPanelOpen(false)} />}
     </>
   );
 }
