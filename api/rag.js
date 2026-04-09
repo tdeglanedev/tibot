@@ -18,28 +18,18 @@ export default async function handler(req) {
 
   const { query } = await req.json();
 
-  const TIBOT_SECRET = process.env.TIBOT_SECRET ?? "";
-  const ASKNIELS_URL = process.env.ASKNIELS_URL ?? "";
-
-  const response = await fetch(
-    `${ASKNIELS_URL}/make-server-1cb90903/tibot-search`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-tibot-secret": TIBOT_SECRET,
-      },
-      body: JSON.stringify({ query }),
-    }
-  );
-
-  const data = await response.json();
-
-  return new Response(JSON.stringify(data), {
+  // DEBUG TEMPORAIRE
+  const url = process.env.ASKNIELS_URL;
+  const secret = process.env.TIBOT_SECRET;
+  
+  return new Response(JSON.stringify({ 
+    url_present: !!url,
+    url_length: url?.length,
+    url_start: url?.slice(0, 20),
+    secret_present: !!secret,
+    secret_length: secret?.length
+  }), {
     status: 200,
-    headers: {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
-    },
+    headers: { "Content-Type": "application/json" }
   });
 }
