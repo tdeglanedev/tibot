@@ -606,9 +606,11 @@ export default function TiBot() {
   const [showSuggestions, setShowSuggestions] = useState({ en: true, fr: true });
   const [contactOpen, setContactOpen] = useState(false);
   const [panelOpen, setPanelOpen] = useState(false);
+  const [isListening, setIsListening] = useState(false);
   const animatedIds = useRef(new Set());
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+  const recognitionRef = useRef(null);
 
   const c = CONTENT[lang];
   const messages = sessions[lang];
@@ -762,6 +764,54 @@ ${ragData.chunks.map((c) => c.content).join("\n\n---\n\n")}
     sendMessage(lang === "fr" ? project.question_fr : project.question_en);
   };
 
+  const toggleListening = () => {
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+      alert(lang === "fr"
+        ? "Votre navigateur ne supporte pas la reconnaissance vocale."
+        : "Your browser doesn't support voice recognition.");
+      return;
+    }
+
+    if (isListening) {
+      recognitionRef.current?.stop();
+      setIsListening(false);
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognitionRef.current = recognition;
+
+    recognition.lang = lang === "fr" ? "fr-FR" : "en-US";
+    recognition.continuous = false;
+    recognition.interimResults = true;
+
+    recognition.onstart = () => setIsListening(true);
+
+    recognition.onresult = (event) => {
+      const transcript = Array.from(event.results)
+        .map((result) => result[0].transcript)
+        .join("");
+      setInput(transcript);
+
+      if (event.results[event.results.length - 1].isFinal) {
+        setIsListening(false);
+        setTimeout(() => sendMessage(transcript), 100);
+      }
+    };
+
+    recognition.onerror = (event) => {
+      console.error("Speech recognition error:", event.error);
+      setIsListening(false);
+    };
+
+    recognition.onend = () => setIsListening(false);
+
+    recognition.start();
+  };
+
   return (
     <>
       <style>{`
@@ -913,6 +963,38 @@ ${ragData.chunks.map((c) => c.content).join("\n\n---\n\n")}
         .input-wrap:focus-within { border-color: var(--border-hover); }
         .input-field { flex: 1; background: transparent; border: none; outline: none; color: var(--text); font-family: 'Poppins', sans-serif; font-size: 14.5px; font-weight: 300; line-height: 1.5; resize: none; min-height: 22px; max-height: 120px; overflow-y: auto; }
         .input-field::placeholder { color: var(--text-muted); }
+        .mic-btn {
+          background: transparent;
+          border: none;
+          color: var(--text-muted);
+          width: 30px;
+          height: 30px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          flex-shrink: 0;
+          border-radius: 9999px;
+          transition: all 0.2s;
+          padding: 0;
+        }
+        .mic-btn:hover {
+          color: var(--text);
+          background: var(--surface-2);
+        }
+        .mic-btn:disabled {
+          opacity: 0.3;
+          cursor: not-allowed;
+        }
+        .mic-btn.listening {
+          color: #e05c5c;
+          background: rgba(224, 92, 92, 0.12);
+          animation: micPulse 1s ease infinite;
+        }
+        @keyframes micPulse {
+          0%, 100% { box-shadow: 0 0 0 0 rgba(224, 92, 92, 0.3); }
+          50% { box-shadow: 0 0 0 6px rgba(224, 92, 92, 0); }
+        }
         .send-btn { background: var(--accent); border: none; border-radius: var(--radius-full); width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; transition: opacity 0.2s; color: #0e0e0e; }
         .send-btn:disabled { opacity: 0.3; cursor: not-allowed; }
         .send-btn:not(:disabled):hover { opacity: 0.85; }
@@ -1056,7 +1138,9 @@ ${ragData.chunks.map((c) => c.content).join("\n\n---\n\n")}
                 <textarea
                   ref={inputRef}
                   className="input-field"
-                  placeholder={c.placeholder}
+                  placeholder={isListening
+                    ? (lang === "fr" ? "Je vous écoute..." : "Listening...")
+                    : c.placeholder}
                   value={input}
                   onChange={(e) => {
                     setInput(e.target.value);
@@ -1067,6 +1151,19 @@ ${ragData.chunks.map((c) => c.content).join("\n\n---\n\n")}
                   rows={1}
                   disabled={loading}
                 />
+                <button
+                  className={`mic-btn ${isListening ? "listening" : ""}`}
+                  onClick={toggleListening}
+                  disabled={loading}
+                  aria-label="Voice input"
+                  type="button"
+                >
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                    <rect x="4" y="1" width="6" height="8" rx="3" stroke="currentColor" strokeWidth="1.5" />
+                    <path d="M2 7c0 2.761 2.239 5 5 5s5-2.239 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                    <line x1="7" y1="12" x2="7" y2="13.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                  </svg>
+                </button>
                 <button className="send-btn" onClick={() => sendMessage()} disabled={!input.trim() || loading} aria-label="Send">
                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                     <path d="M7 12V2M7 2L2 7M7 2L12 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
