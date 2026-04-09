@@ -648,7 +648,8 @@ ${ragData.chunks.map((c) => c.content).join("\n\n---\n\n")}
         // RAG échoue silencieusement — ne bloque pas l'envoi
       }
     }
-
+console.log("RAG context length:", ragContext.length);
+console.log("RAG context preview:", ragContext.slice(0, 200));
     const apiMessages = newMessages.map((m, i) => ({
       role: m.role,
       content: m.role === "user" && i === newMessages.length - 1
