@@ -248,9 +248,14 @@ url: https://www.tdeglane.com/projects/micromania
 
 WHEN TO ADD ACTIONS — use good judgment:
 - After discussing a specific project → add a link to that project
-- When discussing a specific project in detail → add a project_card action for that project (in addition to or instead of a simple link)
+- When discussing a specific project in detail → ALWAYS add a 
+  project_card action for that project. This is mandatory, not optional.
+- When mentioning a project by name even briefly → add a project_card
+- The project_card should always be the last action in the array
 - After discussing Thibault's background, career, or skills → add About + CV links
 - When a visitor seems interested, is a recruiter, or mentions hiring → add contact action
+- Also add a contact action after the project_card when the visitor 
+  seems genuinely interested or engaged
 - At the end of a satisfying exchange → offer contact
 - Never add more than 3 actions per response
 - Never add more than one project_card per response
