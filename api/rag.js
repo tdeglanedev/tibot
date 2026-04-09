@@ -20,7 +20,7 @@ export default async function handler(req) {
 
   try {
     const response = await fetch(
-      `${process.env.ASKNIELS_URL}/make-server-1cb90903/tibot-search`,
+      `${process.env.ASKNIELS_URL}/tibot-search`,
       {
         method: "POST",
         headers: {
