@@ -16,9 +16,9 @@ export default async function handler(req) {
     return new Response("Method not allowed", { status: 405 });
   }
 
-  const { query } = await req.json();
-
   try {
+    const { query } = await req.json();
+
     const response = await fetch(
       `${process.env.ASKNIELS_URL}/tibot-search`,
       {
@@ -26,35 +26,28 @@ export default async function handler(req) {
         headers: {
           "Content-Type": "application/json",
           "x-tibot-secret": process.env.TIBOT_SECRET,
-        "Authorization": `Bearer ${process.env.SUPABASE_ANON_KEY}`,
+          "Authorization": `Bearer ${process.env.SUPABASE_ANON_KEY}`,
         },
         body: JSON.stringify({ query }),
       }
     );
 
-    const text = await response.text();
-    
-    // On retourne le status ET le body brut pour debug
-    return new Response(JSON.stringify({ 
-      status: response.status,
-      body: text
-    }), {
+    const data = await response.json();
+
+    return new Response(JSON.stringify(data), {
       status: 200,
-      headers: { 
+      headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
+        "Access-Control-Allow-Origin": "*",
       },
     });
 
   } catch (err) {
-    return new Response(JSON.stringify({ 
-      error: err.message,
-      stack: err.stack
-    }), {
+    return new Response(JSON.stringify({ chunks: [] }), {
       status: 200,
-      headers: { 
+      headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
+        "Access-Control-Allow-Origin": "*",
       },
     });
   }
