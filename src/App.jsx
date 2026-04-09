@@ -1031,6 +1031,25 @@ ${ragData.chunks.map((c) => c.content).join("\n\n---\n\n")}
           .suggestion { font-size: 12px; padding: 6px 11px; }
           .project-card { max-width: 100%; }
         }
+
+        @media (max-width: 768px) {
+          .app {
+            position: relative;
+            padding-bottom: 90px;
+          }
+
+          .input-area {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 12px 20px;
+            padding-bottom: max(12px, env(safe-area-inset-bottom));
+            background: var(--bg);
+            border-top: 1px solid var(--border);
+            z-index: 10;
+          }
+        }
       `}</style>
 
       <div className="app">
