@@ -18,18 +18,43 @@ export default async function handler(req) {
 
   const { query } = await req.json();
 
-  // DEBUG TEMPORAIRE
-  const url = process.env.ASKNIELS_URL;
-  const secret = process.env.TIBOT_SECRET;
-  
-  return new Response(JSON.stringify({ 
-    url_present: !!url,
-    url_length: url?.length,
-    url_start: url?.slice(0, 20),
-    secret_present: !!secret,
-    secret_length: secret?.length
-  }), {
-    status: 200,
-    headers: { "Content-Type": "application/json" }
-  });
+  try {
+    const response = await fetch(
+      `${process.env.ASKNIELS_URL}/make-server-1cb90903/tibot-search`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-tibot-secret": process.env.TIBOT_SECRET,
+        },
+        body: JSON.stringify({ query }),
+      }
+    );
+
+    const text = await response.text();
+    
+    // On retourne le status ET le body brut pour debug
+    return new Response(JSON.stringify({ 
+      status: response.status,
+      body: text
+    }), {
+      status: 200,
+      headers: { 
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*"
+      },
+    });
+
+  } catch (err) {
+    return new Response(JSON.stringify({ 
+      error: err.message,
+      stack: err.stack
+    }), {
+      status: 200,
+      headers: { 
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*"
+      },
+    });
+  }
 }
