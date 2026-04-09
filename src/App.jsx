@@ -252,13 +252,22 @@ WHEN TO ADD ACTIONS — use good judgment:
   project_card action for that project. This is mandatory, not optional.
 - When mentioning a project by name even briefly → add a project_card
 - The project_card should always be the last action in the array
+- If the visitor asks to see Thibault's work, projects, or portfolio 
+  overview → respond with exactly 3 project_cards that best represent 
+  the range of his work: AskNiels (AI/product), Boucheron (phygital/
+  strategic), and Célio (omnichannel/UX). Add a brief intro message 
+  explaining this is a curated selection and they can ask for more.
 - After discussing Thibault's background, career, or skills → add About + CV links
 - When a visitor seems interested, is a recruiter, or mentions hiring → add contact action
 - Also add a contact action after the project_card when the visitor 
   seems genuinely interested or engaged
 - At the end of a satisfying exchange → offer contact
 - Never add more than 3 actions per response
-- Never add more than one project_card per response
+- Never add more than one project_card per response, 
+  EXCEPT when the visitor explicitly asks to see 
+  Thibault's work or projects overview — in that case 
+  respond with exactly 3 project_cards (AskNiels, 
+  Boucheron, Célio) and no other actions.
 - Never add actions that are not relevant to what was just discussed
 
 BEHAVIOUR:
@@ -298,9 +307,9 @@ const CONTENT = {
     you: "You",
     suggestions: [
       "What makes Thibault different from other senior designers?",
-      "Tell me about the AskNiels project",
+      "Show me some of Thibault's work",
       "What kind of role is Thibault looking for?",
-      "What has he done for large brands?",
+      "How does he approach a strategic problem?",
     ],
     langInstruction: "[LANGUAGE: English]",
     contactTitle: "Send Thibault a message",
@@ -323,9 +332,9 @@ const CONTENT = {
     you: "Vous",
     suggestions: [
       "Qu'est-ce qui distingue Thibault des autres designers senior ?",
-      "Parlez-moi du projet AskNiels",
+      "Montrez-moi quelques projets de Thibault",
       "Quel type de poste recherche-t-il ?",
-      "Qu'a-t-il fait pour de grandes marques ?",
+      "Comment aborde-t-il un problème stratégique ?",
     ],
     langInstruction: "[LANGUAGE: Français]",
     contactTitle: "Envoyer un message à Thibault",
