@@ -801,6 +801,9 @@ export default function TiBot() {
 
       // Stream terminé — parse le JSON final pour extraire les actions
       const finalParsed = parseResponse(fullText);
+      // Marque le message comme déjà animé —
+      // le stream a joué le rôle de l'animation
+      animatedIds.current.add(assistantId);
       setSessions((prev) => ({
         ...prev,
         [lang]: [
