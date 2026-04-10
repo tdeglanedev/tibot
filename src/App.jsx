@@ -626,11 +626,10 @@ export default function TiBot() {
   const parseResponse = (raw) => {
     const separator = "---ACTIONS---";
     const idx = raw.indexOf(separator);
-    if (idx === -1) {
-      return { message: raw.trim(), actions: [] };
-    }
-    const message = raw.slice(0, idx).trim();
-    const jsonPart = raw.slice(idx + separator.length).trim();
+    let message = idx === -1 ? raw.trim() : raw.slice(0, idx).trim();
+    message = message.replace(/^\[LANGUAGE:.*?\]\s*/i, "");
+    const jsonPart =
+      idx === -1 ? '{"actions":[]}' : raw.slice(idx + separator.length).trim();
     try {
       const parsed = JSON.parse(jsonPart);
       return { message, actions: parsed.actions || [] };
@@ -743,8 +742,9 @@ export default function TiBot() {
       const extractStreamMessage = (raw) => {
         const separator = "---ACTIONS---";
         const idx = raw.indexOf(separator);
-        if (idx === -1) return raw.trim();
-        return raw.slice(0, idx).trim();
+        let text = idx === -1 ? raw.trim() : raw.slice(0, idx).trim();
+        text = text.replace(/^\[LANGUAGE:.*?\]\s*/i, "");
+        return text;
       };
 
       while (true) {
@@ -1163,7 +1163,12 @@ export default function TiBot() {
                       <div className="msg-name">{isAssistant ? BRAND_DISPLAY_NAME : c.you}</div>
                       {isAssistant ? (
                         isStreaming ? (
-                          <div className="msg-text">{message}</div>
+                          <div
+                            className="msg-text"
+                            dangerouslySetInnerHTML={{
+                              __html: parseMarkdown(message),
+                            }}
+                          />
                         ) : animatedIds.current.has(msg.id) ? (
                           <div
                             className="msg-text"
