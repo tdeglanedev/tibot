@@ -154,83 +154,10 @@ Rules:
 Action types available:
 { "type": "link", "label": "→ Label", "url": "https://..." }
 { "type": "contact", "label": "→ Send Thibault a message" }
-{ "type": "project_card", "slug": "...", "title": "...", 
-  "tagline": "...", "category": "...", "metrics": [...], 
-  "problem": "...", "solution": "...", "url": "https://..." }
+{ "type": "project_card", "slug": "askniels" }
 
-PROJECT CARD SLUGS AND IMAGES:
-- askniels → /projects/askniels.jpg
-- nike-fff → /projects/nike-fff.jpg
-- boucheron → /projects/boucheron.jpg
-- olympique-de-marseille → /projects/olympique-de-marseille.jpg
-- pierre-hardy → /projects/pierre-hardy.jpg
-- celio → /projects/celio.jpg
-- micromania → /projects/micromania.jpg
-
-PROJECT CARD REFERENCE DATA (use exactly these fields/values):
-
-ASKNIELS:
-slug: askniels, title: AskNiels
-tagline: Building the operating system of a methodology
-category: AI · UX · UI · React
-metrics: ["−54% time to delivery", "57 structured activities", "97 Lighthouse score"]
-problem: The Niels methodology had no home. Coaches had knowledge but not structure. Every project started with the same blank page.
-solution: A multi-tenant SaaS live in production. Plan Builder drag-and-drop canvas + context-aware AI assistant embedded in the workspace. Teams self-onboard without a coach.
-url: https://www.tdeglane.com/projects/askniels-project
-
-NIKE x FFF:
-slug: nike-fff, title: Nike x FFF
-tagline: Spreading football fever in France
-category: UI/UX
-metrics: ["+40% direct orders", "12,000+ clubs onboarded", "4.2/5 satisfaction"]
-problem: FFF wanted to give amateur clubs direct access to Nike equipment — moving from a fragmented paper-based process to a first-of-its-kind direct digital B2B platform.
-solution: A ready-to-use B2B platform with custom outfit configuration tool. Post-COVID redesign fed entirely by customer insights, not assumptions.
-url: https://www.tdeglane.com/projects/nikefff
-
-BOUCHERON:
-slug: boucheron, title: Boucheron Vendorama
-tagline: Digitizing the 160th anniversary of the luxury house
-category: Strategic Design · Phygital
-metrics: ["16 days sold out", "10,000+ visitors", "#1 luxury activation of the year"]
-problem: Making 160 years of Boucheron heritage visceral for an audience that had never set foot inside a jewellery house.
-solution: Three interconnected digital touchpoints in 2 months: AR app guided by Wladimir (Boucheron's cat), interactive multi-touch table, three interactive books. Nothing could feel like a tech demo.
-url: https://www.tdeglane.com/projects/boucheron-vendorama
-
-OLYMPIQUE DE MARSEILLE:
-slug: olympique-de-marseille, title: Olympique de Marseille
-tagline: A legendary club in full digital transformation
-category: Strategic Design
-metrics: ["+45% app engagement", "+60% hospitality conversion", "3 touchpoints unified"]
-problem: OM had one of the most passionate fan bases in Europe but no digital infrastructure to turn that passion into a relationship outside the stadium.
-solution: Redesigned website + mobile app with live predictions, polls, gamification, OM Prime loyalty. Full omnichannel: stadium, shop, partners unified.
-url: https://www.tdeglane.com/projects/olympique-de-marseille
-
-PIERRE HARDY:
-slug: pierre-hardy, title: Pierre Hardy
-tagline: Creating an experience in the image of a great name
-category: UI/UX
-metrics: ["+65% online revenue", "+38% returning customers", "−30% checkout drop-off"]
-problem: Luxury doesn't translate to digital by default. The brief: brand content and commerce coexisting without compromise, mobile first.
-solution: Co-design process with client teams from day one. Atomic design for pixel-perfect execution. 3 months, on time, on budget.
-url: https://www.tdeglane.com/projects/pierrehardy
-
-CELIO:
-slug: celio, title: Célio
-tagline: One brand, two touchpoints, zero friction
-category: UI/UX · Omnichannel
-metrics: ["550 stores unified", "85–90% reservation-to-store", "+3x click & collect"]
-problem: E-commerce at 5% of revenue vs. 15% target. Online and in-store operating in parallel, not together.
-solution: Overhauled e-commerce platform + in-store seller tablet with real-time stock across 550 stores, customer history, omnichannel checkout on the shop floor.
-url: https://www.tdeglane.com/projects/celio
-
-MICROMANIA:
-slug: micromania, title: Micromania-Zing
-tagline: When video games meet pop culture
-category: UI/UX
-metrics: ["140+ screens", "430 stores unified", "4,000+ catalogue references"]
-problem: Two brands, two audiences, one platform. Two thirds of visits were web-to-store — a conventional e-commerce approach would have solved the wrong problem.
-solution: 8 design sprints over 7 months. Platform designed around the full decision journey, not cart conversion. Navigation handling 4,000+ references across radically different browsing behaviours.
-url: https://www.tdeglane.com/projects/micromania
+For project_card, output ONLY the slug field — title, tagline, category, metrics, problem, solution, and url are filled in by the client. Valid slugs only:
+askniels, nike-fff, boucheron, olympique-de-marseille, pierre-hardy, celio, micromania
 
 WHEN TO ADD ACTIONS — use good judgment:
 - After discussing a specific project → add a link to that project
@@ -393,6 +320,156 @@ const PANEL_PROJECTS = [
   },
 ];
 
+const PROJECT_DATA = {
+  askniels: {
+    title: "AskNiels",
+    tagline: {
+      en: "Building the operating system of a methodology",
+      fr: "Construire le système d'exploitation d'une méthodologie",
+    },
+    category: "AI · UX · UI · React",
+    metrics: {
+      en: ["−54% time to delivery", "57 structured activities", "97 Lighthouse score"],
+      fr: ["−54% temps de livraison", "57 activités structurées", "Score Lighthouse 97"],
+    },
+    problem: {
+      en: "The Niels methodology had no home. Coaches had knowledge but not structure. Every project started with the same blank page.",
+      fr: "La méthodologie n'avait pas de maison. Les coachs avaient la connaissance mais pas la structure. Chaque projet démarrait avec une page blanche.",
+    },
+    solution: {
+      en: "A multi-tenant SaaS live in production. Plan Builder drag-and-drop canvas + context-aware AI assistant. Teams self-onboard without a coach.",
+      fr: "Un SaaS multi-tenant en production. Plan Builder en drag-and-drop + assistant IA contextuel. Les équipes s'auto-onboardent sans coach.",
+    },
+    url: "https://www.tdeglane.com/projects/askniels-project",
+  },
+  "nike-fff": {
+    title: "Nike x FFF",
+    tagline: {
+      en: "Spreading football fever in France",
+      fr: "Diffuser la fièvre du football en France",
+    },
+    category: "UI/UX",
+    metrics: {
+      en: ["+40% direct orders", "12,000+ clubs onboarded", "4.2/5 satisfaction"],
+      fr: ["+40% commandes directes", "12 000+ clubs onboardés", "Satisfaction 4,2/5"],
+    },
+    problem: {
+      en: "FFF wanted to give amateur clubs direct access to Nike equipment — moving from a fragmented paper-based process to a direct digital B2B platform.",
+      fr: "La FFF voulait donner aux clubs amateurs un accès direct à l'équipement Nike — passer d'un processus papier fragmenté à une plateforme B2B numérique directe.",
+    },
+    solution: {
+      en: "A ready-to-use B2B platform with custom outfit configuration tool. Post-COVID redesign fed entirely by customer insights.",
+      fr: "Une plateforme B2B clé en main avec configurateur de tenues sur mesure. Refonte post-COVID entièrement nourrie par les retours clients.",
+    },
+    url: "https://www.tdeglane.com/projects/nikefff",
+  },
+  boucheron: {
+    title: "Boucheron Vendorama",
+    tagline: {
+      en: "Digitizing the 160th anniversary of the luxury house",
+      fr: "Numériser le 160e anniversaire de la maison de luxe",
+    },
+    category: "Strategic Design · Phygital",
+    metrics: {
+      en: ["16 days sold out", "10,000+ visitors", "#1 luxury activation of the year"],
+      fr: ["16 jours complets", "10 000+ visiteurs", "#1 activation luxe de l'année"],
+    },
+    problem: {
+      en: "Making 160 years of Boucheron heritage visceral for an audience that had never set foot inside a jewellery house.",
+      fr: "Rendre 160 ans d'héritage Boucheron viscéral pour un public qui n'avait jamais franchi le seuil d'une maison de joaillerie.",
+    },
+    solution: {
+      en: "Three interconnected digital touchpoints in 2 months: AR app, interactive multi-touch table, three interactive books. Nothing could feel like a tech demo.",
+      fr: "Trois points de contact numériques interconnectés en 2 mois : appli RA, table multitouch interactive, trois livres interactifs. Rien ne devait ressembler à une démo tech.",
+    },
+    url: "https://www.tdeglane.com/projects/boucheron-vendorama",
+  },
+  "olympique-de-marseille": {
+    title: "Olympique de Marseille",
+    tagline: {
+      en: "A legendary club in full digital transformation",
+      fr: "Un club légendaire en pleine transformation digitale",
+    },
+    category: "Strategic Design",
+    metrics: {
+      en: ["+45% app engagement", "+60% hospitality conversion", "3 touchpoints unified"],
+      fr: ["+45% engagement appli", "+60% conversion hospitalité", "3 points de contact unifiés"],
+    },
+    problem: {
+      en: "OM had one of the most passionate fan bases in Europe but no digital infrastructure to turn that passion into a relationship outside the stadium.",
+      fr: "L'OM comptait parmi les bases de supporters les plus passionnées d'Europe, sans infrastructure numérique pour transformer cette passion en relation hors stade.",
+    },
+    solution: {
+      en: "Redesigned website + mobile app with live predictions, polls, gamification, OM Prime loyalty. Full omnichannel unification.",
+      fr: "Site refondu + appli mobile avec pronostics live, sondages, gamification, fidélité OM Prime. Omnicanal pleinement unifié.",
+    },
+    url: "https://www.tdeglane.com/projects/olympique-de-marseille",
+  },
+  "pierre-hardy": {
+    title: "Pierre Hardy",
+    tagline: {
+      en: "Creating an experience in the image of a great name",
+      fr: "Créer une expérience à l'image d'un grand nom",
+    },
+    category: "UI/UX",
+    metrics: {
+      en: ["+65% online revenue", "+38% returning customers", "−30% checkout drop-off"],
+      fr: ["+65% revenus en ligne", "+38% clients récurrents", "−30% abandon au checkout"],
+    },
+    problem: {
+      en: "Luxury doesn't translate to digital by default. Brand content and commerce needed to coexist without compromise, mobile first.",
+      fr: "Le luxe ne se transpose pas tout seul au numérique. Contenu de marque et commerce devaient coexister sans compromis, mobile first.",
+    },
+    solution: {
+      en: "Co-design process with client teams from day one. Atomic design for pixel-perfect execution. 3 months, on time, on budget.",
+      fr: "Co-design avec les équipes client dès le jour 1. Design atomique pour une exécution pixel-perfect. 3 mois, dans les temps et le budget.",
+    },
+    url: "https://www.tdeglane.com/projects/pierrehardy",
+  },
+  celio: {
+    title: "Célio",
+    tagline: {
+      en: "One brand, two touchpoints, zero friction",
+      fr: "Une marque, deux points de contact, zéro friction",
+    },
+    category: "UI/UX · Omnichannel",
+    metrics: {
+      en: ["550 stores unified", "85–90% reservation-to-store", "+3x click & collect"],
+      fr: ["550 magasins unifiés", "85–90% réservation vers magasin", "+3x click & collect"],
+    },
+    problem: {
+      en: "E-commerce at 5% of revenue vs. 15% target. Online and in-store operating in parallel, not together.",
+      fr: "E-commerce à 5% du CA vs objectif 15%. En ligne et en magasin en parallèle, pas ensemble.",
+    },
+    solution: {
+      en: "Overhauled e-commerce platform + in-store seller tablet with real-time stock, customer history, omnichannel checkout on the shop floor.",
+      fr: "Refonte de la plateforme e-commerce + tablette vendeur en magasin avec stock temps réel, historique client, checkout omnicanal en boutique.",
+    },
+    url: "https://www.tdeglane.com/projects/celio",
+  },
+  micromania: {
+    title: "Micromania-Zing",
+    tagline: {
+      en: "When video games meet pop culture",
+      fr: "Quand le jeu vidéo rencontre la pop culture",
+    },
+    category: "UI/UX",
+    metrics: {
+      en: ["140+ screens", "430 stores unified", "4,000+ catalogue references"],
+      fr: ["140+ écrans", "430 magasins unifiés", "4 000 références catalogue"],
+    },
+    problem: {
+      en: "Two brands, two audiences, one platform. Two thirds of visits were web-to-store — a conventional approach would have solved the wrong problem.",
+      fr: "Deux marques, deux publics, une plateforme. Deux tiers des visites web-to-store — une approche classique aurait résolu le mauvais problème.",
+    },
+    solution: {
+      en: "8 design sprints over 7 months. Platform designed around the full decision journey. Navigation handling 4,000+ references.",
+      fr: "8 sprints design sur 7 mois. Plateforme pensée autour du parcours de décision complet. Navigation gérant 4 000+ références.",
+    },
+    url: "https://www.tdeglane.com/projects/micromania",
+  },
+};
+
 // ─── PROJECT CARD ─────────────────────────────────────────────────────────────
 
 function parseMarkdown(text) {
@@ -414,6 +491,12 @@ function parseMarkdown(text) {
 function ProjectCard({ action, lang }) {
   const [expanded, setExpanded] = useState(false);
   const [imgLoaded, setImgLoaded] = useState(false);
+  const data = PROJECT_DATA[action.slug] || {};
+  const { title, category, url } = data;
+  const tagline = data.tagline?.[lang] || data.tagline?.en;
+  const metrics = data.metrics?.[lang] || data.metrics?.en;
+  const problem = data.problem?.[lang] || data.problem?.en;
+  const solution = data.solution?.[lang] || data.solution?.en;
   const labels = lang === "fr"
     ? { problem: "Problème", solution: "Solution", view: "Voir le projet →" }
     : { problem: "Problem", solution: "Solution", view: "View project →" };
@@ -429,18 +512,18 @@ function ProjectCard({ action, lang }) {
           className="card-img"
           style={{ opacity: imgLoaded ? 1 : 0 }}
           onLoad={() => setImgLoaded(true)}
-          alt={action.title}
+          alt={title}
         />
       </div>
       <div className="project-card-body">
-        <div className="project-card-category">{action.category}</div>
-        <div className="project-card-title">{action.title}</div>
-        <div className="project-card-tagline">{action.tagline}</div>
+        <div className="project-card-category">{category}</div>
+        <div className="project-card-title">{title}</div>
+        <div className="project-card-tagline">{tagline}</div>
 
         <div className="project-card-separator" />
 
         <div className="project-card-metrics">
-          {(action.metrics || []).slice(0, 3).map((metric, i) => (
+          {(metrics || []).slice(0, 3).map((metric, i) => (
             <span key={i} className="project-card-metric">{metric}</span>
           ))}
         </div>
@@ -452,15 +535,15 @@ function ProjectCard({ action, lang }) {
         {expanded && (
           <div className="project-card-details">
             <div className="project-card-label">{labels.problem}</div>
-            <div className="project-card-text">{action.problem}</div>
+            <div className="project-card-text">{problem}</div>
             <div className="project-card-label">{labels.solution}</div>
-            <div className="project-card-text">{action.solution}</div>
+            <div className="project-card-text">{solution}</div>
           </div>
         )}
 
         <button
           className="project-card-cta"
-          onClick={() => window.open(action.url, "_blank", "noopener")}
+          onClick={() => window.open(url, "_blank", "noopener")}
         >
           {labels.view}
         </button>
