@@ -131,46 +131,32 @@ Never mix languages. Maintain selected language even if the user writes in the o
 
 ## RESPONSE FORMAT — CRITICAL
 
-You MUST always respond with a valid JSON object and nothing else. No markdown, no preamble, no explanation outside the JSON.
+You MUST always respond in this exact two-part format:
 
-Format:
-{
-  "message": "Your response text here. Can include line breaks with \\n.",
-  "actions": []
-}
+PART 1 — Your message text, written naturally.
+No JSON, no special formatting. Just your response.
+Use **bold** for emphasis and - for bullet points if needed.
 
-The "actions" array is optional but you should include it when relevant. Each action is one of:
+---ACTIONS---
+{"actions": [...]}
 
-1. Link to a project page:
-{ "type": "link", "label": "→ See AskNiels", "url": "https://www.tdeglane.com/projects/askniels-project" }
+The ---ACTIONS--- separator is mandatory even if actions is empty:
+---ACTIONS---
+{"actions": []}
 
-2. Link to about page:
-{ "type": "link", "label": "→ About Thibault", "url": "https://www.tdeglane.com/about" }
+Rules:
+- Everything before ---ACTIONS--- is your message text
+- Everything after ---ACTIONS--- is a single JSON line with actions array
+- Never put JSON in the message part
+- Never omit the ---ACTIONS--- separator
+- Keep the JSON on a single line after the separator
 
-3. CV download:
-{ "type": "link", "label": "→ Download CV (EN)", "url": "https://drive.google.com/file/d/1waRu0E8tjhUK10XP7rsa2K_valTy-U4T/view?usp=share_link" }
-{ "type": "link", "label": "→ Télécharger le CV (FR)", "url": "https://drive.google.com/file/d/1wZinQ0tr2SBp3_f_BWMW7kXpC6rZFagD/view?usp=share_link" }
-
-4. Contact form (opens inline form in the interface):
+Action types available:
+{ "type": "link", "label": "→ Label", "url": "https://..." }
 { "type": "contact", "label": "→ Send Thibault a message" }
-or in French:
-{ "type": "contact", "label": "→ Envoyer un message à Thibault" }
-
-5. Portfolio home:
-{ "type": "link", "label": "→ View portfolio", "url": "https://www.tdeglane.com" }
-
-6. Project card (expandable visual card):
-{
-  "type": "project_card",
-  "slug": "askniels",
-  "title": "AskNiels",
-  "tagline": "Building the operating system of a methodology",
-  "category": "AI · UX · UI · React",
-  "metrics": ["−54% time to delivery", "57 activities", "97 Lighthouse"],
-  "problem": "The Niels methodology had no home. Every project started with the same blank page.",
-  "solution": "A multi-tenant SaaS with a drag-and-drop Plan Builder and a context-aware AI assistant embedded in the workspace.",
-  "url": "https://www.tdeglane.com/projects/askniels-project"
-}
+{ "type": "project_card", "slug": "...", "title": "...", 
+  "tagline": "...", "category": "...", "metrics": [...], 
+  "problem": "...", "solution": "...", "url": "https://..." }
 
 PROJECT CARD SLUGS AND IMAGES:
 - askniels → /projects/askniels.jpg
@@ -638,11 +624,18 @@ export default function TiBot() {
   };
 
   const parseResponse = (raw) => {
+    const separator = "---ACTIONS---";
+    const idx = raw.indexOf(separator);
+    if (idx === -1) {
+      return { message: raw.trim(), actions: [] };
+    }
+    const message = raw.slice(0, idx).trim();
+    const jsonPart = raw.slice(idx + separator.length).trim();
     try {
-      const clean = raw.replace(/^```json\s*/i, "").replace(/```$/i, "").trim();
-      return JSON.parse(clean);
+      const parsed = JSON.parse(jsonPart);
+      return { message, actions: parsed.actions || [] };
     } catch {
-      return { message: raw, actions: [] };
+      return { message, actions: [] };
     }
   };
 
@@ -747,20 +740,11 @@ export default function TiBot() {
       let fullText = "";
       let sseBuffer = "";
 
-      // Extrait uniquement le texte du message pendant le stream
-      // pour ne pas afficher le JSON brut
       const extractStreamMessage = (raw) => {
-        // Tente d'extraire "message": "..." du JSON partiel
-        const match = raw.match(/"message"\s*:\s*"((?:[^"\\]|\\.)*)"/);
-        if (match) {
-          // Déséchappe les \n et \" du JSON
-          return match[1]
-            .replace(/\\n/g, "\n")
-            .replace(/\\"/g, '"')
-            .replace(/\\\\/g, "\\");
-        }
-        // Si pas encore de champ message, retourne vide
-        return "";
+        const separator = "---ACTIONS---";
+        const idx = raw.indexOf(separator);
+        if (idx === -1) return raw.trim();
+        return raw.slice(0, idx).trim();
       };
 
       while (true) {
