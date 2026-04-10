@@ -743,7 +743,11 @@ export default function TiBot() {
         const separator = "---ACTIONS---";
         const idx = raw.indexOf(separator);
         let text = idx === -1 ? raw.trim() : raw.slice(0, idx).trim();
+        // Supprime l'instruction de langue
         text = text.replace(/^\[LANGUAGE:.*?\]\s*/i, "");
+        // Ne retourne rien tant que le texte est trop court
+        // pour éviter le flash du crochet [
+        if (text.length < 3) return "";
         return text;
       };
 
