@@ -814,6 +814,14 @@ export default function TiBot() {
       }));
     } catch (err) {
       console.error("sendMessage error:", err?.message, err);
+      const isOverloaded = err?.message?.includes("Overloaded");
+      const errorMsg = isOverloaded
+        ? lang === "fr"
+          ? "Le service est momentanément surchargé. Réessayez dans quelques secondes."
+          : "Service temporarily overloaded. Please retry in a few seconds."
+        : lang === "fr"
+          ? "Problème de connexion. Réessayez."
+          : "Connection issue. Please try again.";
       setSessions((prev) => ({
         ...prev,
         [lang]: [
@@ -821,10 +829,7 @@ export default function TiBot() {
           {
             role: "assistant",
             parsed: {
-              message:
-                lang === "fr"
-                  ? "Problème de connexion. Réessayez."
-                  : "Connection issue. Please try again.",
+              message: errorMsg,
               actions: [],
             },
             id: Date.now(),
