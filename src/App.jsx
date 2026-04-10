@@ -210,7 +210,7 @@ BEHAVIOUR:
 
 const CONTENT = {
   en: {
-    agentSub: "AI Agent",
+    agentSub: "Ask me anything",
     backLink: "Portfolio",
     greeting: {
       message: "Most portfolios make you do the work. This one talks back.\n\nAsk me anything about Thibault, his projects, or whether he could be the right fit for what you're building.",
@@ -235,7 +235,7 @@ const CONTENT = {
     contactCancel: "Cancel",
   },
   fr: {
-    agentSub: "Agent IA",
+    agentSub: "Posez-moi une question",
     backLink: "Portfolio",
     greeting: {
       message: "La plupart des portfolios vous font faire le travail. Celui-ci vous répond.\n\nPosez-moi n'importe quelle question sur Thibault, ses projets, ou ce qu'il pourrait apporter à ce que vous construisez.",
