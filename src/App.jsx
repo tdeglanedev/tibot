@@ -747,6 +747,22 @@ export default function TiBot() {
       let fullText = "";
       let sseBuffer = "";
 
+      // Extrait uniquement le texte du message pendant le stream
+      // pour ne pas afficher le JSON brut
+      const extractStreamMessage = (raw) => {
+        // Tente d'extraire "message": "..." du JSON partiel
+        const match = raw.match(/"message"\s*:\s*"((?:[^"\\]|\\.)*)"/);
+        if (match) {
+          // Déséchappe les \n et \" du JSON
+          return match[1]
+            .replace(/\\n/g, "\n")
+            .replace(/\\"/g, '"')
+            .replace(/\\\\/g, "\\");
+        }
+        // Si pas encore de champ message, retourne vide
+        return "";
+      };
+
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
@@ -780,7 +796,10 @@ export default function TiBot() {
                   ...newMessages,
                   {
                     role: "assistant",
-                    parsed: { message: fullText, actions: [] },
+                    parsed: {
+                      message: extractStreamMessage(fullText),
+                      actions: [],
+                    },
                     id: assistantId,
                   },
                 ],
