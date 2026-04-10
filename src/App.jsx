@@ -673,18 +673,22 @@ export default function TiBot() {
     if (!content || loading) return;
 
     setInput("");
-    // Retire le focus sur iOS pour fermer le clavier
     if (inputRef.current) {
       inputRef.current.blur();
     }
     setContactOpen(false);
     setShowSuggestions((prev) => ({ ...prev, [lang]: false }));
 
-    const userMsg = { role: "user", parsed: { message: content, actions: [] }, id: Date.now() + 1 };
+    const userMsg = {
+      role: "user",
+      parsed: { message: content, actions: [] },
+      id: Date.now() + 1,
+    };
     const newMessages = [...messages, userMsg];
     setSessions((prev) => ({ ...prev, [lang]: newMessages }));
     setLoading(true);
 
+    // RAG
     let ragContext = "";
     if (isMethodological(content)) {
       try {
@@ -695,22 +699,31 @@ export default function TiBot() {
         });
         const ragData = await ragRes.json();
         if (ragData.chunks && ragData.chunks.length > 0) {
-          ragContext = `[METHODOLOGICAL CONTEXT FROM NIELS KNOWLEDGE BASE]
-${ragData.chunks.map((c) => c.content).join("\n\n---\n\n")}
-[END CONTEXT]
-
-`;
+          ragContext = `[METHODOLOGICAL CONTEXT FROM NIELS KNOWLEDGE BASE]\n${ragData.chunks.map((c) => c.content).join("\n\n---\n\n")}\n[END CONTEXT]\n\n`;
         }
       } catch {
-        // RAG échoue silencieusement — ne bloque pas l'envoi
+        // RAG échoue silencieusement
       }
     }
-    
+
     const apiMessages = newMessages.map((m, i) => ({
       role: m.role,
-      content: m.role === "user" && i === newMessages.length - 1
-        ? `${c.langInstruction}\n\n${ragContext}${m.parsed.message}`
-        : m.parsed.message,
+      content:
+        m.role === "user" && i === newMessages.length - 1
+          ? `${c.langInstruction}\n\n${ragContext}${m.parsed.message}`
+          : m.parsed.message,
+    }));
+
+    // Ajoute un message assistant vide qu'on va remplir progressivement
+    const assistantId = Date.now();
+    const assistantMsg = {
+      role: "assistant",
+      parsed: { message: "", actions: [] },
+      id: assistantId,
+    };
+    setSessions((prev) => ({
+      ...prev,
+      [lang]: [...newMessages, assistantMsg],
     }));
 
     try {
@@ -725,18 +738,88 @@ ${ragData.chunks.map((c) => c.content).join("\n\n---\n\n")}
         }),
       });
 
-      const data = await response.json();
-      const raw = data.content?.[0]?.text || '{"message":"Something went wrong.","actions":[]}';
-      const parsed = parseResponse(raw);
+      if (!response.ok) {
+        throw new Error(await response.text());
+      }
 
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let fullText = "";
+      let sseBuffer = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        sseBuffer += decoder.decode(value, { stream: true });
+        const lineParts = sseBuffer.split("\n");
+        sseBuffer = lineParts.pop() || "";
+
+        for (const line of lineParts) {
+          if (line.startsWith("data: ")) {
+            const data = line.slice(6).trim();
+            if (data === "[DONE]") continue;
+            let sseParsed;
+            try {
+              sseParsed = JSON.parse(data);
+            } catch {
+              // chunk SSE non parseable — on ignore
+              continue;
+            }
+            if (sseParsed.type === "error") {
+              throw new Error(sseParsed.error?.message || "API error");
+            }
+            if (
+              sseParsed.type === "content_block_delta" &&
+              sseParsed.delta?.type === "text_delta"
+            ) {
+              fullText += sseParsed.delta.text;
+              setSessions((prev) => ({
+                ...prev,
+                [lang]: [
+                  ...newMessages,
+                  {
+                    role: "assistant",
+                    parsed: { message: fullText, actions: [] },
+                    id: assistantId,
+                  },
+                ],
+              }));
+            }
+          }
+        }
+      }
+
+      // Stream terminé — parse le JSON final pour extraire les actions
+      const finalParsed = parseResponse(fullText);
       setSessions((prev) => ({
         ...prev,
-        [lang]: [...newMessages, { role: "assistant", parsed, id: Date.now() }],
+        [lang]: [
+          ...newMessages,
+          {
+            role: "assistant",
+            parsed: finalParsed,
+            id: assistantId,
+          },
+        ],
       }));
-    } catch {
+    } catch (err) {
       setSessions((prev) => ({
         ...prev,
-        [lang]: [...newMessages, { role: "assistant", parsed: { message: "Connection issue. Please try again.", actions: [] }, id: Date.now() }],
+        [lang]: [
+          ...newMessages,
+          {
+            role: "assistant",
+            parsed: {
+              message:
+                lang === "fr"
+                  ? "Problème de connexion. Réessayez."
+                  : "Connection issue. Please try again.",
+              actions: [],
+            },
+            id: Date.now(),
+          },
+        ],
       }));
     } finally {
       setLoading(false);
@@ -1060,7 +1143,13 @@ ${ragData.chunks.map((c) => c.content).join("\n\n---\n\n")}
                 const { message, actions = [] } = msg.parsed;
                 const isAssistant = msg.role === "assistant";
                 const isLast = i === messages.length - 1;
-                const shouldAnimate = isAssistant && !animatedIds.current.has(msg.id);
+                const isStreaming = isLast && loading && isAssistant;
+                const shouldAnimate =
+                  isAssistant && !animatedIds.current.has(msg.id) && !isStreaming;
+
+                if (isAssistant && isLast && loading && message === "") {
+                  return null;
+                }
 
                 return (
                   <div key={`${lang}-${i}`} className="msg">
@@ -1070,7 +1159,9 @@ ${ragData.chunks.map((c) => c.content).join("\n\n---\n\n")}
                     <div className="msg-body">
                       <div className="msg-name">{isAssistant ? BRAND_DISPLAY_NAME : c.you}</div>
                       {isAssistant ? (
-                        animatedIds.current.has(msg.id) ? (
+                        isStreaming ? (
+                          <div className="msg-text">{message}</div>
+                        ) : animatedIds.current.has(msg.id) ? (
                           <div
                             className="msg-text"
                             dangerouslySetInnerHTML={{ __html: parseMarkdown(message) }}
@@ -1125,7 +1216,9 @@ ${ragData.chunks.map((c) => c.content).join("\n\n---\n\n")}
                 );
               })}
 
-              {loading && (
+              {loading &&
+                messages[messages.length - 1]?.role === "assistant" &&
+                messages[messages.length - 1]?.parsed?.message === "" && (
                 <div className="typing">
                   <div className="msg-avatar assistant" aria-hidden>
                     <img src={BRAND_LOGO_SRC} alt="" />

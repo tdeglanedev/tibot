@@ -1,7 +1,3 @@
-// api/chat.js
-// Proxy Vercel Edge Function — fait le lien entre TiBot et l'API Anthropic
-// sans jamais exposer la clé API dans le navigateur du visiteur.
-
 export const config = { runtime: "edge" };
 
 export default async function handler(req) {
@@ -31,8 +27,8 @@ export default async function handler(req) {
       "anthropic-beta": "prompt-caching-2024-07-31",
     },
     body: JSON.stringify({
-      model: body.model,
-      max_tokens: body.max_tokens,
+      ...body,
+      stream: true,
       system: [
         {
           type: "text",
@@ -40,17 +36,16 @@ export default async function handler(req) {
           cache_control: { type: "ephemeral" },
         },
       ],
-      messages: body.messages,
     }),
   });
 
-  const data = await response.json();
-
-  return new Response(JSON.stringify(data), {
+  // On passe le stream directement au client
+  return new Response(response.body, {
     status: 200,
     headers: {
-      "Content-Type": "application/json",
+      "Content-Type": "text/event-stream",
       "Access-Control-Allow-Origin": "*",
+      "Cache-Control": "no-cache",
     },
   });
 }
