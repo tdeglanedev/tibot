@@ -413,17 +413,25 @@ function parseMarkdown(text) {
 
 function ProjectCard({ action, lang }) {
   const [expanded, setExpanded] = useState(false);
+  const [imgLoaded, setImgLoaded] = useState(false);
   const labels = lang === "fr"
     ? { problem: "Problème", solution: "Solution", view: "Voir le projet →" }
     : { problem: "Problem", solution: "Solution", view: "View project →" };
 
   return (
     <div className="project-card">
-      <img
-        className="project-card-image"
-        src={`/projects/${action.slug}.jpg`}
-        alt={action.title}
-      />
+      <div className="card-img-container">
+        {!imgLoaded && (
+          <div className="card-img-skeleton" />
+        )}
+        <img
+          src={`/projects/${action.slug}.jpg`}
+          className="card-img"
+          style={{ opacity: imgLoaded ? 1 : 0 }}
+          onLoad={() => setImgLoaded(true)}
+          alt={action.title}
+        />
+      </div>
       <div className="project-card-body">
         <div className="project-card-category">{action.category}</div>
         <div className="project-card-title">{action.title}</div>
@@ -1038,7 +1046,37 @@ export default function TiBot() {
 
         /* PROJECT CARD */
         .project-card { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius); margin-top: 14px; animation: fadeUp 0.25s ease; max-width: 420px; overflow: hidden; }
-        .project-card-image { width: 100%; height: 160px; object-fit: cover; border-radius: var(--radius) var(--radius) 0 0; display: block; }
+        .card-img-container {
+          position: relative;
+          width: 100%;
+          height: 160px;
+          border-radius: var(--radius) var(--radius) 0 0;
+          overflow: hidden;
+          background: var(--surface-2);
+        }
+        .card-img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          transition: opacity 0.3s ease;
+          display: block;
+        }
+        .card-img-skeleton {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(
+            90deg,
+            var(--surface-2) 0%,
+            rgba(200,184,154,0.08) 50%,
+            var(--surface-2) 100%
+          );
+          background-size: 200% 100%;
+          animation: shimmer 1.5s ease infinite;
+        }
+        @keyframes shimmer {
+          0% { background-position: 200% 0; }
+          100% { background-position: -200% 0; }
+        }
         .project-card-body { padding: 16px; }
         .project-card-category { font-size: 11px; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; text-align: left; }
         .project-card-title { font-family: "Poppins", sans-serif; font-size: 18px; font-weight: 600; color: var(--text); margin-top: 4px; line-height: 1.2; }
