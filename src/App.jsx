@@ -813,6 +813,7 @@ export default function TiBot() {
         ],
       }));
     } catch (err) {
+      console.error("sendMessage error:", err?.message, err);
       setSessions((prev) => ({
         ...prev,
         [lang]: [
