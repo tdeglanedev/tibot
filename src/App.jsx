@@ -997,8 +997,8 @@ ${ragData.chunks.map((c) => c.content).join("\n\n---\n\n")}
         @media (max-width: 768px) {
           .main-layout { display: block; }
           .conversation-column { max-width: 100%; }
-          .side-panel { position: fixed; left: 0; right: 0; bottom: 0; width: auto; height: 75vh; transform: translateY(100%); transition: transform 0.3s ease; border-radius: 16px 16px 0 0; background: var(--surface); border-top: 1px solid var(--border); border-left: none; z-index: 100; overflow-y: auto; }
-          .side-panel.open { width: auto; transform: translateY(0); }
+          .side-panel { position: fixed; left: 0; right: 0; bottom: 0; width: auto; height: 75vh; transform: translateY(100%); transition: transform 0.3s ease; border-radius: 16px 16px 0 0; background: var(--surface); border-top: 1px solid var(--border); border-left: none; z-index: 100; overflow-y: auto; visibility: hidden; }
+          .side-panel.open { width: auto; transform: translateY(0); visibility: visible; }
           .side-panel-content { width: 100%; height: auto; min-height: 100%; }
           .mobile-panel-overlay { display: block; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; }
         }
