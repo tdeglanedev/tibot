@@ -632,6 +632,15 @@ export default function TiBot() {
   };
 
   const parseResponse = (raw) => {
+    console.log("RAW length:", raw.length);
+    console.log("Has separator:", raw.includes("---ACTIONS---"));
+    console.log(
+      "JSON part preview:",
+      raw.slice(
+        raw.indexOf("---ACTIONS---") + 13,
+        raw.indexOf("---ACTIONS---") + 200
+      )
+    );
     const separator = "---ACTIONS---";
     const idx = raw.indexOf(separator);
     let message = idx === -1 ? raw.trim() : raw.slice(0, idx).trim();
