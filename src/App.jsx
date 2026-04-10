@@ -631,6 +631,8 @@ export default function TiBot() {
     const jsonPart =
       idx === -1 ? '{"actions":[]}' : raw.slice(idx + separator.length).trim();
     try {
+      console.log("JSON part:", jsonPart.slice(0, 500));
+      console.log("Message:", message.slice(0, 100));
       const parsed = JSON.parse(jsonPart);
       return { message, actions: parsed.actions || [] };
     } catch {
