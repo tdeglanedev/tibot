@@ -353,15 +353,15 @@ const PANEL_PROJECTS = [
     category: "UI/UX · Omnichannel",
     question_en: "Tell me about the Longchamp project",
     question_fr: "Parle-moi du projet Longchamp",
-    url: "https://www.tdeglane.com",
+    url: "https://www.tdeglane.com/projects/longchamp",
   },
   {
-    slug: "van-cleef",
+    slug: "van-cleef-arpels",
     title: "Van Cleef & Arpels",
     category: "Strategic Design · Brand Experience",
     question_en: "Tell me about the Van Cleef & Arpels project",
     question_fr: "Parle-moi du projet Van Cleef & Arpels",
-    url: "https://www.tdeglane.com",
+    url: "https://www.tdeglane.com/projects/van-cleef-arpels",
   },
   {
     slug: "jaeger-lecoultre",
@@ -369,7 +369,7 @@ const PANEL_PROJECTS = [
     category: "Strategic Design · Phygital",
     question_en: "Tell me about the Jaeger-LeCoultre project",
     question_fr: "Parle-moi du projet Jaeger-LeCoultre",
-    url: "https://www.tdeglane.com",
+    url: "https://www.tdeglane.com/projects/jaeger-lecoultre  ",
   },
 ];
 
