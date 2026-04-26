@@ -60,7 +60,7 @@ Thibault's own product — citing it as a use case in a methodological
 context conflates his role as creator with his role as practitioner. 
 When illustrating how Thibault thinks, use only client projects: 
 Nike x FFF, Boucheron, Olympique de Marseille, Pierre Hardy, 
-Célio, Micromania.
+Célio, Micromania, Longchamp, Van Cleef & Arpels, Jaeger-LeCoultre.
 
 ### Nike x FFF (2023) — UI/UX
 "Spreading football fever in France."
@@ -100,6 +100,30 @@ URL: https://www.tdeglane.com/projects/celio
 Two brands, two audiences, one platform. 8 sprints over 7 months. Two thirds of visits were web-to-store — platform designed around the full decision journey, not cart conversion. 4,000+ catalogue references.
 Results: 140+ screens, 430 stores unified, 4,000+ references integrated.
 URL: https://www.tdeglane.com/projects/micromania
+
+### Longchamp (2018) — UI/UX / Omnichannel
+"Making the Pliage the beginning of the story, not the end."
+Role: Head of Design.
+Longchamp had a brand paradox: the Pliage had become a glass ceiling, capturing all attention online and rendering the rest of the collection invisible. The challenge was to reposition toward high-end luxury while turning the Pliage from a final destination into an entry point into the full Maison.
+Solution: Redesigned the customisation funnel as a discovery mechanism. Introduced editorial navigation over category-based browsing — a decision that created internal friction but was validated by post-launch metrics. Architected a design system and digital brand book governing visual consistency across all markets.
+Results: Platform deployed across 24 countries, 7 languages, delivered in 4 months. First unified omnichannel experience for the Maison — click & collect, real-time stock, one-click payment.
+URL: https://www.tdeglane.com/projects/longchamp
+
+### Van Cleef & Arpels (2019) — Strategic Design / Brand Experience · AVA Digital Awards — Platinum
+"Designing desire before the decision."
+Role: Lead Designer.
+Van Cleef & Arpels needed to understand what happened in the space between desire and decision across 5 strategic markets: France, China, Japan, UAE and the US. The Maison's online and in-store experiences were speaking two completely different emotional languages to the same client. Not a communication problem. A coherence problem.
+Solution: Research-first engagement — sector benchmarking, mystery shopping, client and sales team interviews across 5 markets. Four buyer profiles identified: clients who visit boutiques to buy for themselves, online clients, travellers who purchase as ritual, and gift buyers. Development of a Brand Experience Platform with 4 elements: experience contract, expected XP, projected XP and lived XP. Results deployed across social media, website and in-store experience. Invited to global seminars to spread the user-centricity mindset across markets.
+Results: AVA Digital Awards — Platinum, Digital Marketing. 5 markets researched, 4 buyer profiles defined, BXP deployed globally.
+URL: https://www.tdeglane.com/projects/van-cleef-arpels
+
+### Jaeger-LeCoultre (2018) — Strategic Design / Phygital · Best of Web Innovation Award
+"When the interface is the object."
+Role: Lead Designer.
+Jaeger-LeCoultre needed a memorable activation for SIHH — the annual fine watchmaking summit. The challenge wasn't visibility. It was memorability. The brief pointed toward the Maison's deep astral heritage — the solution had to live there as structural logic, not decoration.
+Solution: Two interconnected experience layers. A VR telescope experience giving collectors the feeling of discovering the collection through an instrument — chosen not because VR was interesting, but because it was the only interface carrying the right metaphorical weight for a Maison built on astronomical precision. The "On Your Wrist" AR device — first AR try-on in fine watchmaking — letting collectors virtually try timepieces using a paper bracelet and tablet, with the technology completely invisible between them and the piece.
+Results: Best of Web Innovation Award. First AR try-on in fine watchmaking. Both experiences designed around one principle: the technology belongs to the Maison's world, or it doesn't exist.
+URL: https://www.tdeglane.com/projects/jaeger-lecoultre
 
 ---
 
@@ -162,7 +186,7 @@ Action types available:
 { "type": "project_card", "slug": "askniels" }
 
 For project_card, output ONLY the slug field — title, tagline, category, metrics, problem, solution, and url are filled in by the client. Valid slugs only:
-askniels, nike-fff, boucheron, olympique-de-marseille, pierre-hardy, celio, micromania
+askniels, nike-fff, boucheron, olympique-de-marseille, pierre-hardy, celio, micromania, longchamp, van-cleef, jaeger-lecoultre
 
 WHEN TO ADD ACTIONS — use good judgment:
 - After discussing a specific project → add a link to that project
@@ -472,6 +496,69 @@ const PROJECT_DATA = {
       fr: "8 sprints design sur 7 mois. Plateforme pensée autour du parcours de décision complet. Navigation gérant 4 000+ références.",
     },
     url: "https://www.tdeglane.com/projects/micromania",
+  },
+  longchamp: {
+    title: "Longchamp",
+    tagline: {
+      en: "Making the Pliage the beginning of the story, not the end",
+      fr: "Faire du Pliage le début de l'histoire, pas sa conclusion",
+    },
+    category: "UI/UX · Omnichannel",
+    metrics: {
+      en: ["24 countries, 7 languages", "Delivered in 4 months", "First unified omnichannel experience"],
+      fr: ["24 pays, 7 langues", "Livré en 4 mois", "Première expérience omnicanale unifiée"],
+    },
+    problem: {
+      en: "The Pliage had become a glass ceiling, capturing all attention online and rendering the rest of the collection invisible. The challenge was to reposition toward high-end luxury while turning the Pliage from a final destination into an entry point.",
+      fr: "Le Pliage était devenu un plafond de verre, captant toute l'attention en ligne et rendant le reste de la collection invisible. L'enjeu: repositionner vers le luxe haut de gamme en faisant du Pliage une porte d'entrée plutôt qu'une destination finale.",
+    },
+    solution: {
+      en: "Redesigned the customisation funnel as a discovery mechanism. Introduced editorial navigation over category-based browsing. Architected a design system and digital brand book governing visual consistency across all markets.",
+      fr: "Tunnel de customisation repensé comme mécanisme de découverte. Navigation éditoriale plutôt que par catégories. Design system et digital brand book gouvernant la cohérence visuelle sur tous les marchés.",
+    },
+    url: "https://www.tdeglane.com/projects/longchamp",
+  },
+  "van-cleef": {
+    title: "Van Cleef & Arpels",
+    tagline: {
+      en: "Designing desire before the decision",
+      fr: "Concevoir le désir avant la décision",
+    },
+    category: "Strategic Design · Brand Experience",
+    metrics: {
+      en: ["5 markets researched", "4 buyer profiles defined", "AVA Digital Awards — Platinum"],
+      fr: ["5 marchés étudiés", "4 profils d'acheteurs définis", "AVA Digital Awards — Platine"],
+    },
+    problem: {
+      en: "The Maison's online and in-store experiences were speaking two completely different emotional languages to the same client. Not a communication problem. A coherence problem.",
+      fr: "Les expériences en ligne et en boutique parlaient deux langages émotionnels complètement différents au même client. Pas un problème de communication. Un problème de cohérence.",
+    },
+    solution: {
+      en: "Research-first engagement across 5 markets: benchmarking, mystery shopping, client and sales interviews. Four buyer profiles. Brand Experience Platform with 4 elements: experience contract, expected XP, projected XP and lived XP. Deployed across social media, website and in-store.",
+      fr: "Approche research-first sur 5 marchés: benchmark, mystery shopping, interviews clients et équipes. Quatre profils d'acheteurs. Brand Experience Platform à 4 éléments: contrat d'expérience, XP attendue, projetée et vécue. Déployée sur les réseaux sociaux, le site et en boutique.",
+    },
+    url: "https://www.tdeglane.com/projects/van-cleef-arpels",
+  },
+  "jaeger-lecoultre": {
+    title: "Jaeger-LeCoultre",
+    tagline: {
+      en: "When the interface is the object",
+      fr: "Quand l'interface est l'objet",
+    },
+    category: "Strategic Design · Phygital",
+    metrics: {
+      en: ["First AR try-on in fine watchmaking", "Best of Web Innovation Award", "2 interconnected experience layers"],
+      fr: ["Premier essayage AR en haute horlogerie", "Best of Web Innovation Award", "2 couches d'expérience interconnectées"],
+    },
+    problem: {
+      en: "At SIHH, every Maison competes for the same finite attention. Jaeger-LeCoultre's challenge wasn't visibility, it was memorability. The brief pointed toward the Maison's deep astral heritage.",
+      fr: "Au SIHH, chaque Maison se bat pour la même attention limitée. Le défi de Jaeger-LeCoultre n'était pas la visibilité, c'était la mémorabilité. Le brief pointait vers l'héritage astral profond de la Maison.",
+    },
+    solution: {
+      en: "A VR telescope experience for immersive collection discovery. The 'On Your Wrist' AR device, first AR try-on in fine watchmaking. Both designed around one principle: the technology belongs to the Maison's world, or it doesn't exist.",
+      fr: "Une expérience VR via télescope pour la découverte immersive de la collection. Le dispositif AR 'On Your Wrist', premier essayage AR en haute horlogerie. Les deux conçus autour d'un principe: la technologie appartient au monde de la Maison, ou elle n'existe pas.",
+    },
+    url: "https://www.tdeglane.com/projects/jaeger-lecoultre",
   },
 };
 
