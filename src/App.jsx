@@ -347,6 +347,30 @@ const PANEL_PROJECTS = [
     question_fr: "Parle-moi du projet Micromania",
     url: "https://www.tdeglane.com/projects/micromania",
   },
+  {
+    slug: "longchamp",
+    title: "Longchamp",
+    category: "UI/UX · Omnichannel",
+    question_en: "Tell me about the Longchamp project",
+    question_fr: "Parle-moi du projet Longchamp",
+    url: "https://www.tdeglane.com",
+  },
+  {
+    slug: "van-cleef",
+    title: "Van Cleef & Arpels",
+    category: "Strategic Design · Brand Experience",
+    question_en: "Tell me about the Van Cleef & Arpels project",
+    question_fr: "Parle-moi du projet Van Cleef & Arpels",
+    url: "https://www.tdeglane.com",
+  },
+  {
+    slug: "jaeger-lecoultre",
+    title: "Jaeger-LeCoultre",
+    category: "Strategic Design · Phygital",
+    question_en: "Tell me about the Jaeger-LeCoultre project",
+    question_fr: "Parle-moi du projet Jaeger-LeCoultre",
+    url: "https://www.tdeglane.com",
+  },
 ];
 
 const PROJECT_DATA = {
