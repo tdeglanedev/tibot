@@ -800,6 +800,9 @@ export default function TiBot() {
   const [showSuggestions, setShowSuggestions] = useState({ en: true, fr: true });
   const [contactOpen, setContactOpen] = useState(false);
   const [panelOpen, setPanelOpen] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(
+    () => (typeof window !== "undefined" ? window.innerWidth > 768 : true)
+  );
   const [isListening, setIsListening] = useState(false);
   const animatedIds = useRef(new Set());
   const messagesEndRef = useRef(null);
@@ -822,6 +825,14 @@ export default function TiBot() {
       document.body.style.overflow = "";
     };
   }, [panelOpen]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    const onResize = () => setIsDesktop(window.innerWidth > 768);
+    onResize();
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
 
   const switchLang = (newLang) => {
     if (newLang === lang) return;
@@ -1146,6 +1157,23 @@ export default function TiBot() {
           --accent: #c8b89a; --accent-dim: rgba(200,184,154,0.12);
           --green: #4caf7d; --red: #e05c5c; --radius: 4px; --radius-full: 9999px;
         }
+        body {
+          background-color: #111514;
+          background-image:
+            repeating-linear-gradient(
+              to right,
+              transparent,
+              transparent calc(100% / 2 - 1px),
+              rgba(255, 255, 255, 0.04) calc(100% / 2 - 1px),
+              rgba(255, 255, 255, 0.04) calc(100% / 2)
+            );
+          background-attachment: fixed;
+          min-height: 100vh;
+          width: 100%;
+        }
+        #root, .app {
+          background: transparent;
+        }
         .main-layout {
           display: flex;
           flex: 1;
@@ -1175,14 +1203,13 @@ export default function TiBot() {
         .lang-btn { background: transparent; border: none; color: var(--text-muted); font-family: 'Poppins', sans-serif; font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; padding: 6px 10px; cursor: pointer; transition: all 0.15s; line-height: 1; border-radius: 9999px; }
         .lang-btn.active { background: rgba(200, 184, 154, 1); color: #0e0e0e; }
         .lang-btn:not(.active):hover { color: var(--text); background: rgba(255,255,255,0.04); }
-        .explore-btn { background: transparent; border: 1px solid rgba(200,184,154,0.4); color: var(--accent); font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 0.04em; padding: 6px 16px; border-radius: 9999px; transition: all 0.2s; cursor: pointer; white-space: nowrap; }
+        .explore-btn { background: transparent; border: 1px solid rgba(200,184,154,0.4); color: var(--accent); font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 0.04em; padding: 6px 16px; border-radius: 9999px; transition: all 0.2s; cursor: pointer; white-space: nowrap; opacity: 1; pointer-events: auto; }
         .explore-btn:hover { background: var(--accent-dim); border-color: var(--accent); }
         .explore-btn.open { border-color: var(--accent); }
 
         /* SIDE PANEL */
-        .side-panel { width: 0; overflow: hidden; transition: width 0.3s ease; flex-shrink: 0; background: var(--surface); border-left: 1px solid transparent; pointer-events: none; }
-        .side-panel.open { width: 360px; border-left-color: var(--border); }
-        .side-panel.open { pointer-events: auto; }
+        .side-panel { transition: transform 0.3s ease; background: var(--surface); border-left: 1px solid transparent; z-index: 50; overflow-y: auto; }
+        .side-panel-close { display: none; }
         .side-panel-content { width: 360px; height: 100%; display: flex; flex-direction: column; }
         .side-panel-header { padding: 20px 20px 16px; border-bottom: 1px solid var(--border); }
         .side-panel-title { font-size: 14px; font-weight: 500; color: var(--text); }
@@ -1353,14 +1380,48 @@ export default function TiBot() {
         .send-btn { background: var(--accent); border: none; border-radius: var(--radius-full); width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; transition: opacity 0.2s; color: #0e0e0e; }
         .send-btn:disabled { opacity: 0.3; cursor: not-allowed; }
         .send-btn:not(:disabled):hover { opacity: 0.85; }
+        @media (min-width: 769px) {
+          .explore-btn.open { opacity: 0.4; pointer-events: none; }
+          .side-panel {
+            position: fixed;
+            top: 0;
+            right: 0;
+            height: 100vh;
+            width: 360px;
+            transform: translateX(100%);
+            pointer-events: none;
+            box-shadow: -4px 0 24px rgba(0,0,0,0.4);
+          }
+          .side-panel.open {
+            transform: translateX(0);
+            border-left-color: var(--border);
+            pointer-events: auto;
+          }
+          .side-panel-content { padding-top: 80px; }
+          .side-panel-close {
+            display: block;
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-family: 'Poppins', sans-serif;
+            font-size: 12px;
+            font-weight: 500;
+            padding: 6px 14px;
+            border-radius: 9999px;
+            cursor: pointer;
+          }
+        }
         @media (max-width: 768px) {
           .main-layout {
             display: flex;
             flex-direction: column;
           }
           .conversation-column { max-width: 100%; }
-          .side-panel { position: fixed; left: 0; right: 0; bottom: 0; width: auto; height: 75vh; transform: translateY(100%); transition: transform 0.3s ease; border-radius: 16px 16px 0 0; background: var(--surface); border-top: 1px solid var(--border); border-left: none; z-index: 100; overflow-y: auto; visibility: hidden; }
-          .side-panel.open { width: auto; transform: translateY(0); visibility: visible; }
+          .side-panel { position: fixed; left: 0; right: 0; bottom: 0; width: 100%; height: 75vh; transform: translateY(100%); border-radius: 16px 16px 0 0; border-top: 1px solid var(--border); border-left: none; z-index: 100; visibility: hidden; }
+          .side-panel.open { width: 100%; transform: translateY(0); visibility: visible; }
           .side-panel-content { width: 100%; height: auto; min-height: 100%; }
           .mobile-panel-overlay { display: block; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; }
         }
@@ -1392,9 +1453,13 @@ export default function TiBot() {
             </div>
             <button
               className={`explore-btn ${panelOpen ? "open" : ""}`}
-              onClick={() => setPanelOpen((v) => !v)}
+              onClick={() => setPanelOpen((prev) => (isDesktop ? true : !prev))}
             >
-              {panelOpen ? (lang === "fr" ? "Fermer ✕" : "Close ✕") : (lang === "fr" ? "Projets ☰" : "Projects ☰")}
+              {isDesktop
+                ? (lang === "fr" ? "Projets ☰" : "Projects ☰")
+                : (panelOpen
+                    ? (lang === "fr" ? "Fermer ✕" : "Close ✕")
+                    : (lang === "fr" ? "Projets ☰" : "Projects ☰"))}
             </button>
           </div>
         </header>
@@ -1545,6 +1610,9 @@ export default function TiBot() {
           </div>
 
           <aside className={`side-panel ${panelOpen ? "open" : ""}`}>
+            <button className="side-panel-close" onClick={() => setPanelOpen(false)} type="button">
+              Fermer ✕
+            </button>
             <div className="side-panel-content">
               <div className="side-panel-header">
                 <div className="side-panel-title">Thibault Deglane</div>
