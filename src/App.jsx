@@ -1208,9 +1208,9 @@ export default function TiBot() {
         .explore-btn.open { border-color: var(--accent); }
 
         /* SIDE PANEL */
-        .side-panel { transition: transform 0.3s ease; background: var(--surface); border-left: 1px solid transparent; z-index: 50; overflow-y: auto; }
+        .side-panel { transition: transform 0.3s ease; background: var(--surface); border-left: 1px solid transparent; z-index: 50; overflow-y: auto; overflow-x: hidden; }
         .side-panel-close { display: none; }
-        .side-panel-content { width: 360px; height: 100%; display: flex; flex-direction: column; }
+        .side-panel-content { width: 100%; height: 100%; display: flex; flex-direction: column; overflow-x: hidden; }
         .side-panel-header { padding: 20px 20px 16px; border-bottom: 1px solid var(--border); }
         .side-panel-title { font-size: 14px; font-weight: 500; color: var(--text); }
         .side-panel-subtitle { margin-top: 4px; font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 500; }
