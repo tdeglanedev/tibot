@@ -1175,8 +1175,6 @@ export default function TiBot() {
         .lang-btn { background: transparent; border: none; color: var(--text-muted); font-family: 'Poppins', sans-serif; font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; padding: 6px 10px; cursor: pointer; transition: all 0.15s; line-height: 1; border-radius: 9999px; }
         .lang-btn.active { background: rgba(200, 184, 154, 1); color: #0e0e0e; }
         .lang-btn:not(.active):hover { color: var(--text); background: rgba(255,255,255,0.04); }
-        .header-link { font-size: 12px; color: var(--accent); text-decoration: none; letter-spacing: 0.04em; font-weight: 500; border: 1px solid rgba(200,184,154,0.4); padding: 6px 16px; border-radius: 9999px; transition: all 0.2s; white-space: nowrap; }
-        .header-link:hover { background: var(--accent-dim); border-color: var(--accent); }
         .explore-btn { background: transparent; border: 1px solid rgba(200,184,154,0.4); color: var(--accent); font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 0.04em; padding: 6px 16px; border-radius: 9999px; transition: all 0.2s; cursor: pointer; white-space: nowrap; }
         .explore-btn:hover { background: var(--accent-dim); border-color: var(--accent); }
         .explore-btn.open { border-color: var(--accent); }
@@ -1189,10 +1187,12 @@ export default function TiBot() {
         .side-panel-header { padding: 20px 20px 16px; border-bottom: 1px solid var(--border); }
         .side-panel-title { font-size: 14px; font-weight: 500; color: var(--text); }
         .side-panel-subtitle { margin-top: 4px; font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 500; }
-        .side-panel-top-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+        .side-panel-portfolio-btn { width: 100%; margin-top: 12px; background: transparent; color: var(--accent); border: 1px solid var(--accent); font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 500; padding: 10px; border-radius: 9999px; cursor: pointer; transition: all 0.2s; }
+        .side-panel-portfolio-btn:hover { background: var(--accent-dim); }
+        .side-panel-top-actions { display: flex; gap: 12px; margin-top: 12px; align-items: center; flex-wrap: nowrap; }
         .side-panel-mini-btn { background: transparent; border: 1px solid var(--border); color: var(--text-muted); font-family: 'Poppins', sans-serif; font-size: 11px; font-weight: 500; padding: 5px 12px; border-radius: 9999px; cursor: pointer; transition: all 0.2s; }
         .side-panel-mini-btn:hover { color: var(--text); border-color: var(--border-hover); }
-        .side-panel-cv-links { display: flex; gap: 16px; margin-top: 10px; }
+        .side-panel-cv-links { display: flex; gap: 12px; }
         .side-panel-cv-link { font-size: 11px; color: var(--accent); text-decoration: none; }
         .side-panel-cv-link:hover { text-decoration: underline; }
         .side-panel-projects { padding: 16px 20px; overflow-y: auto; flex: 1; }
@@ -1390,12 +1390,11 @@ export default function TiBot() {
               <button className={`lang-btn ${lang === "en" ? "active" : ""}`} onClick={() => switchLang("en")}>EN</button>
               <button className={`lang-btn ${lang === "fr" ? "active" : ""}`} onClick={() => switchLang("fr")}>FR</button>
             </div>
-            <a href="https://www.tdeglane.com" className="header-link">{c.backLink}</a>
             <button
               className={`explore-btn ${panelOpen ? "open" : ""}`}
               onClick={() => setPanelOpen((v) => !v)}
             >
-              {panelOpen ? (lang === "fr" ? "Fermer ✕" : "Close ✕") : (lang === "fr" ? "Explorer ☰" : "Explore ☰")}
+              {panelOpen ? (lang === "fr" ? "Fermer ✕" : "Close ✕") : (lang === "fr" ? "Projets ☰" : "Projects ☰")}
             </button>
           </div>
         </header>
@@ -1550,17 +1549,20 @@ export default function TiBot() {
               <div className="side-panel-header">
                 <div className="side-panel-title">Thibault Deglane</div>
                 <div className="side-panel-subtitle">Senior Strategic Designer · Paris</div>
+                <button
+                  className="side-panel-portfolio-btn"
+                  onClick={() => window.open("https://www.tdeglane.com", "_blank", "noopener")}
+                >
+                  → Voir le portfolio complet
+                </button>
                 <div className="side-panel-top-actions">
                   <button className="side-panel-mini-btn" onClick={() => window.open("https://www.tdeglane.com/about", "_blank", "noopener")}>
-                    About & CV
+                    About
                   </button>
-                  <button className="side-panel-mini-btn" onClick={() => window.open("https://www.tdeglane.com", "_blank", "noopener")}>
-                    Portfolio →
-                  </button>
-                </div>
-                <div className="side-panel-cv-links">
-                  <a className="side-panel-cv-link" href="https://drive.google.com/file/d/1waRu0E8tjhUK10XP7rsa2K_valTy-U4T/view?usp=share_link" target="_blank" rel="noopener noreferrer">↓ CV EN</a>
-                  <a className="side-panel-cv-link" href="https://drive.google.com/file/d/1wZinQ0tr2SBp3_f_BWMW7kXpC6rZFagD/view?usp=share_link" target="_blank" rel="noopener noreferrer">↓ CV FR</a>
+                  <div className="side-panel-cv-links">
+                    <a className="side-panel-cv-link" href="https://drive.google.com/file/d/1waRu0E8tjhUK10XP7rsa2K_valTy-U4T/view?usp=share_link" target="_blank" rel="noopener noreferrer">↓ CV EN</a>
+                    <a className="side-panel-cv-link" href="https://drive.google.com/file/d/1wZinQ0tr2SBp3_f_BWMW7kXpC6rZFagD/view?usp=share_link" target="_blank" rel="noopener noreferrer">↓ CV FR</a>
+                  </div>
                 </div>
               </div>
 
