@@ -1187,7 +1187,7 @@ export default function TiBot() {
         .side-panel-header { padding: 20px 20px 16px; border-bottom: 1px solid var(--border); }
         .side-panel-title { font-size: 14px; font-weight: 500; color: var(--text); }
         .side-panel-subtitle { margin-top: 4px; font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 500; }
-        .side-panel-portfolio-btn { width: 100%; margin-top: 12px; background: transparent; color: var(--accent); border: 1px solid var(--accent); font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 500; padding: 10px; border-radius: 9999px; cursor: pointer; transition: all 0.2s; }
+        .side-panel-portfolio-btn { width: 100%; background: transparent; color: var(--accent); border: 1px solid var(--accent); font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 500; padding: 10px; border-radius: 9999px; cursor: pointer; transition: all 0.2s; }
         .side-panel-portfolio-btn:hover { background: var(--accent-dim); }
         .side-panel-top-actions { display: flex; gap: 12px; margin-top: 12px; align-items: center; flex-wrap: nowrap; }
         .side-panel-mini-btn { background: transparent; border: 1px solid var(--border); color: var(--text-muted); font-family: 'Poppins', sans-serif; font-size: 11px; font-weight: 500; padding: 5px 12px; border-radius: 9999px; cursor: pointer; transition: all 0.2s; }
@@ -1206,7 +1206,7 @@ export default function TiBot() {
         .panel-project-title { font-size: 13px; font-weight: 400; color: var(--text); transition: color 0.15s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .panel-project-category { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; margin-top: 2px; font-weight: 500; }
         .panel-project-arrow { margin-left: auto; color: var(--text-muted); font-size: 12px; transition: all 0.15s; flex-shrink: 0; }
-        .side-panel-footer { padding: 16px 20px; border-top: 1px solid var(--border); }
+        .side-panel-footer { padding: 16px 20px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 8px; }
         .side-panel-contact-btn { width: 100%; background: var(--accent); color: #0e0e0e; border: none; font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 500; padding: 10px; border-radius: 9999px; cursor: pointer; transition: opacity 0.2s; }
         .side-panel-contact-btn:hover { opacity: 0.85; }
         .mobile-panel-overlay { display: none; }
@@ -1549,12 +1549,6 @@ export default function TiBot() {
               <div className="side-panel-header">
                 <div className="side-panel-title">Thibault Deglane</div>
                 <div className="side-panel-subtitle">Senior Strategic Designer · Paris</div>
-                <button
-                  className="side-panel-portfolio-btn"
-                  onClick={() => window.open("https://www.tdeglane.com", "_blank", "noopener")}
-                >
-                  → Voir le portfolio complet
-                </button>
                 <div className="side-panel-top-actions">
                   <button className="side-panel-mini-btn" onClick={() => window.open("https://www.tdeglane.com/about", "_blank", "noopener")}>
                     About
@@ -1581,6 +1575,12 @@ export default function TiBot() {
               </div>
 
               <div className="side-panel-footer">
+                <button
+                  className="side-panel-portfolio-btn"
+                  onClick={() => window.open("https://www.tdeglane.com", "_blank", "noopener")}
+                >
+                  → Voir le portfolio complet
+                </button>
                 <button
                   className="side-panel-contact-btn"
                   onClick={() => {
