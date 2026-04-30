@@ -1626,8 +1626,8 @@ export default function TiBot() {
         .lang-btn { background: transparent; border: none; color: var(--text-muted); font-family: 'Poppins', sans-serif; font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; padding: 6px 10px; cursor: pointer; transition: all 0.15s; line-height: 1; border-radius: 9999px; }
         .lang-btn.active { background: rgba(200, 184, 154, 1); color: #0e0e0e; }
         .lang-btn:not(.active):hover { color: var(--text); background: rgba(255,255,255,0.04); }
-        .reset-btn { background: transparent; border: 1px solid var(--border); color: var(--text-muted); width: 32px; height: 32px; border-radius: 9999px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; font-size: 14px; flex-shrink: 0; }
-        .reset-btn:hover { color: var(--text); border-color: var(--border-hover); }
+        .reset-btn { background: transparent; border: none; color: var(--text-muted); display: flex; align-items: center; gap: 6px; font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 400; padding: 6px 0; cursor: pointer; transition: color 0.2s; }
+        .reset-btn:hover { color: var(--text); }
         .explore-btn { background: transparent; border: 1px solid rgba(200,184,154,0.4); color: var(--accent); font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 0.04em; padding: 6px 16px; border-radius: 9999px; transition: all 0.2s; cursor: pointer; white-space: nowrap; opacity: 1; pointer-events: auto; }
         .explore-btn:hover { background: var(--accent-dim); border-color: var(--accent); }
         .explore-btn.open { border-color: var(--accent); }
@@ -1910,16 +1910,6 @@ export default function TiBot() {
               <button className={`lang-btn ${lang === "en" ? "active" : ""}`} onClick={() => switchLang("en")}>EN</button>
               <button className={`lang-btn ${lang === "fr" ? "active" : ""}`} onClick={() => switchLang("fr")}>FR</button>
             </div>
-            {messages.length > 1 && (
-              <button
-                className="reset-btn"
-                onClick={resetConversation}
-                title={lang === "fr" ? "Nouvelle conversation" : "New conversation"}
-                type="button"
-              >
-                ↺
-              </button>
-            )}
             <button
               className={`explore-btn ${panelOpen ? "open" : ""}`}
               onClick={() => setPanelOpen((prev) => (isDesktop ? true : !prev))}
@@ -2083,6 +2073,17 @@ export default function TiBot() {
                   setTimeout(() => messagesEndRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
                 }}
               />
+            )}
+
+            {/* Reset button */}
+            {messages.length > 1 && (
+              <button className="reset-btn" onClick={resetConversation} type="button">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                  <path d="M1 6a5 5 0 1 0 1.5-3.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+                  <path d="M1 2.5V6h3.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                {lang === "fr" ? "Nouvelle conversation" : "New conversation"}
+              </button>
             )}
 
             {/* INPUT */}
