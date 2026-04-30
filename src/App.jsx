@@ -804,11 +804,16 @@ function generateWorkshopPDF(answers, synthesis, lang) {
   const grey = [136, 136, 136];
   let y = margin;
 
+  const cleanText = (text) => String(text)
+    .replace(/\*\*(.*?)\*\*/g, "$1")
+    .replace(/\*(.*?)\*/g, "$1")
+    .trim();
+
   const addText = (text, x, fontSize, color, fontStyle = "normal", maxWidth = contentW) => {
     doc.setFont("helvetica", fontStyle);
     doc.setFontSize(fontSize);
     doc.setTextColor(...color);
-    const lines = doc.splitTextToSize(String(text), maxWidth);
+    const lines = doc.splitTextToSize(cleanText(text), maxWidth);
     doc.text(lines, x, y);
     y += lines.length * (fontSize * 0.4) + 2;
     return lines.length;
@@ -865,7 +870,7 @@ function generateWorkshopPDF(answers, synthesis, lang) {
     const labelW = doc.getTextWidth(`${label} · `);
     doc.setFont("helvetica", "normal");
     doc.setTextColor(...dark);
-    doc.text(String(value || "—"), margin + labelW, y);
+    doc.text(cleanText(value || "—"), margin + labelW, y);
     y += 6;
   });
   y += 4;
@@ -882,7 +887,7 @@ function generateWorkshopPDF(answers, synthesis, lang) {
     );
     let content = "";
     if (matchingBlock) {
-      content = matchingBlock.replace(/\*\*[^*]+\*\*\n?/, "").trim();
+      content = cleanText(matchingBlock.replace(/\*\*[^*]+\*\*\n?/, ""));
     }
 
     doc.setFont("helvetica", "bold");
