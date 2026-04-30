@@ -1686,6 +1686,7 @@ export default function TiBot() {
         .msg-name { font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
         .msg-text { color: rgba(255, 255, 255, 1); line-height: 1.7; white-space: pre-wrap; word-break: break-word; }
         .msg-text.user-text { color: rgba(240,237,232,0.8); }
+        .msg-text--workshop-pending { color: var(--text-muted); font-style: italic; }
         .msg-text strong { font-weight: 600; color: var(--text); }
         .msg-text em { font-style: italic; color: var(--text-muted); }
         .msg-text ul { margin: 8px 0 8px 16px; list-style: disc; }
@@ -1951,7 +1952,9 @@ export default function TiBot() {
                           </div>
                         )
                       ) : (
-                        <div className="msg-text user-text">{message}</div>
+                        message.startsWith("[WORKSHOP SYNTHESIS REQUEST]")
+                          ? <div className="msg-text msg-text--workshop-pending">{lang === "fr" ? "Analyse de votre problématique en cours..." : "Analysing your challenge..."}</div>
+                          : <div className="msg-text user-text">{message}</div>
                       )}
 
                       {/* Suggestions (premier message uniquement) */}
