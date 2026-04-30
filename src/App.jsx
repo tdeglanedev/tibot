@@ -1080,8 +1080,6 @@ Based on this context and the methodological knowledge available, produce a stru
 Respond in the visitor's language. Be direct and specific. No generic advice. This should feel like a real strategic diagnosis.
 After the synthesis, add this action: { "type": "workshop_done" }`;
       sendSilent(prompt);
-    } else {
-      sendSilent(`[Workshop context — ${step.key}] ${choice}`);
     }
   };
 
@@ -2005,34 +2003,6 @@ export default function TiBot() {
                 );
               })}
 
-              {/* Workshop card */}
-              {["triggered", "step1", "step2", "step3", "step4", "generating"].includes(workshopState) && !loading && (
-                <WorkshopCard
-                  workshopState={workshopState}
-                  setWorkshopState={setWorkshopState}
-                  workshopAnswers={workshopAnswers}
-                  setWorkshopAnswers={setWorkshopAnswers}
-                  lang={lang}
-                  sendSilent={sendSilent}
-                />
-              )}
-
-              {/* Workshop done card */}
-              {workshopState === "done" && !loading && (
-                <WorkshopDoneCard
-                  lang={lang}
-                  answers={workshopAnswers}
-                  synthesis={workshopSynthesisRef.current}
-                  onContact={() => {
-                    const prefill = lang === "fr"
-                      ? `Bonjour Thibault,\n\nJ'ai utilisé l'atelier de cadrage et voici mon contexte :\n- Sujet : ${workshopAnswers.step1}\n- Enjeu : ${workshopAnswers.step2}\n- Contrainte : ${workshopAnswers.step3}\n- Horizon : ${workshopAnswers.step4}\n\nJ'aimerais continuer cet échange avec vous.`
-                      : `Hi Thibault,\n\nI used the discovery workshop and here's my context:\n- Challenge type: ${workshopAnswers.step1}\n- Main blocker: ${workshopAnswers.step2}\n- Constraint: ${workshopAnswers.step3}\n- Expected outcome: ${workshopAnswers.step4}\n\nI'd like to continue this conversation with you.`;
-                    setContactPrefill(prefill);
-                    setContactOpen(true);
-                  }}
-                />
-              )}
-
               {loading &&
                 messages[messages.length - 1]?.role === "assistant" &&
                 messages[messages.length - 1]?.parsed?.message === "" && (
@@ -2050,6 +2020,34 @@ export default function TiBot() {
               )}
               <div ref={messagesEndRef} />
             </div>
+
+            {/* Workshop card — hors du flux messages */}
+            {["triggered", "step1", "step2", "step3", "step4", "generating"].includes(workshopState) && !loading && (
+              <WorkshopCard
+                workshopState={workshopState}
+                setWorkshopState={setWorkshopState}
+                workshopAnswers={workshopAnswers}
+                setWorkshopAnswers={setWorkshopAnswers}
+                lang={lang}
+                sendSilent={sendSilent}
+              />
+            )}
+
+            {/* Workshop done card — hors du flux messages */}
+            {workshopState === "done" && !loading && (
+              <WorkshopDoneCard
+                lang={lang}
+                answers={workshopAnswers}
+                synthesis={workshopSynthesisRef.current}
+                onContact={() => {
+                  const prefill = lang === "fr"
+                    ? `Bonjour Thibault,\n\nJ'ai utilisé l'atelier de cadrage et voici mon contexte :\n- Sujet : ${workshopAnswers.step1}\n- Enjeu : ${workshopAnswers.step2}\n- Contrainte : ${workshopAnswers.step3}\n- Horizon : ${workshopAnswers.step4}\n\nJ'aimerais continuer cet échange avec vous.`
+                    : `Hi Thibault,\n\nI used the discovery workshop and here's my context:\n- Challenge type: ${workshopAnswers.step1}\n- Main blocker: ${workshopAnswers.step2}\n- Constraint: ${workshopAnswers.step3}\n- Expected outcome: ${workshopAnswers.step4}\n\nI'd like to continue this conversation with you.`;
+                  setContactPrefill(prefill);
+                  setContactOpen(true);
+                }}
+              />
+            )}
 
             {/* INPUT */}
             <div className="input-area">
