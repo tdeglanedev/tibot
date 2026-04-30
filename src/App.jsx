@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { jsPDF } from "jspdf";
 
 const BRAND_LOGO_SRC = "/Logo%20Thibault.png";
 const BRAND_DISPLAY_NAME = ".Thibault Deglane";
@@ -234,7 +235,11 @@ BEHAVIOUR:
 - Ask one smart qualifying question per exchange.
 - Never invent projects or capabilities not listed above.
 - 3-5 sentences per reply unless more detail is requested.
-- For sensitive questions (salary, private context, specific availability details) → invite direct contact warmly rather than answering on my behalf.`;
+- For sensitive questions (salary, private context, specific availability details) → invite direct contact warmly rather than answering on my behalf.
+
+WORKSHOP DETECTION: When a visitor describes a real problem, challenge, or project they are working on — using phrases like "we're trying to", "our challenge is", "how do we", "we're struggling with", "our project is about", "j'ai une problématique", "on essaie de", "notre défi", "comment faire pour", "on travaille sur" — add a workshop_trigger action to your response:
+{ "type": "workshop_trigger" }
+This signals that the visitor has a real problem worth exploring. Only trigger once per conversation. Never trigger on general questions about Thibault or his work.`;
 
 // ─── CONTENT (EN / FR) ───────────────────────────────────────────────────────
 
@@ -252,7 +257,7 @@ const CONTENT = {
       "Why does design fragment as organisations grow?",
       "What makes AI feel wrong inside a product?",
       "What's the difference between a design system and a design culture?",
-      "When does research slow a project down?",
+      "I have a real problem to explore",
     ],
     langInstruction: "[LANGUAGE: English]",
     contactTitle: "Send me a message",
@@ -277,7 +282,7 @@ const CONTENT = {
       "Pourquoi le design se fragmente-t-il quand une organisation grandit ?",
       "Qu'est-ce qui fait qu'une IA sonne faux dans un produit ?",
       "Quelle différence entre un système de design et une culture design ?",
-      "À quel moment la recherche ralentit-elle un projet ?",
+      "J'ai une vraie problématique à explorer",
     ],
     langInstruction: "[LANGUAGE: Français]",
     contactTitle: "M'envoyer un message",
@@ -718,10 +723,10 @@ function AnimatedText({ text, lang, onDone }) {
 
 // ─── CONTACT FORM ─────────────────────────────────────────────────────────────
 
-function ContactForm({ lang, onClose, onSuccess }) {
+function ContactForm({ lang, onClose, onSuccess, prefill = "" }) {
   const c = CONTENT[lang];
   const [name, setName] = useState("");
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState(prefill);
   const [status, setStatus] = useState("idle"); // idle | sending | success | error
 
   const handleSubmit = async () => {
@@ -787,6 +792,389 @@ function ContactForm({ lang, onClose, onSuccess }) {
   );
 }
 
+// ─── WORKSHOP PDF ─────────────────────────────────────────────────────────────
+
+function generateWorkshopPDF(answers, synthesis, lang) {
+  const doc = new jsPDF({ unit: "mm", format: "a4" });
+  const margin = 20;
+  const pageW = 210;
+  const contentW = pageW - margin * 2;
+  const accent = [200, 184, 154];
+  const dark = [26, 26, 26];
+  const grey = [136, 136, 136];
+  let y = margin;
+
+  const addText = (text, x, fontSize, color, fontStyle = "normal", maxWidth = contentW) => {
+    doc.setFont("helvetica", fontStyle);
+    doc.setFontSize(fontSize);
+    doc.setTextColor(...color);
+    const lines = doc.splitTextToSize(String(text), maxWidth);
+    doc.text(lines, x, y);
+    y += lines.length * (fontSize * 0.4) + 2;
+    return lines.length;
+  };
+
+  const addHRule = (color = [220, 220, 220]) => {
+    doc.setDrawColor(...color);
+    doc.setLineWidth(0.3);
+    doc.line(margin, y, pageW - margin, y);
+    y += 4;
+  };
+
+  // ── En-tête ────────────────────────────────────────────────
+  addText(".Thibault Deglane", margin, 11, grey);
+  y += 1;
+  addHRule();
+  addText(
+    lang === "fr" ? "Ébauche de cadrage stratégique" : "Strategic Framing Draft",
+    margin, 22, dark, "bold"
+  );
+  y += 1;
+  addText(new Date().toLocaleDateString(lang === "fr" ? "fr-FR" : "en-GB", { year: "numeric", month: "long", day: "numeric" }), margin, 10, grey);
+  y += 6;
+
+  // ── Section 1 — Contexte ───────────────────────────────────
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(9);
+  doc.setTextColor(...accent);
+  doc.setCharSpace(1);
+  doc.text(lang === "fr" ? "VOTRE CONTEXTE" : "YOUR CONTEXT", margin, y);
+  doc.setCharSpace(0);
+  y += 4;
+  addHRule(accent);
+
+  const contextLines = lang === "fr"
+    ? [
+        ["Type de sujet", answers.step1],
+        ["Enjeu principal", answers.step2],
+        ["Contrainte", answers.step3],
+        ["Horizon", answers.step4],
+      ]
+    : [
+        ["Challenge type", answers.step1],
+        ["Main blocker", answers.step2],
+        ["Constraint", answers.step3],
+        ["Expected outcome", answers.step4],
+      ];
+
+  contextLines.forEach(([label, value]) => {
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(10);
+    doc.setTextColor(...grey);
+    doc.text(`${label} ·`, margin, y);
+    const labelW = doc.getTextWidth(`${label} · `);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(...dark);
+    doc.text(String(value || "—"), margin + labelW, y);
+    y += 6;
+  });
+  y += 4;
+
+  // ── Section 2 — Synthèse ───────────────────────────────────
+  const sectionHeaders = lang === "fr"
+    ? ["Le problème reformulé", "L'angle d'approche", "Par où commencer", "Ce que ça change"]
+    : ["Reframed problem", "Strategic angle", "Where to start", "What it changes"];
+
+  const blocks = synthesis.split(/\n(?=\*\*)/);
+  sectionHeaders.forEach((header, idx) => {
+    const matchingBlock = blocks.find((b) =>
+      b.toLowerCase().includes(header.toLowerCase().slice(0, 12))
+    );
+    let content = "";
+    if (matchingBlock) {
+      content = matchingBlock.replace(/\*\*[^*]+\*\*\n?/, "").trim();
+    }
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(9);
+    doc.setTextColor(...accent);
+    doc.setCharSpace(1);
+    doc.text(header.toUpperCase(), margin, y);
+    doc.setCharSpace(0);
+    y += 4;
+    addHRule(accent);
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(11);
+    doc.setTextColor(...dark);
+    const lines = doc.splitTextToSize(content || "—", contentW);
+    doc.text(lines, margin, y);
+    y += lines.length * 5 + 8;
+
+    if (y > 260 && idx < sectionHeaders.length - 1) {
+      doc.addPage();
+      y = margin;
+    }
+  });
+
+  // ── Pied de page ───────────────────────────────────────────
+  if (y > 255) { doc.addPage(); y = margin; }
+  y += 4;
+  addHRule();
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(10);
+  doc.setTextColor(...grey);
+  doc.text(
+    lang === "fr"
+      ? "Suite logique : un échange de 30 min avec Thibault Deglane"
+      : "Next step: a 30-minute conversation with Thibault Deglane",
+    margin, y
+  );
+  y += 5;
+  doc.text("tdeglane.com · hello@tdeglane.com", margin, y);
+
+  doc.save(lang === "fr" ? "cadrage-strategique.pdf" : "strategic-framing.pdf");
+}
+
+// ─── WORKSHOP DONE CARD ───────────────────────────────────────────────────────
+
+function WorkshopDoneCard({ lang, answers, synthesis, onContact }) {
+  const t = {
+    fr: {
+      title: "Votre ébauche est prête",
+      pdf: "↓ Télécharger le PDF",
+      contact: "→ Continuer avec Thibault",
+      footnote: "Cette ébauche couvre le cadrage. Un échange de 30 minutes permet d'aller beaucoup plus loin.",
+    },
+    en: {
+      title: "Your draft is ready",
+      pdf: "↓ Download PDF",
+      contact: "→ Continue with Thibault",
+      footnote: "This draft covers the framing. A 30-minute conversation goes much further.",
+    },
+  }[lang] || { title: "Your draft is ready", pdf: "↓ Download PDF", contact: "→ Continue with Thibault", footnote: "" };
+
+  return (
+    <div className="workshop-card workshop-done-card">
+      <div className="workshop-card-title">{t.title}</div>
+      <div className="workshop-done-actions">
+        <button
+          className="workshop-done-btn-primary"
+          onClick={() => generateWorkshopPDF(answers, synthesis, lang)}
+        >
+          {t.pdf}
+        </button>
+        <button className="workshop-done-btn-outline" onClick={onContact}>
+          {t.contact}
+        </button>
+      </div>
+      <div className="workshop-done-footnote">{t.footnote}</div>
+    </div>
+  );
+}
+
+// ─── WORKSHOP CARD ────────────────────────────────────────────────────────────
+
+function WorkshopCard({ workshopState, setWorkshopState, workshopAnswers, setWorkshopAnswers, lang, sendSilent }) {
+  const [showCustomInput, setShowCustomInput] = useState(false);
+  const [customInputValue, setCustomInputValue] = useState("");
+
+  const L = {
+    fr: {
+      triggeredTitle: "Explorons votre problématique",
+      triggeredSub: "Je vais vous poser 4 questions courtes pour cadrer la situation et produire une ébauche de direction.",
+      triggeredCta: "C'est parti →",
+      generating: "Analyse en cours...",
+      steps: [
+        {
+          label: "01 / 04",
+          q: "Vous travaillez sur quel type de sujet ?",
+          choices: ["Produit digital", "Expérience de service", "Transformation interne", "Autre chose"],
+          key: "step1",
+          next: "step2",
+        },
+        {
+          label: "02 / 04",
+          q: "Qu'est-ce qui bloque vraiment ?",
+          choices: ["On ne sait pas par où commencer", "Les équipes ne sont pas alignées", "On a des solutions mais pas d'adoption", "Le problème n'est pas bien défini"],
+          key: "step2",
+          next: "step3",
+        },
+        {
+          label: "03 / 04",
+          q: "Qu'est-ce qui contraint votre approche ?",
+          choices: ["Le temps — on doit aller vite", "Les ressources — équipe réduite", "L'organisation — structure complexe", "L'incertitude — on ne sait pas encore"],
+          key: "step3",
+          next: "step4",
+        },
+        {
+          label: "04 / 04",
+          q: "Quel résultat cherchez-vous ?",
+          choices: ["Une vision claire pour décider", "Un plan d'action concret", "Aligner mon équipe ou mes parties prenantes", "Valider ou invalider une direction"],
+          key: "step4",
+          next: "generating",
+        },
+      ],
+    },
+    en: {
+      triggeredTitle: "Let's explore your challenge",
+      triggeredSub: "I'll ask you 4 short questions to frame the situation and produce a draft direction.",
+      triggeredCta: "Let's go →",
+      generating: "Analysing...",
+      steps: [
+        {
+          label: "01 / 04",
+          q: "What type of challenge are you working on?",
+          choices: ["Digital product", "Service experience", "Internal transformation", "Something else"],
+          key: "step1",
+          next: "step2",
+        },
+        {
+          label: "02 / 04",
+          q: "What's the real blocker?",
+          choices: ["We don't know where to start", "Teams aren't aligned", "Solutions exist but nobody uses them", "The problem isn't well defined"],
+          key: "step2",
+          next: "step3",
+        },
+        {
+          label: "03 / 04",
+          q: "What's constraining your approach?",
+          choices: ["Time — we need to move fast", "Resources — small team", "Organisation — complex structure", "Uncertainty — we don't know yet"],
+          key: "step3",
+          next: "step4",
+        },
+        {
+          label: "04 / 04",
+          q: "What outcome are you looking for?",
+          choices: ["A clear vision to make decisions", "A concrete action plan", "Align my team or stakeholders", "Validate or invalidate a direction"],
+          key: "step4",
+          next: "generating",
+        },
+      ],
+    },
+  };
+
+  const t = L[lang] || L.fr;
+
+  const handleStepChoice = (step, choice) => {
+    const updated = { ...workshopAnswers, [step.key]: choice };
+    setWorkshopAnswers(updated);
+    setWorkshopState(step.next);
+
+    if (step.next === "generating") {
+      const a1 = updated.step1 || "";
+      const a2 = updated.step2 || "";
+      const a3 = updated.step3 || "";
+      const a4 = choice;
+      const prompt = `[WORKSHOP SYNTHESIS REQUEST]
+The visitor has completed the discovery workshop. Here are their answers:
+- Type of challenge: ${a1}
+- Main blocker: ${a2}
+- Main constraint: ${a3}
+- Expected outcome: ${a4}
+
+Based on this context and the methodological knowledge available, produce a structured diagnosis in this exact format:
+
+**Le problème reformulé**
+[2-3 sentences reformulating the real challenge behind their answers]
+
+**L'angle d'approche**
+[1-2 sentences on the recommended strategic angle]
+
+**Par où commencer**
+[3 concrete first steps, numbered]
+
+**Ce que ça change**
+[1 sentence on the expected impact if the direction is right]
+
+Respond in the visitor's language. Be direct and specific. No generic advice. This should feel like a real strategic diagnosis.
+After the synthesis, add this action: { "type": "workshop_done" }`;
+      sendSilent(prompt);
+    } else {
+      sendSilent(`[Workshop context — ${step.key}] ${choice}`);
+    }
+  };
+
+  if (workshopState === "triggered") {
+    return (
+      <div className="workshop-card">
+        <div className="workshop-card-title">{t.triggeredTitle}</div>
+        <div className="workshop-card-sub">{t.triggeredSub}</div>
+        <button className="workshop-card-cta" onClick={() => setWorkshopState("step1")}>
+          {t.triggeredCta}
+        </button>
+      </div>
+    );
+  }
+
+  const currentStep = t.steps.find((s) => s.key === workshopState);
+  if (currentStep) {
+    const lastChoice = currentStep.choices[currentStep.choices.length - 1];
+    const placeholder = lang === "fr" ? "Décrivez en quelques mots..." : "Describe in a few words...";
+    const validateLabel = lang === "fr" ? "Valider →" : "Confirm →";
+
+    const handleConfirmCustom = () => {
+      const val = customInputValue.trim();
+      if (!val) return;
+      setShowCustomInput(false);
+      setCustomInputValue("");
+      handleStepChoice(currentStep, val);
+    };
+
+    return (
+      <div className="workshop-card">
+        <div className="workshop-step-label">{currentStep.label}</div>
+        <div className="workshop-card-title">{currentStep.q}</div>
+        <div className="workshop-choices">
+          {currentStep.choices.map((choice) => {
+            const isCustomChoice = choice === lastChoice;
+            const isSelected = isCustomChoice && showCustomInput;
+            return (
+              <button
+                key={choice}
+                className={`workshop-choice-btn${isSelected ? " workshop-choice-btn--selected" : ""}`}
+                onClick={() => {
+                  if (isCustomChoice) {
+                    setShowCustomInput(true);
+                    setCustomInputValue("");
+                  } else {
+                    setShowCustomInput(false);
+                    handleStepChoice(currentStep, choice);
+                  }
+                }}
+              >
+                {choice}
+              </button>
+            );
+          })}
+        </div>
+        {showCustomInput && (
+          <div className="workshop-custom-input-wrap">
+            <input
+              className="workshop-custom-input"
+              placeholder={placeholder}
+              value={customInputValue}
+              onChange={(e) => setCustomInputValue(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Enter") handleConfirmCustom(); }}
+              autoFocus
+            />
+            <button
+              className="workshop-custom-confirm"
+              onClick={handleConfirmCustom}
+              disabled={!customInputValue.trim()}
+            >
+              {validateLabel}
+            </button>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  if (workshopState === "generating") {
+    return (
+      <div className="workshop-card workshop-card--generating">
+        <div className="workshop-generating-dots">
+          <div className="dot" /><div className="dot" /><div className="dot" />
+        </div>
+        <div className="workshop-generating-text">{t.generating}</div>
+      </div>
+    );
+  }
+
+  return null;
+}
+
 // ─── MAIN APP ─────────────────────────────────────────────────────────────────
 
 export default function TiBot() {
@@ -804,6 +1192,10 @@ export default function TiBot() {
     () => (typeof window !== "undefined" ? window.innerWidth > 768 : true)
   );
   const [isListening, setIsListening] = useState(false);
+  const [workshopState, setWorkshopState] = useState("idle");
+  const [workshopAnswers, setWorkshopAnswers] = useState({});
+  const [contactPrefill, setContactPrefill] = useState("");
+  const workshopSynthesisRef = useRef("");
   const animatedIds = useRef(new Set());
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
@@ -862,7 +1254,15 @@ export default function TiBot() {
       console.log("JSON part:", jsonPart.slice(0, 500));
       console.log("Message:", message.slice(0, 100));
       const parsed = JSON.parse(jsonPart);
-      return { message, actions: parsed.actions || [] };
+      const actions = parsed.actions || [];
+      if (actions.some((a) => a.type === "workshop_trigger")) {
+        setWorkshopState("triggered");
+      }
+      if (actions.some((a) => a.type === "workshop_done")) {
+        setWorkshopState("done");
+        workshopSynthesisRef.current = message;
+      }
+      return { message, actions };
     } catch {
       return { message, actions: [] };
     }
@@ -1088,6 +1488,11 @@ export default function TiBot() {
     }
   };
 
+  // Envoie un contexte à TiBot sans afficher le message utilisateur dans le flux
+  const sendSilent = (context) => {
+    sendMessage(context);
+  };
+
   const handlePanelProject = (project) => {
     // Ferme le panneau sur mobile uniquement
     if (window.innerWidth <= 768) {
@@ -1238,6 +1643,35 @@ export default function TiBot() {
         .side-panel-contact-btn:hover { opacity: 0.85; }
         .mobile-panel-overlay { display: none; }
 
+        /* WORKSHOP CARD */
+        .workshop-card { background: var(--surface-2); border: 1px solid rgba(200,184,154,0.25); border-radius: 8px; padding: 24px; max-width: 480px; animation: fadeUp 0.25s ease; margin-top: 16px; }
+        .workshop-step-label { font-size: 11px; font-weight: 500; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
+        .workshop-card-title { font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 500; color: var(--text); line-height: 1.4; margin-bottom: 10px; }
+        .workshop-card-sub { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 20px; }
+        .workshop-card-cta { background: var(--accent); border: none; color: #0e0e0e; font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 500; padding: 10px 20px; border-radius: 9999px; cursor: pointer; transition: opacity 0.2s; }
+        .workshop-card-cta:hover { opacity: 0.85; }
+        .workshop-choices { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px; }
+        .workshop-choice-btn { background: transparent; border: 1px solid var(--border); color: var(--text); font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 400; padding: 10px 14px; border-radius: 8px; cursor: pointer; transition: all 0.2s; text-align: left; line-height: 1.4; }
+        .workshop-choice-btn:hover { border-color: var(--accent); color: var(--accent); }
+        .workshop-choice-btn--selected { border-color: var(--accent); color: var(--accent); }
+        .workshop-custom-input-wrap { display: flex; gap: 8px; align-items: center; margin-top: 12px; }
+        .workshop-custom-input { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 300; padding: 10px 12px; outline: none; transition: border-color 0.2s; }
+        .workshop-custom-input:focus { border-color: var(--border-hover); }
+        .workshop-custom-input::placeholder { color: var(--text-muted); }
+        .workshop-custom-confirm { background: var(--accent); border: none; color: #0e0e0e; font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 500; padding: 10px 16px; border-radius: 9999px; cursor: pointer; transition: opacity 0.2s; white-space: nowrap; flex-shrink: 0; }
+        .workshop-custom-confirm:disabled { opacity: 0.35; cursor: not-allowed; }
+        .workshop-custom-confirm:not(:disabled):hover { opacity: 0.85; }
+        .workshop-card--generating { display: flex; align-items: center; gap: 12px; }
+        .workshop-generating-dots { display: flex; align-items: center; gap: 5px; }
+        .workshop-generating-text { font-size: 13px; color: var(--text-muted); }
+        .workshop-done-card { margin-top: 12px; }
+        .workshop-done-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+        .workshop-done-btn-primary { background: var(--accent); border: none; color: #0e0e0e; font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 500; padding: 10px 20px; border-radius: 9999px; cursor: pointer; transition: opacity 0.2s; white-space: nowrap; }
+        .workshop-done-btn-primary:hover { opacity: 0.85; }
+        .workshop-done-btn-outline { background: transparent; border: 1px solid var(--accent); color: var(--accent); font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 500; padding: 10px 20px; border-radius: 9999px; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+        .workshop-done-btn-outline:hover { background: var(--accent-dim); }
+        .workshop-done-footnote { margin-top: 14px; font-size: 11px; color: var(--text-muted); line-height: 1.5; }
+
         /* MESSAGES */
         .msg { display: flex; gap: 14px; animation: fadeUp 0.25s ease; }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
@@ -1264,6 +1698,10 @@ export default function TiBot() {
         .suggestions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; animation: fadeUp 0.3s ease 0.1s both; }
         .suggestion { background: transparent; border: 1px solid var(--border); color: var(--text-muted); font-family: 'Poppins', sans-serif; font-size: 12.5px; font-weight: 500; padding: 7px 13px; border-radius: var(--radius-full); cursor: pointer; transition: all 0.2s; text-align: left; line-height: 1.4; }
         .suggestion:hover { border-color: var(--border-hover); color: var(--text); background: var(--surface-2); }
+        .suggestion-workshop { background: transparent; border: 1px solid transparent; background-clip: padding-box; position: relative; color: var(--text-muted); font-family: 'Poppins', sans-serif; font-size: 12.5px; font-weight: 500; padding: 7px 13px; border-radius: 9999px; cursor: pointer; transition: all 0.2s; text-align: left; line-height: 1.4; }
+        .suggestion-workshop::before { content: ''; position: absolute; inset: -1px; border-radius: 9999px; background: linear-gradient(135deg, #0e7490, #4a3f6b, #0891b2); z-index: -1; }
+        .suggestion-workshop::after { content: ''; position: absolute; inset: 0; border-radius: 9999px; background: var(--bg); z-index: -1; }
+        .suggestion-workshop:hover::after { background: rgba(14, 116, 144, 0.08); }
 
         /* CONTACT FORM */
         .contact-form { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-top: 14px; animation: fadeUp 0.2s ease; }
@@ -1516,9 +1954,25 @@ export default function TiBot() {
                       {/* Suggestions (premier message uniquement) */}
                       {i === 0 && showSuggestions[lang] && (
                         <div className="suggestions">
-                          {c.suggestions.map((q, j) => (
-                            <button key={j} className="suggestion" onClick={() => sendMessage(q)}>{q}</button>
-                          ))}
+                          {c.suggestions.map((q, j) => {
+                            const isWorkshopSuggestion = j === c.suggestions.length - 1;
+                            return (
+                              <button
+                                key={j}
+                                className={isWorkshopSuggestion ? "suggestion-workshop" : "suggestion"}
+                                onClick={() => {
+                                  if (isWorkshopSuggestion) {
+                                    setWorkshopState("triggered");
+                                    setShowSuggestions((prev) => ({ ...prev, [lang]: false }));
+                                  } else {
+                                    sendMessage(q);
+                                  }
+                                }}
+                              >
+                                {q}
+                              </button>
+                            );
+                          })}
                         </div>
                       )}
 
@@ -1541,14 +1995,43 @@ export default function TiBot() {
                       {isAssistant && isLast && contactOpen && (
                         <ContactForm
                           lang={lang}
-                          onClose={() => setContactOpen(false)}
+                          onClose={() => { setContactOpen(false); setContactPrefill(""); }}
                           onSuccess={() => {}}
+                          prefill={contactPrefill}
                         />
                       )}
                     </div>
                   </div>
                 );
               })}
+
+              {/* Workshop card */}
+              {["triggered", "step1", "step2", "step3", "step4", "generating"].includes(workshopState) && !loading && (
+                <WorkshopCard
+                  workshopState={workshopState}
+                  setWorkshopState={setWorkshopState}
+                  workshopAnswers={workshopAnswers}
+                  setWorkshopAnswers={setWorkshopAnswers}
+                  lang={lang}
+                  sendSilent={sendSilent}
+                />
+              )}
+
+              {/* Workshop done card */}
+              {workshopState === "done" && !loading && (
+                <WorkshopDoneCard
+                  lang={lang}
+                  answers={workshopAnswers}
+                  synthesis={workshopSynthesisRef.current}
+                  onContact={() => {
+                    const prefill = lang === "fr"
+                      ? `Bonjour Thibault,\n\nJ'ai utilisé l'atelier de cadrage et voici mon contexte :\n- Sujet : ${workshopAnswers.step1}\n- Enjeu : ${workshopAnswers.step2}\n- Contrainte : ${workshopAnswers.step3}\n- Horizon : ${workshopAnswers.step4}\n\nJ'aimerais continuer cet échange avec vous.`
+                      : `Hi Thibault,\n\nI used the discovery workshop and here's my context:\n- Challenge type: ${workshopAnswers.step1}\n- Main blocker: ${workshopAnswers.step2}\n- Constraint: ${workshopAnswers.step3}\n- Expected outcome: ${workshopAnswers.step4}\n\nI'd like to continue this conversation with you.`;
+                    setContactPrefill(prefill);
+                    setContactOpen(true);
+                  }}
+                />
+              )}
 
               {loading &&
                 messages[messages.length - 1]?.role === "assistant" &&
