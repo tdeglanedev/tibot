@@ -61,21 +61,21 @@ Solution: Multi-tenant SaaS live in production. Plan Builder (drag-and-drop canv
 Learnings: Full freedom created paralysis — templates became essential. Progressive activity discovery by phase replaced full catalogue view. Building the AI forced formalisation of tacit knowledge.
 Results: -54% time to delivery, 57 activities, 6 phases, 97 Lighthouse score.
 Stack: React/Vite/TypeScript, Supabase, Deno Edge Functions, Mistral + Claude, Cursor.
-URL: https://www.tdeglane.com/work/askniels-project
+URL: https://www.tdeglane.com/work/askniels
 IMPORTANT: Never use AskNiels as a reference case when discussing methodology or problem-solving approaches. It's my own product — citing it as a use case conflates my role as creator with my role as practitioner. When illustrating how I think, use only client projects: Nike x FFF, Boucheron, Olympique de Marseille, Pierre Hardy, Célio, Micromania, Longchamp, Van Cleef & Arpels, Jaeger-LeCoultre, Louvre Hotels Group.
 
 ### Nike x FFF (2023) — UI/UX
 "Spreading football fever in France."
 First direct digital B2B platform between a sporting brand and amateur clubs. Custom outfit configuration tool. 4-year engagement. Post-COVID: design decisions fed by customer insights, not assumptions.
 Results: +40% direct orders, 3x faster kit config, 12,000+ clubs onboarded, 4.2/5 satisfaction.
-URL: https://www.tdeglane.com/work/nikefff
+URL: https://www.tdeglane.com/work/nike-fff
 
 ### Boucheron Vendorama (2023) — Strategic Design / Phygital
 "Digitizing the 160th anniversary of the luxury house."
 Three interconnected digital touchpoints for the Monnaie de Paris exhibition, in 2 months: AR smartphone app, interactive multi-touch table, three interactive books. Constraint: nothing could feel like a tech demo.
 Philosophy: Phygital done right is a decision about where human attention is most alive.
 Results: 16 days sold out, 10,000+ visitors, #1 luxury brand activation of the year.
-URL: https://www.tdeglane.com/work/boucheron-vendorama
+URL: https://www.tdeglane.com/work/boucheron
 
 ### Olympique de Marseille (2022–2023) — Strategic Design
 "A legendary club in full digital transformation."
@@ -88,7 +88,7 @@ URL: https://www.tdeglane.com/work/olympique-de-marseille
 "Creating an experience in the image of a great name."
 Mobile-first platform, brand content and commerce coexisting without compromise. Co-design process from day one. Atomic design for pixel-perfect execution. 3 months, on time, on budget.
 Results: +65% online revenue in 6 months, +38% returning customers, 2.4x session duration, -30% checkout drop-off.
-URL: https://www.tdeglane.com/work/pierrehardy
+URL: https://www.tdeglane.com/work/pierre-hardy
 
 ### Célio (2022) — UI/UX / Omnichannel
 "One brand, two touchpoints, zero friction."
@@ -114,7 +114,7 @@ URL: https://www.tdeglane.com/work/longchamp
 The Maison's online and in-store experiences were speaking two completely different emotional languages to the same client. Not a communication problem. A coherence problem.
 Solution: Research-first engagement across 5 markets — sector benchmarking, mystery shopping, client and sales team interviews. Four buyer profiles identified. Development of a Brand Experience Platform with 4 elements: experience contract, expected XP, projected XP and lived XP. Deployed across social media, website and in-store. Invited to global seminars to spread the user-centricity mindset.
 Results: AVA Digital Awards — Platinum, Digital Marketing. 5 markets researched, 4 buyer profiles defined, BXP deployed globally.
-URL: https://www.tdeglane.com/work/van-cleef-arpels
+URL: https://www.tdeglane.com/work/van-cleef
 
 ### Jaeger-LeCoultre (2018) — Strategic Design / Phygital · Best of Web Innovation Award
 "When the interface is the object."
@@ -127,7 +127,7 @@ URL: https://www.tdeglane.com/work/jaeger-lecoultre
 "Great digital journeys make amazing voyages."
 Five hotel brands, five audiences, and a reservation system that couldn't compete with OTAs on the only metric guests use: number of clicks to confirm a room. Research-first approach across 5 key countries. Full ecosystem audit. Conversion strategy built against booking.com benchmark. 60 designs (120 with mobile) structured for multi-brand rollout.
 Results: 5 brands unified, booking flow matching booking.com on click count, 120 screens delivered.
-URL: https://www.tdeglane.com/work/louvre-hotels-group
+URL: https://www.tdeglane.com/work/louvre-hotels
 
 ---
 
@@ -303,7 +303,7 @@ const PANEL_PROJECTS = [
     category: "AI · UX · UI · React",
     question_en: "Tell me about the AskNiels project",
     question_fr: "Parle-moi du projet AskNiels",
-    url: "https://www.tdeglane.com/work/askniels-project",
+    url: "https://www.tdeglane.com/work/askniels",
   },
   {
     slug: "nike-fff",
@@ -311,7 +311,7 @@ const PANEL_PROJECTS = [
     category: "UI/UX",
     question_en: "Tell me about the Nike x FFF project",
     question_fr: "Parle-moi du projet Nike x FFF",
-    url: "https://www.tdeglane.com/work/nikefff",
+    url: "https://www.tdeglane.com/work/nike-fff",
   },
   {
     slug: "boucheron",
@@ -319,7 +319,7 @@ const PANEL_PROJECTS = [
     category: "Strategic Design · Phygital",
     question_en: "Tell me about the Boucheron Vendorama project",
     question_fr: "Parle-moi du projet Boucheron Vendorama",
-    url: "https://www.tdeglane.com/work/boucheron-vendorama",
+    url: "https://www.tdeglane.com/work/boucheron",
   },
   {
     slug: "olympique-de-marseille",
@@ -335,7 +335,7 @@ const PANEL_PROJECTS = [
     category: "UI/UX",
     question_en: "Tell me about the Pierre Hardy project",
     question_fr: "Parle-moi du projet Pierre Hardy",
-    url: "https://www.tdeglane.com/work/pierrehardy",
+    url: "https://www.tdeglane.com/work/pierre-hardy",
   },
   {
     slug: "celio",
@@ -362,12 +362,12 @@ const PANEL_PROJECTS = [
     url: "https://www.tdeglane.com/work/longchamp",
   },
   {
-    slug: "van-cleef-arpels",
+    slug: "van-cleef",
     title: "Van Cleef & Arpels",
     category: "Strategic Design · Brand Experience",
     question_en: "Tell me about the Van Cleef & Arpels project",
     question_fr: "Parle-moi du projet Van Cleef & Arpels",
-    url: "https://www.tdeglane.com/work/van-cleef-arpels",
+    url: "https://www.tdeglane.com/work/van-cleef",
   },
   {
     slug: "jaeger-lecoultre",
@@ -399,7 +399,7 @@ const PROJECT_DATA = {
       en: "A multi-tenant SaaS live in production. Plan Builder drag-and-drop canvas + context-aware AI assistant. Teams self-onboard without a coach.",
       fr: "Un SaaS multi-tenant en production. Plan Builder en drag-and-drop + assistant IA contextuel. Les équipes s'auto-onboardent sans coach.",
     },
-    url: "https://www.tdeglane.com/work/askniels-project",
+    url: "https://www.tdeglane.com/work/askniels",
   },
   "nike-fff": {
     title: "Nike x FFF",
@@ -420,7 +420,7 @@ const PROJECT_DATA = {
       en: "A ready-to-use B2B platform with custom outfit configuration tool. Post-COVID redesign fed entirely by customer insights.",
       fr: "Une plateforme B2B clé en main avec configurateur de tenues sur mesure. Refonte post-COVID entièrement nourrie par les retours clients.",
     },
-    url: "https://www.tdeglane.com/work/nikefff",
+    url: "https://www.tdeglane.com/work/nike-fff",
   },
   boucheron: {
     title: "Boucheron Vendorama",
@@ -441,7 +441,7 @@ const PROJECT_DATA = {
       en: "Three interconnected digital touchpoints in 2 months: AR app, interactive multi-touch table, three interactive books. Nothing could feel like a tech demo.",
       fr: "Trois points de contact numériques interconnectés en 2 mois : appli RA, table multitouch interactive, trois livres interactifs. Rien ne devait ressembler à une démo tech.",
     },
-    url: "https://www.tdeglane.com/work/boucheron-vendorama",
+    url: "https://www.tdeglane.com/work/boucheron",
   },
   "olympique-de-marseille": {
     title: "Olympique de Marseille",
@@ -483,7 +483,7 @@ const PROJECT_DATA = {
       en: "Co-design process with client teams from day one. Atomic design for pixel-perfect execution. 3 months, on time, on budget.",
       fr: "Co-design avec les équipes client dès le jour 1. Design atomique pour une exécution pixel-perfect. 3 mois, dans les temps et le budget.",
     },
-    url: "https://www.tdeglane.com/work/pierrehardy",
+    url: "https://www.tdeglane.com/work/pierre-hardy",
   },
   celio: {
     title: "Célio",
@@ -567,7 +567,7 @@ const PROJECT_DATA = {
       en: "Research-first engagement across 5 markets: benchmarking, mystery shopping, client and sales interviews. Four buyer profiles. Brand Experience Platform with 4 elements: experience contract, expected XP, projected XP and lived XP. Deployed across social media, website and in-store.",
       fr: "Approche research-first sur 5 marchés: benchmark, mystery shopping, interviews clients et équipes. Quatre profils d'acheteurs. Brand Experience Platform à 4 éléments: contrat d'expérience, XP attendue, projetée et vécue. Déployée sur les réseaux sociaux, le site et en boutique.",
     },
-    url: "https://www.tdeglane.com/work/van-cleef-arpels",
+    url: "https://www.tdeglane.com/work/van-cleef",
   },
   "jaeger-lecoultre": {
     title: "Jaeger-LeCoultre",
