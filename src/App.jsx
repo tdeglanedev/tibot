@@ -61,73 +61,73 @@ Solution: Multi-tenant SaaS live in production. Plan Builder (drag-and-drop canv
 Learnings: Full freedom created paralysis — templates became essential. Progressive activity discovery by phase replaced full catalogue view. Building the AI forced formalisation of tacit knowledge.
 Results: -54% time to delivery, 57 activities, 6 phases, 97 Lighthouse score.
 Stack: React/Vite/TypeScript, Supabase, Deno Edge Functions, Mistral + Claude, Cursor.
-URL: https://www.tdeglane.com/projects/askniels-project
+URL: https://www.tdeglane.com/work/askniels-project
 IMPORTANT: Never use AskNiels as a reference case when discussing methodology or problem-solving approaches. It's my own product — citing it as a use case conflates my role as creator with my role as practitioner. When illustrating how I think, use only client projects: Nike x FFF, Boucheron, Olympique de Marseille, Pierre Hardy, Célio, Micromania, Longchamp, Van Cleef & Arpels, Jaeger-LeCoultre, Louvre Hotels Group.
 
 ### Nike x FFF (2023) — UI/UX
 "Spreading football fever in France."
 First direct digital B2B platform between a sporting brand and amateur clubs. Custom outfit configuration tool. 4-year engagement. Post-COVID: design decisions fed by customer insights, not assumptions.
 Results: +40% direct orders, 3x faster kit config, 12,000+ clubs onboarded, 4.2/5 satisfaction.
-URL: https://www.tdeglane.com/projects/nikefff
+URL: https://www.tdeglane.com/work/nikefff
 
 ### Boucheron Vendorama (2023) — Strategic Design / Phygital
 "Digitizing the 160th anniversary of the luxury house."
 Three interconnected digital touchpoints for the Monnaie de Paris exhibition, in 2 months: AR smartphone app, interactive multi-touch table, three interactive books. Constraint: nothing could feel like a tech demo.
 Philosophy: Phygital done right is a decision about where human attention is most alive.
 Results: 16 days sold out, 10,000+ visitors, #1 luxury brand activation of the year.
-URL: https://www.tdeglane.com/projects/boucheron-vendorama
+URL: https://www.tdeglane.com/work/boucheron-vendorama
 
 ### Olympique de Marseille (2022–2023) — Strategic Design
 "A legendary club in full digital transformation."
 Brief: stop selling tickets, start building OM Nation — a 24/7 fan ecosystem. Redesigned website + mobile app (live predictions, polls, gamification, OM Prime loyalty). Full omnichannel: stadium, shop, partners.
 Key insight: The hardest shift in sports digital isn't technical — it's moving from episodic to continuous fan relationship.
 Results: 24/7 engagement, 3 touchpoints unified, +45% app engagement, +60% hospitality conversion.
-URL: https://www.tdeglane.com/projects/olympique-de-marseille
+URL: https://www.tdeglane.com/work/olympique-de-marseille
 
 ### Pierre Hardy (2018) — UI/UX
 "Creating an experience in the image of a great name."
 Mobile-first platform, brand content and commerce coexisting without compromise. Co-design process from day one. Atomic design for pixel-perfect execution. 3 months, on time, on budget.
 Results: +65% online revenue in 6 months, +38% returning customers, 2.4x session duration, -30% checkout drop-off.
-URL: https://www.tdeglane.com/projects/pierrehardy
+URL: https://www.tdeglane.com/work/pierrehardy
 
 ### Célio (2022) — UI/UX / Omnichannel
 "One brand, two touchpoints, zero friction."
 E-commerce at 5% of revenue vs. 15% target. Overhauled e-commerce platform + in-store seller tablet (real-time stock across 550 stores, customer history, omnichannel checkout on shop floor).
 Key insight: In a showrooming model, the salesperson is the conversion layer.
 Results: 550 stores unified, 85-90% reservation-to-store conversion, +3x click & collect, 15% target unlocked.
-URL: https://www.tdeglane.com/projects/celio
+URL: https://www.tdeglane.com/work/celio
 
 ### Micromania-Zing (2020) — UI/UX
 "When video games meet pop culture."
 Two brands, two audiences, one platform. 8 sprints over 7 months. Two thirds of visits were web-to-store — platform designed around the full decision journey, not cart conversion. 4,000+ catalogue references.
 Results: 140+ screens, 430 stores unified, 4,000+ references integrated.
-URL: https://www.tdeglane.com/projects/micromania
+URL: https://www.tdeglane.com/work/micromania
 
 ### Longchamp (2018) — UI/UX / Omnichannel
 "Making the Pliage the beginning of the story, not the end."
 The Pliage had become a glass ceiling — capturing all attention online and rendering the rest of the collection invisible. I redesigned the customisation funnel as a discovery mechanism. Introduced editorial navigation over category-based browsing — a decision that created internal friction but was validated by post-launch metrics. Architected a design system and digital brand book governing visual consistency across all markets.
 Results: Platform deployed across 24 countries, 7 languages, delivered in 4 months. First unified omnichannel experience for the Maison.
-URL: https://www.tdeglane.com/projects/longchamp
+URL: https://www.tdeglane.com/work/longchamp
 
 ### Van Cleef & Arpels (2019) — Strategic Design / Brand Experience · AVA Digital Awards — Platinum
 "Designing desire before the decision."
 The Maison's online and in-store experiences were speaking two completely different emotional languages to the same client. Not a communication problem. A coherence problem.
 Solution: Research-first engagement across 5 markets — sector benchmarking, mystery shopping, client and sales team interviews. Four buyer profiles identified. Development of a Brand Experience Platform with 4 elements: experience contract, expected XP, projected XP and lived XP. Deployed across social media, website and in-store. Invited to global seminars to spread the user-centricity mindset.
 Results: AVA Digital Awards — Platinum, Digital Marketing. 5 markets researched, 4 buyer profiles defined, BXP deployed globally.
-URL: https://www.tdeglane.com/projects/van-cleef-arpels
+URL: https://www.tdeglane.com/work/van-cleef-arpels
 
 ### Jaeger-LeCoultre (2018) — Strategic Design / Phygital · Best of Web Innovation Award
 "When the interface is the object."
 The challenge wasn't visibility. It was memorability. The brief pointed toward the Maison's deep astral heritage — the solution had to live there as structural logic, not decoration.
 Solution: Two interconnected experience layers. A VR telescope experience — chosen not because VR was interesting, but because it was the only interface carrying the right metaphorical weight for a Maison built on astronomical precision. The "On Your Wrist" AR device — first AR try-on in fine watchmaking.
 Results: Best of Web Innovation Award. First AR try-on in fine watchmaking.
-URL: https://www.tdeglane.com/projects/jaeger-lecoultre
+URL: https://www.tdeglane.com/work/jaeger-lecoultre
 
 ### Louvre Hotels Group (2023) — Strategic Design / UX Research
 "Great digital journeys make amazing voyages."
 Five hotel brands, five audiences, and a reservation system that couldn't compete with OTAs on the only metric guests use: number of clicks to confirm a room. Research-first approach across 5 key countries. Full ecosystem audit. Conversion strategy built against booking.com benchmark. 60 designs (120 with mobile) structured for multi-brand rollout.
 Results: 5 brands unified, booking flow matching booking.com on click count, 120 screens delivered.
-URL: https://www.tdeglane.com/projects/louvre-hotels-group
+URL: https://www.tdeglane.com/work/louvre-hotels-group
 
 ---
 
@@ -303,7 +303,7 @@ const PANEL_PROJECTS = [
     category: "AI · UX · UI · React",
     question_en: "Tell me about the AskNiels project",
     question_fr: "Parle-moi du projet AskNiels",
-    url: "https://www.tdeglane.com/projects/askniels-project",
+    url: "https://www.tdeglane.com/work/askniels-project",
   },
   {
     slug: "nike-fff",
@@ -311,7 +311,7 @@ const PANEL_PROJECTS = [
     category: "UI/UX",
     question_en: "Tell me about the Nike x FFF project",
     question_fr: "Parle-moi du projet Nike x FFF",
-    url: "https://www.tdeglane.com/projects/nikefff",
+    url: "https://www.tdeglane.com/work/nikefff",
   },
   {
     slug: "boucheron",
@@ -319,7 +319,7 @@ const PANEL_PROJECTS = [
     category: "Strategic Design · Phygital",
     question_en: "Tell me about the Boucheron Vendorama project",
     question_fr: "Parle-moi du projet Boucheron Vendorama",
-    url: "https://www.tdeglane.com/projects/boucheron-vendorama",
+    url: "https://www.tdeglane.com/work/boucheron-vendorama",
   },
   {
     slug: "olympique-de-marseille",
@@ -327,7 +327,7 @@ const PANEL_PROJECTS = [
     category: "Strategic Design",
     question_en: "Tell me about the Olympique de Marseille project",
     question_fr: "Parle-moi du projet Olympique de Marseille",
-    url: "https://www.tdeglane.com/projects/olympique-de-marseille",
+    url: "https://www.tdeglane.com/work/olympique-de-marseille",
   },
   {
     slug: "pierre-hardy",
@@ -335,7 +335,7 @@ const PANEL_PROJECTS = [
     category: "UI/UX",
     question_en: "Tell me about the Pierre Hardy project",
     question_fr: "Parle-moi du projet Pierre Hardy",
-    url: "https://www.tdeglane.com/projects/pierrehardy",
+    url: "https://www.tdeglane.com/work/pierrehardy",
   },
   {
     slug: "celio",
@@ -343,7 +343,7 @@ const PANEL_PROJECTS = [
     category: "UI/UX · Omnichannel",
     question_en: "Tell me about the Célio project",
     question_fr: "Parle-moi du projet Célio",
-    url: "https://www.tdeglane.com/projects/celio",
+    url: "https://www.tdeglane.com/work/celio",
   },
   {
     slug: "micromania",
@@ -351,7 +351,7 @@ const PANEL_PROJECTS = [
     category: "UI/UX",
     question_en: "Tell me about the Micromania project",
     question_fr: "Parle-moi du projet Micromania",
-    url: "https://www.tdeglane.com/projects/micromania",
+    url: "https://www.tdeglane.com/work/micromania",
   },
   {
     slug: "longchamp",
@@ -359,7 +359,7 @@ const PANEL_PROJECTS = [
     category: "UI/UX · Omnichannel",
     question_en: "Tell me about the Longchamp project",
     question_fr: "Parle-moi du projet Longchamp",
-    url: "https://www.tdeglane.com/projects/longchamp",
+    url: "https://www.tdeglane.com/work/longchamp",
   },
   {
     slug: "van-cleef-arpels",
@@ -367,7 +367,7 @@ const PANEL_PROJECTS = [
     category: "Strategic Design · Brand Experience",
     question_en: "Tell me about the Van Cleef & Arpels project",
     question_fr: "Parle-moi du projet Van Cleef & Arpels",
-    url: "https://www.tdeglane.com/projects/van-cleef-arpels",
+    url: "https://www.tdeglane.com/work/van-cleef-arpels",
   },
   {
     slug: "jaeger-lecoultre",
@@ -375,7 +375,7 @@ const PANEL_PROJECTS = [
     category: "Strategic Design · Phygital",
     question_en: "Tell me about the Jaeger-LeCoultre project",
     question_fr: "Parle-moi du projet Jaeger-LeCoultre",
-    url: "https://www.tdeglane.com/projects/jaeger-lecoultre  ",
+    url: "https://www.tdeglane.com/work/jaeger-lecoultre  ",
   },
 ];
 
@@ -399,7 +399,7 @@ const PROJECT_DATA = {
       en: "A multi-tenant SaaS live in production. Plan Builder drag-and-drop canvas + context-aware AI assistant. Teams self-onboard without a coach.",
       fr: "Un SaaS multi-tenant en production. Plan Builder en drag-and-drop + assistant IA contextuel. Les équipes s'auto-onboardent sans coach.",
     },
-    url: "https://www.tdeglane.com/projects/askniels-project",
+    url: "https://www.tdeglane.com/work/askniels-project",
   },
   "nike-fff": {
     title: "Nike x FFF",
@@ -420,7 +420,7 @@ const PROJECT_DATA = {
       en: "A ready-to-use B2B platform with custom outfit configuration tool. Post-COVID redesign fed entirely by customer insights.",
       fr: "Une plateforme B2B clé en main avec configurateur de tenues sur mesure. Refonte post-COVID entièrement nourrie par les retours clients.",
     },
-    url: "https://www.tdeglane.com/projects/nikefff",
+    url: "https://www.tdeglane.com/work/nikefff",
   },
   boucheron: {
     title: "Boucheron Vendorama",
@@ -441,7 +441,7 @@ const PROJECT_DATA = {
       en: "Three interconnected digital touchpoints in 2 months: AR app, interactive multi-touch table, three interactive books. Nothing could feel like a tech demo.",
       fr: "Trois points de contact numériques interconnectés en 2 mois : appli RA, table multitouch interactive, trois livres interactifs. Rien ne devait ressembler à une démo tech.",
     },
-    url: "https://www.tdeglane.com/projects/boucheron-vendorama",
+    url: "https://www.tdeglane.com/work/boucheron-vendorama",
   },
   "olympique-de-marseille": {
     title: "Olympique de Marseille",
@@ -462,7 +462,7 @@ const PROJECT_DATA = {
       en: "Redesigned website + mobile app with live predictions, polls, gamification, OM Prime loyalty. Full omnichannel unification.",
       fr: "Site refondu + appli mobile avec pronostics live, sondages, gamification, fidélité OM Prime. Omnicanal pleinement unifié.",
     },
-    url: "https://www.tdeglane.com/projects/olympique-de-marseille",
+    url: "https://www.tdeglane.com/work/olympique-de-marseille",
   },
   "pierre-hardy": {
     title: "Pierre Hardy",
@@ -483,7 +483,7 @@ const PROJECT_DATA = {
       en: "Co-design process with client teams from day one. Atomic design for pixel-perfect execution. 3 months, on time, on budget.",
       fr: "Co-design avec les équipes client dès le jour 1. Design atomique pour une exécution pixel-perfect. 3 mois, dans les temps et le budget.",
     },
-    url: "https://www.tdeglane.com/projects/pierrehardy",
+    url: "https://www.tdeglane.com/work/pierrehardy",
   },
   celio: {
     title: "Célio",
@@ -504,7 +504,7 @@ const PROJECT_DATA = {
       en: "Overhauled e-commerce platform + in-store seller tablet with real-time stock, customer history, omnichannel checkout on the shop floor.",
       fr: "Refonte de la plateforme e-commerce + tablette vendeur en magasin avec stock temps réel, historique client, checkout omnicanal en boutique.",
     },
-    url: "https://www.tdeglane.com/projects/celio",
+    url: "https://www.tdeglane.com/work/celio",
   },
   micromania: {
     title: "Micromania-Zing",
@@ -525,7 +525,7 @@ const PROJECT_DATA = {
       en: "8 design sprints over 7 months. Platform designed around the full decision journey. Navigation handling 4,000+ references.",
       fr: "8 sprints design sur 7 mois. Plateforme pensée autour du parcours de décision complet. Navigation gérant 4 000+ références.",
     },
-    url: "https://www.tdeglane.com/projects/micromania",
+    url: "https://www.tdeglane.com/work/micromania",
   },
   longchamp: {
     title: "Longchamp",
@@ -546,7 +546,7 @@ const PROJECT_DATA = {
       en: "Redesigned the customisation funnel as a discovery mechanism. Introduced editorial navigation over category-based browsing. Architected a design system and digital brand book governing visual consistency across all markets.",
       fr: "Tunnel de customisation repensé comme mécanisme de découverte. Navigation éditoriale plutôt que par catégories. Design system et digital brand book gouvernant la cohérence visuelle sur tous les marchés.",
     },
-    url: "https://www.tdeglane.com/projects/longchamp",
+    url: "https://www.tdeglane.com/work/longchamp",
   },
   "van-cleef": {
     title: "Van Cleef & Arpels",
@@ -567,7 +567,7 @@ const PROJECT_DATA = {
       en: "Research-first engagement across 5 markets: benchmarking, mystery shopping, client and sales interviews. Four buyer profiles. Brand Experience Platform with 4 elements: experience contract, expected XP, projected XP and lived XP. Deployed across social media, website and in-store.",
       fr: "Approche research-first sur 5 marchés: benchmark, mystery shopping, interviews clients et équipes. Quatre profils d'acheteurs. Brand Experience Platform à 4 éléments: contrat d'expérience, XP attendue, projetée et vécue. Déployée sur les réseaux sociaux, le site et en boutique.",
     },
-    url: "https://www.tdeglane.com/projects/van-cleef-arpels",
+    url: "https://www.tdeglane.com/work/van-cleef-arpels",
   },
   "jaeger-lecoultre": {
     title: "Jaeger-LeCoultre",
@@ -588,7 +588,7 @@ const PROJECT_DATA = {
       en: "A VR telescope experience for immersive collection discovery. The 'On Your Wrist' AR device, first AR try-on in fine watchmaking. Both designed around one principle: the technology belongs to the Maison's world, or it doesn't exist.",
       fr: "Une expérience VR via télescope pour la découverte immersive de la collection. Le dispositif AR 'On Your Wrist', premier essayage AR en haute horlogerie. Les deux conçus autour d'un principe: la technologie appartient au monde de la Maison, ou elle n'existe pas.",
     },
-    url: "https://www.tdeglane.com/projects/jaeger-lecoultre",
+    url: "https://www.tdeglane.com/work/jaeger-lecoultre",
   },
 };
 
