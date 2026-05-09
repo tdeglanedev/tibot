@@ -385,14 +385,6 @@ const PANEL_PROJECTS = [
     url: "https://www.tdeglane.com/work/jaeger-lecoultre",
   },
   {
-    slug: "louvre-hotels",
-    title: "Louvre Hotels Group",
-    category: "Strategic Design · UX Research",
-    question_en: "Tell me about the Louvre Hotels Group project",
-    question_fr: "Parle-moi du projet Louvre Hotels Group",
-    url: "https://www.tdeglane.com/work/louvre-hotels",
-  },
-  {
     slug: "bank-of-ireland",
     title: "Bank of Ireland",
     category: "Design System · Governance · UX",
@@ -612,27 +604,6 @@ const PROJECT_DATA = {
       fr: "Une expérience VR via télescope pour la découverte immersive de la collection. Le dispositif AR 'On Your Wrist', premier essayage AR en haute horlogerie. Les deux conçus autour d'un principe: la technologie appartient au monde de la Maison, ou elle n'existe pas.",
     },
     url: "https://www.tdeglane.com/work/jaeger-lecoultre",
-  },
-  "louvre-hotels": {
-    title: "Louvre Hotels Group",
-    tagline: {
-      en: "Great digital journeys make amazing voyages",
-      fr: "Les grands parcours digitaux font les beaux voyages",
-    },
-    category: "Strategic Design · UX Research",
-    metrics: {
-      en: ["5 brands unified", "Booking flow matching booking.com on click count", "120 screens delivered"],
-      fr: ["5 marques unifiées", "Parcours de réservation au niveau booking.com", "120 écrans livrés"],
-    },
-    problem: {
-      en: "Five hotel brands, five audiences, and a reservation system that couldn't compete with OTAs on the only metric guests use: number of clicks to confirm a room.",
-      fr: "Cinq marques hôtelières, cinq audiences, et un système de réservation incapable de concurrencer les OTAs sur le seul indicateur qui compte pour les voyageurs : le nombre de clics pour confirmer une chambre.",
-    },
-    solution: {
-      en: "Research-first approach across 5 key countries. Full ecosystem audit. Conversion strategy built against booking.com benchmark. 60 designs (120 with mobile) structured for multi-brand rollout.",
-      fr: "Approche research-first dans 5 pays clés. Audit complet de l'écosystème. Stratégie de conversion bâtie contre le benchmark booking.com. 60 designs (120 avec mobile) structurés pour un déploiement multi-marques.",
-    },
-    url: "https://www.tdeglane.com/work/louvre-hotels",
   },
   "bank-of-ireland": {
     title: "Bank of Ireland",
