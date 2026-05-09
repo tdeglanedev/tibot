@@ -129,6 +129,13 @@ Five hotel brands, five audiences, and a reservation system that couldn't compet
 Results: 5 brands unified, booking flow matching booking.com on click count, 120 screens delivered.
 URL: https://www.tdeglane.com/work/louvre-hotels
 
+### Bank of Ireland (2022–2023) — Design System · Governance · UX
+"One group. Three branches. Zero shared language."
+Problem: Three banking branches with fragmented digital journeys, a legacy design system and no transversal governance.
+Solution: Three simultaneous workstreams — UX/UI craft, token architecture and a monthly Design Council — delivered in parallel over 6 months.
+Results: 3 branches aligned on one brand language, 6-month delivery across 3 platforms in parallel, monthly Design Council installed as a permanent structure, first conversational AI patterns integrated into the system.
+URL: https://www.tdeglane.com/work/bank-of-ireland
+
 ---
 
 ## NAVIGATION LINKS (use in actions)
@@ -208,7 +215,7 @@ Action types available:
 { "type": "project_card", "slug": "askniels" }
 
 For project_card, output ONLY the slug field — title, tagline, category, metrics, problem, solution, and url are filled in by the client. Valid slugs only:
-askniels, nike-fff, boucheron, olympique-de-marseille, pierre-hardy, celio, micromania, longchamp, van-cleef, jaeger-lecoultre, louvre-hotels
+askniels, nike-fff, boucheron, olympique-de-marseille, pierre-hardy, celio, micromania, longchamp, van-cleef, jaeger-lecoultre, louvre-hotels, bank-of-ireland
 
 WHEN TO ADD ACTIONS — use good judgment:
 - After discussing a specific project → add a link to that project
@@ -375,7 +382,23 @@ const PANEL_PROJECTS = [
     category: "Strategic Design · Phygital",
     question_en: "Tell me about the Jaeger-LeCoultre project",
     question_fr: "Parle-moi du projet Jaeger-LeCoultre",
-    url: "https://www.tdeglane.com/work/jaeger-lecoultre  ",
+    url: "https://www.tdeglane.com/work/jaeger-lecoultre",
+  },
+  {
+    slug: "louvre-hotels",
+    title: "Louvre Hotels Group",
+    category: "Strategic Design · UX Research",
+    question_en: "Tell me about the Louvre Hotels Group project",
+    question_fr: "Parle-moi du projet Louvre Hotels Group",
+    url: "https://www.tdeglane.com/work/louvre-hotels",
+  },
+  {
+    slug: "bank-of-ireland",
+    title: "Bank of Ireland",
+    category: "Design System · Governance · UX",
+    question_en: "Tell me about the Bank of Ireland project",
+    question_fr: "Parle-moi du projet Bank of Ireland",
+    url: "https://www.tdeglane.com/work/bank-of-ireland",
   },
 ];
 
@@ -589,6 +612,48 @@ const PROJECT_DATA = {
       fr: "Une expérience VR via télescope pour la découverte immersive de la collection. Le dispositif AR 'On Your Wrist', premier essayage AR en haute horlogerie. Les deux conçus autour d'un principe: la technologie appartient au monde de la Maison, ou elle n'existe pas.",
     },
     url: "https://www.tdeglane.com/work/jaeger-lecoultre",
+  },
+  "louvre-hotels": {
+    title: "Louvre Hotels Group",
+    tagline: {
+      en: "Great digital journeys make amazing voyages",
+      fr: "Les grands parcours digitaux font les beaux voyages",
+    },
+    category: "Strategic Design · UX Research",
+    metrics: {
+      en: ["5 brands unified", "Booking flow matching booking.com on click count", "120 screens delivered"],
+      fr: ["5 marques unifiées", "Parcours de réservation au niveau booking.com", "120 écrans livrés"],
+    },
+    problem: {
+      en: "Five hotel brands, five audiences, and a reservation system that couldn't compete with OTAs on the only metric guests use: number of clicks to confirm a room.",
+      fr: "Cinq marques hôtelières, cinq audiences, et un système de réservation incapable de concurrencer les OTAs sur le seul indicateur qui compte pour les voyageurs : le nombre de clics pour confirmer une chambre.",
+    },
+    solution: {
+      en: "Research-first approach across 5 key countries. Full ecosystem audit. Conversion strategy built against booking.com benchmark. 60 designs (120 with mobile) structured for multi-brand rollout.",
+      fr: "Approche research-first dans 5 pays clés. Audit complet de l'écosystème. Stratégie de conversion bâtie contre le benchmark booking.com. 60 designs (120 avec mobile) structurés pour un déploiement multi-marques.",
+    },
+    url: "https://www.tdeglane.com/work/louvre-hotels",
+  },
+  "bank-of-ireland": {
+    title: "Bank of Ireland",
+    tagline: {
+      en: "One group. Three branches. Zero shared language.",
+      fr: "Un groupe. Trois branches. Zéro langage commun.",
+    },
+    category: "Design System · Governance · UX",
+    metrics: {
+      en: ["3 branches aligned on one brand language", "6-month delivery across 3 platforms in parallel", "Monthly Design Council installed as a permanent structure", "First conversational AI patterns integrated into the system"],
+      fr: ["3 branches alignées sur un seul langage de marque", "6 mois de delivery sur 3 plateformes en parallèle", "Design Council mensuel installé comme structure permanente", "Premiers patterns IA conversationnels intégrés au système"],
+    },
+    problem: {
+      en: "Three banking branches with fragmented digital journeys, a legacy design system and no transversal governance.",
+      fr: "Trois branches bancaires avec des parcours digitaux fragmentés, un design system legacy et aucune gouvernance transverse.",
+    },
+    solution: {
+      en: "Three simultaneous workstreams — UX/UI craft, token architecture and a monthly Design Council — delivered in parallel over 6 months.",
+      fr: "Trois flux simultanés — craft UX/UI, token architecture et Design Council mensuel — livrés en parallèle en 6 mois.",
+    },
+    url: "https://www.tdeglane.com/work/bank-of-ireland",
   },
 };
 
