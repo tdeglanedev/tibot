@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { jsPDF } from "jspdf";
 
+const isEmbedded = new URLSearchParams(window.location.search).get('embedded') === 'true';
+
 const BRAND_LOGO_SRC = "/Logo%20Thibault.png";
 const BRAND_DISPLAY_NAME = ".Thibault Deglane";
 
@@ -701,7 +703,13 @@ function ProjectCard({ action, lang }) {
 
         <button
           className="project-card-cta"
-          onClick={() => window.open(url, "_blank", "noopener")}
+          onClick={() => {
+            if (isEmbedded) {
+              window.parent.postMessage({ type: 'navigate', path: `/work/${action.slug}` }, '*');
+            } else {
+              window.open(url, "_blank", "noopener");
+            }
+          }}
         >
           {labels.view}
         </button>
@@ -1521,7 +1529,16 @@ export default function TiBot() {
 
   const handleAction = (action) => {
     if (action.type === "link") {
-      window.open(action.url, "_blank", "noopener");
+      if (isEmbedded) {
+        const slug = action.url.split('/work/')[1];
+        if (slug) {
+          window.parent.postMessage({ type: 'navigate', path: `/work/${slug}` }, '*');
+        } else {
+          window.open(action.url, "_blank", "noopener");
+        }
+      } else {
+        window.open(action.url, "_blank", "noopener");
+      }
     } else if (action.type === "contact") {
       setContactOpen(true);
     }
