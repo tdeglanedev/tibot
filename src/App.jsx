@@ -1386,6 +1386,7 @@ export default function TiBot() {
   const [activeCaseSlug, setActiveCaseSlug] = useState(null);
   const workshopSynthesisRef = useRef("");
   const pendingContextRef = useRef(null);
+  const hasUserSwitchedLang = useRef(false);
   const animatedIds = useRef(new Set());
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
@@ -1467,7 +1468,17 @@ export default function TiBot() {
       if (!allowedOrigins.includes(event.origin)) return;
       if (event.data?.type !== 'context') return;
 
-      const { page, slug } = event.data;
+      const { page, slug, lang: incomingLang } = event.data;
+
+      // Nouvelle ouverture du panel → reset du choix manuel de langue
+      hasUserSwitchedLang.current = false;
+
+      // Applique la langue du portfolio si l'utilisateur n'a pas encore changé manuellement
+      if (incomingLang === 'fr' || incomingLang === 'en') {
+        if (!hasUserSwitchedLang.current) {
+          setLang(incomingLang);
+        }
+      }
 
       const contextMap = {
         'home': "The visitor just opened TiBot from the homepage.",
@@ -1529,6 +1540,7 @@ export default function TiBot() {
 
   const switchLang = (newLang) => {
     if (newLang === lang) return;
+    hasUserSwitchedLang.current = true;
     setContactOpen(false);
     setLang(newLang);
     setInput("");
