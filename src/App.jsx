@@ -1284,12 +1284,24 @@ export default function TiBot() {
         setSessions({
           en: [{
             role: "assistant",
-            parsed: `I can see you're looking at the ${caseName} case. Want me to walk you through it — the approach, the decisions, what actually happened?`,
+            parsed: {
+              message: `I can see you're looking at the ${caseName} case.\nWant me to walk you through it — the approach, the key decisions, what actually happened?`,
+              actions: [
+                { type: "send", label: "Tell me about this project", text: `Tell me about the ${caseName} project` },
+                { type: "send", label: "What were the key decisions?", text: `What were the key decisions on the ${caseName} project?` },
+              ],
+            },
             id: 0,
           }],
           fr: [{
             role: "assistant",
-            parsed: `Je vois que tu regardes le case ${caseName}. Tu veux que je t'en parle — l'approche, les décisions, ce qui s'est vraiment passé ?`,
+            parsed: {
+              message: `Je vois que tu consultes le case ${caseName}.\nTu veux que je t'en parle — l'approche, les décisions clés, ce qui s'est vraiment passé ?`,
+              actions: [
+                { type: "send", label: "Raconte-moi ce projet", text: `Parle-moi du projet ${caseName}` },
+                { type: "send", label: "Quelles décisions clés ?", text: `Quelles ont été les décisions clés sur le projet ${caseName} ?` },
+              ],
+            },
             id: 1,
           }],
         });
@@ -1352,6 +1364,7 @@ export default function TiBot() {
 
       if (contextMessage) {
         injectSilentContext(contextMessage);
+        event.source?.postMessage({ type: 'context_received' }, event.origin);
       }
     };
 
@@ -1638,6 +1651,8 @@ export default function TiBot() {
       handleLink(action.url);
     } else if (action.type === "contact") {
       setContactOpen(true);
+    } else if (action.type === "send") {
+      sendMessage(action.text);
     }
   };
 
