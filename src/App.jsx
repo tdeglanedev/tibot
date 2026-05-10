@@ -1250,6 +1250,7 @@ export default function TiBot() {
   const [workshopState, setWorkshopState] = useState("idle");
   const [workshopAnswers, setWorkshopAnswers] = useState({});
   const [contactPrefill, setContactPrefill] = useState("");
+  const [externalContext, setExternalContext] = useState(null);
   const workshopSynthesisRef = useRef("");
   const animatedIds = useRef(new Set());
   const messagesEndRef = useRef(null);
@@ -1262,6 +1263,52 @@ export default function TiBot() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading, lang]);
+
+  useEffect(() => {
+    const handler = (event) => {
+      if (
+        event.origin !== 'https://tdeglane.com' &&
+        event.origin !== 'https://www.tdeglane.com' &&
+        event.origin !== 'https://tdeglane-portfolio.vercel.app'
+      ) return;
+
+      if (event.data?.type === 'context') {
+        const { page, slug } = event.data;
+        const caseNames = {
+          'bank-of-ireland': 'Bank of Ireland',
+          'nike-fff': 'Nike × FFF',
+          'longchamp': 'Longchamp',
+          'askniels': 'AskNiels',
+          'boucheron': 'Boucheron',
+          'olympique-de-marseille': 'Olympique de Marseille',
+          'van-cleef': 'Van Cleef & Arpels',
+          'pierre-hardy': 'Pierre Hardy',
+          'celio': 'Célio',
+          'micromania': 'Micromania',
+          'jaeger-lecoultre': 'Jaeger-LeCoultre',
+        };
+
+        let contextMessage = null;
+        if (page === 'case' && slug) {
+          const caseName = caseNames[slug] || slug;
+          contextMessage = `context:case:${slug}:${caseName}`;
+        } else if (page === 'about') {
+          contextMessage = 'context:about';
+        } else if (page === 'how-i-work') {
+          contextMessage = 'context:how-i-work';
+        } else if (page === 'work') {
+          contextMessage = 'context:work';
+        }
+
+        if (contextMessage) {
+          setExternalContext(contextMessage);
+        }
+      }
+    };
+
+    window.addEventListener('message', handler);
+    return () => window.removeEventListener('message', handler);
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return undefined;
@@ -1410,7 +1457,9 @@ export default function TiBot() {
         body: JSON.stringify({
           model: "claude-sonnet-4-20250514",
           max_tokens: 1000,
-          system: SYSTEM_PROMPT,
+          system: externalContext
+            ? `${SYSTEM_PROMPT}\n\n---\nCURRENT PAGE CONTEXT: ${externalContext}`
+            : SYSTEM_PROMPT,
           messages: apiMessages,
         }),
       });
