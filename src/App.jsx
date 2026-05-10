@@ -319,6 +319,141 @@ const CONTENT = {
   },
 };
 
+const CASE_SUGGESTIONS = {
+  'bank-of-ireland': {
+    fr: [
+      "Comment as-tu aligné 3 branches sans autorité hiérarchique ?",
+      "Qu'est-ce qu'un Design Council concrètement ?",
+      "Comment tu as traduit la cohérence en langage business ?",
+    ],
+    en: [
+      "How did you align 3 branches without hierarchical authority?",
+      "What does a Design Council actually look like in practice?",
+      "How did you translate design coherence into business language?",
+    ],
+  },
+  'nike-fff': {
+    fr: [
+      "Pourquoi as-tu refusé le brief initial ?",
+      "Comment tu as convaincu Nike de pivoter ?",
+      "Qu'est-ce qui a rendu l'onboarding de 12 000 clubs possible ?",
+    ],
+    en: [
+      "Why did you refuse the initial brief?",
+      "How did you convince Nike to pivot the approach?",
+      "What made onboarding 12,000 clubs actually work?",
+    ],
+  },
+  'longchamp': {
+    fr: [
+      "Comment structurer un DS en 13 semaines solo ?",
+      "C'est quoi une architecture de tokens en 2 niveaux ?",
+      "Comment tu as géré le RTL et les 7 langues ?",
+    ],
+    en: [
+      "How do you structure a DS in 13 weeks as a solo designer?",
+      "What is a 2-level token architecture in practice?",
+      "How did you handle RTL and 7 languages simultaneously?",
+    ],
+  },
+  'askniels': {
+    fr: [
+      "Comment tu as transformé une méthodologie en produit IA ?",
+      "C'est quoi des guardrails doctrinaux concrètement ?",
+      "Quelle est la différence entre RAG et un simple chatbot ?",
+    ],
+    en: [
+      "How did you turn a methodology into an AI product?",
+      "What are doctrinal guardrails in practice?",
+      "What's the real difference between RAG and a simple chatbot?",
+    ],
+  },
+  'boucheron': {
+    fr: [
+      "Comment tu as conçu l'expérience AR ?",
+      "Qu'est-ce qui a rendu l'exposition phygitale cohérente ?",
+      "Comment mesurer l'impact d'une activation physique ?",
+    ],
+    en: [
+      "How did you design the AR experience?",
+      "What made the phygital exhibition feel coherent?",
+      "How do you measure the impact of a physical activation?",
+    ],
+  },
+  'van-cleef': {
+    fr: [
+      "C'est quoi un framework BXP exactement ?",
+      "Comment tu as identifié les 4 profils acheteurs ?",
+      "Comment aligner 5 marchés sur une même vision ?",
+    ],
+    en: [
+      "What exactly is a BXP framework?",
+      "How did you identify the 4 buyer profiles?",
+      "How do you align 5 markets on a single vision?",
+    ],
+  },
+  'pierre-hardy': {
+    fr: [
+      "Comment concilier brand et e-commerce en luxe ?",
+      "Qu'est-ce que le mobile-first signifie en luxe ?",
+      "Comment le DS a soutenu les +65% de revenus ?",
+    ],
+    en: [
+      "How do you balance brand and commerce in luxury?",
+      "What does mobile-first actually mean in luxury?",
+      "How did the DS contribute to the +65% revenue uplift?",
+    ],
+  },
+  'celio': {
+    fr: [
+      "Comment unifier 550 magasins digitalement ?",
+      "C'est quoi une vraie expérience omnicanale ?",
+      "Comment tu as géré 40 pays avec un seul système ?",
+    ],
+    en: [
+      "How do you unify 550 stores digitally?",
+      "What does a real omnichannel experience look like?",
+      "How did you manage 40 countries with one system?",
+    ],
+  },
+  'micromania': {
+    fr: [
+      "Comment designer pour une communauté gaming ?",
+      "Qu'est-ce qui différencie retail passion et retail classique ?",
+      "Comment connecter online et in-store pour 430 magasins ?",
+    ],
+    en: [
+      "How do you design for a gaming community?",
+      "What separates passion retail from generic retail?",
+      "How do you connect online and in-store for 430 locations?",
+    ],
+  },
+  'olympique-de-marseille': {
+    fr: [
+      "C'est quoi un ecosystem fan concrètement ?",
+      "Comment designer autour du calendrier émotionnel d'un fan ?",
+      "Qu'est-ce que la stratégie a produit comme livrables ?",
+    ],
+    en: [
+      "What does a fan ecosystem actually look like?",
+      "How do you design around a fan's emotional calendar?",
+      "What did the strategy actually produce as deliverables?",
+    ],
+  },
+  'jaeger-lecoultre': {
+    fr: [
+      "Comment la VR révèle ce que l'objet physique ne montre pas ?",
+      "Comment designer pour un salon horloger ?",
+      "Qu'est-ce qui a valu le Best of Web Innovation Award ?",
+    ],
+    en: [
+      "How does VR reveal what the physical object can't show?",
+      "How do you design for a watch fair context?",
+      "What earned the Best of Web Innovation Award?",
+    ],
+  },
+};
+
 const PANEL_PROJECTS = [
   {
     slug: "askniels",
@@ -1248,6 +1383,7 @@ export default function TiBot() {
   const [workshopAnswers, setWorkshopAnswers] = useState({});
   const [contactPrefill, setContactPrefill] = useState("");
   const [externalContext, setExternalContext] = useState(null);
+  const [activeCaseSlug, setActiveCaseSlug] = useState(null);
   const workshopSynthesisRef = useRef("");
   const pendingContextRef = useRef(null);
   const animatedIds = useRef(new Set());
@@ -1345,6 +1481,7 @@ export default function TiBot() {
 
       if (page === 'case' && slug) {
         pendingContextRef.current = { slug };
+        setActiveCaseSlug(slug);
         const caseNames = {
           'bank-of-ireland': 'Bank of Ireland — design system and governance across 3 banking branches',
           'nike-fff': 'Nike × FFF — B2B platform for amateur football clubs',
@@ -2142,25 +2279,37 @@ export default function TiBot() {
                       {/* Suggestions (premier message uniquement) */}
                       {i === 0 && showSuggestions[lang] && (
                         <div className="suggestions">
-                          {c.suggestions.map((q, j) => {
-                            const isWorkshopSuggestion = j === c.suggestions.length - 1;
-                            return (
-                              <button
-                                key={j}
-                                className={isWorkshopSuggestion ? "suggestion-workshop" : "suggestion"}
-                                onClick={() => {
-                                  if (isWorkshopSuggestion) {
-                                    setWorkshopState("triggered");
-                                    setShowSuggestions((prev) => ({ ...prev, [lang]: false }));
-                                  } else {
-                                    sendMessage(q);
-                                  }
-                                }}
-                              >
-                                {q}
-                              </button>
-                            );
-                          })}
+                          {(() => {
+                            const caseSuggs = activeCaseSlug && CASE_SUGGESTIONS[activeCaseSlug]
+                              ? CASE_SUGGESTIONS[activeCaseSlug][lang]
+                              : null;
+                            const workshopLabel = lang === "fr"
+                              ? "J'ai une vraie problématique à explorer"
+                              : "I have a real challenge to explore";
+                            const items = caseSuggs
+                              ? [...caseSuggs, workshopLabel]
+                              : c.suggestions;
+
+                            return items.map((q, j) => {
+                              const isWorkshopSuggestion = j === items.length - 1;
+                              return (
+                                <button
+                                  key={j}
+                                  className={isWorkshopSuggestion ? "suggestion-workshop" : "suggestion"}
+                                  onClick={() => {
+                                    if (isWorkshopSuggestion) {
+                                      setWorkshopState("triggered");
+                                      setShowSuggestions((prev) => ({ ...prev, [lang]: false }));
+                                    } else {
+                                      sendMessage(q);
+                                    }
+                                  }}
+                                >
+                                  {q}
+                                </button>
+                              );
+                            });
+                          })()}
                         </div>
                       )}
 
