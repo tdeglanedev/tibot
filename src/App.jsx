@@ -3,6 +3,20 @@ import { jsPDF } from "jspdf";
 
 const isEmbedded = new URLSearchParams(window.location.search).get('embedded') === 'true';
 
+function handleLink(url) {
+  if (isEmbedded) {
+    try {
+      const path = new URL(url).pathname;
+      const internalPaths = ['/work', '/about', '/notes', '/how-i-work'];
+      if (internalPaths.some(p => path.startsWith(p))) {
+        window.parent.postMessage({ type: 'navigate', path }, '*');
+        return;
+      }
+    } catch {}
+  }
+  window.open(url, '_blank');
+}
+
 const BRAND_LOGO_SRC = "/Logo%20Thibault.png";
 const BRAND_DISPLAY_NAME = ".Thibault Deglane";
 
@@ -703,13 +717,7 @@ function ProjectCard({ action, lang }) {
 
         <button
           className="project-card-cta"
-          onClick={() => {
-            if (isEmbedded) {
-              window.parent.postMessage({ type: 'navigate', path: `/work/${action.slug}` }, '*');
-            } else {
-              window.open(url, "_blank", "noopener");
-            }
-          }}
+          onClick={() => handleLink(url)}
         >
           {labels.view}
         </button>
@@ -1529,16 +1537,7 @@ export default function TiBot() {
 
   const handleAction = (action) => {
     if (action.type === "link") {
-      if (isEmbedded) {
-        const slug = action.url.split('/work/')[1];
-        if (slug) {
-          window.parent.postMessage({ type: 'navigate', path: `/work/${slug}` }, '*');
-        } else {
-          window.open(action.url, "_blank", "noopener");
-        }
-      } else {
-        window.open(action.url, "_blank", "noopener");
-      }
+      handleLink(action.url);
     } else if (action.type === "contact") {
       setContactOpen(true);
     }
@@ -2189,7 +2188,7 @@ export default function TiBot() {
                 <div className="side-panel-title">Thibault Deglane</div>
                 <div className="side-panel-subtitle">Senior Strategic Designer · Paris</div>
                 <div className="side-panel-top-actions">
-                  <button className="side-panel-mini-btn" onClick={() => window.open("https://www.tdeglane.com/about", "_blank", "noopener")}>
+                  <button className="side-panel-mini-btn" onClick={() => handleLink("https://www.tdeglane.com/about")}>
                     About
                   </button>
                   <div className="side-panel-cv-links">
@@ -2216,7 +2215,7 @@ export default function TiBot() {
               <div className="side-panel-footer">
                 <button
                   className="side-panel-portfolio-btn"
-                  onClick={() => window.open("https://www.tdeglane.com", "_blank", "noopener")}
+                  onClick={() => handleLink("https://www.tdeglane.com")}
                 >
                   → Voir le portfolio complet
                 </button>
