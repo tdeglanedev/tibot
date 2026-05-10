@@ -1884,6 +1884,14 @@ export default function TiBot() {
         }
         body {
           background-color: #111514;
+          min-height: 100vh;
+          width: 100%;
+        }
+        .bg-grid {
+          position: fixed;
+          inset: 0;
+          pointer-events: none;
+          z-index: 0;
           background-image:
             repeating-linear-gradient(
               to right,
@@ -1893,8 +1901,6 @@ export default function TiBot() {
               rgba(255, 255, 255, 0.04) calc(100% / 2)
             );
           background-attachment: fixed;
-          min-height: 100vh;
-          width: 100%;
         }
         #root, .app {
           background: transparent;
@@ -2196,6 +2202,7 @@ export default function TiBot() {
       `}</style>
 
       <div className="app">
+        {!isEmbedded && <div className="bg-grid" aria-hidden />}
         {/* HEADER */}
         <header className="header">
           <div className="header-left">
