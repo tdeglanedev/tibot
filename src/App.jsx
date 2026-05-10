@@ -1264,45 +1264,53 @@ export default function TiBot() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading, lang]);
 
+  const injectSilentContext = (contextMessage) => {
+    setExternalContext(contextMessage);
+  };
+
   useEffect(() => {
     const handler = (event) => {
-      if (
-        event.origin !== 'https://tdeglane.com' &&
-        event.origin !== 'https://www.tdeglane.com' &&
-        event.origin !== 'https://tdeglane-portfolio.vercel.app'
-      ) return;
+      const allowedOrigins = [
+        'https://tdeglane.com',
+        'https://www.tdeglane.com',
+        'https://tdeglane-portfolio.vercel.app',
+        'http://localhost:3000',
+      ];
+      if (!allowedOrigins.includes(event.origin)) return;
+      if (event.data?.type !== 'context') return;
 
-      if (event.data?.type === 'context') {
-        const { page, slug } = event.data;
+      const { page, slug } = event.data;
+
+      const contextMap = {
+        'home': "The visitor just opened TiBot from the homepage.",
+        'work': "The visitor is browsing the full work list.",
+        'about': "The visitor is on the About page — they want to know more about Thibault.",
+        'how-i-work': "The visitor is reading the How I Work page — they are interested in process and frameworks.",
+        'notes': "The visitor is on the Notes page — they are interested in Thibault's thinking.",
+      };
+
+      let contextMessage = contextMap[page] || '';
+
+      if (page === 'case' && slug) {
         const caseNames = {
-          'bank-of-ireland': 'Bank of Ireland',
-          'nike-fff': 'Nike × FFF',
-          'longchamp': 'Longchamp',
-          'askniels': 'AskNiels',
-          'boucheron': 'Boucheron',
-          'olympique-de-marseille': 'Olympique de Marseille',
-          'van-cleef': 'Van Cleef & Arpels',
-          'pierre-hardy': 'Pierre Hardy',
-          'celio': 'Célio',
-          'micromania': 'Micromania',
-          'jaeger-lecoultre': 'Jaeger-LeCoultre',
+          'bank-of-ireland': 'Bank of Ireland — design system and governance across 3 banking branches',
+          'nike-fff': 'Nike × FFF — B2B platform for amateur football clubs',
+          'longchamp': 'Longchamp — international design system, 24 markets, 13 weeks',
+          'askniels': 'AskNiels — AI product built on a strategic design methodology',
+          'boucheron': 'Boucheron — phygital exhibition for the 160th anniversary',
+          'olympique-de-marseille': 'Olympique de Marseille — fan ecosystem strategy',
+          'van-cleef': 'Van Cleef & Arpels — BXP framework, 4 buyer profiles, 5 markets',
+          'pierre-hardy': 'Pierre Hardy — mobile-first luxury e-commerce redesign',
+          'celio': 'Célio — omnichannel retail, 550 stores',
+          'micromania': 'Micromania — gaming retail experience, 430 stores',
+          'jaeger-lecoultre': 'Jaeger-LeCoultre — VR immersive experience',
         };
+        const caseName = caseNames[slug] || slug;
+        contextMessage = `The visitor is currently reading the case study: ${caseName}. If they open TiBot, proactively offer to tell them more about this project or answer questions about the approach.`;
+      }
 
-        let contextMessage = null;
-        if (page === 'case' && slug) {
-          const caseName = caseNames[slug] || slug;
-          contextMessage = `context:case:${slug}:${caseName}`;
-        } else if (page === 'about') {
-          contextMessage = 'context:about';
-        } else if (page === 'how-i-work') {
-          contextMessage = 'context:how-i-work';
-        } else if (page === 'work') {
-          contextMessage = 'context:work';
-        }
-
-        if (contextMessage) {
-          setExternalContext(contextMessage);
-        }
+      if (contextMessage) {
+        injectSilentContext(contextMessage);
       }
     };
 
