@@ -1234,10 +1234,7 @@ After the synthesis, add this action: { "type": "workshop_done" }`;
 
 export default function TiBot() {
   const [lang, setLang] = useState("fr");
-  const [sessions, setSessions] = useState({
-    en: [{ role: "assistant", parsed: CONTENT.en.greeting, id: 0 }],
-    fr: [{ role: "assistant", parsed: CONTENT.fr.greeting, id: 1 }],
-  });
+  const [sessions, setSessions] = useState({ en: [], fr: [] });
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState({ en: true, fr: true });
@@ -1252,6 +1249,7 @@ export default function TiBot() {
   const [contactPrefill, setContactPrefill] = useState("");
   const [externalContext, setExternalContext] = useState(null);
   const workshopSynthesisRef = useRef("");
+  const pendingContextRef = useRef(null);
   const animatedIds = useRef(new Set());
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
@@ -1263,6 +1261,48 @@ export default function TiBot() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading, lang]);
+
+  useEffect(() => {
+    const caseNames = {
+      'bank-of-ireland': 'Bank of Ireland',
+      'nike-fff': 'Nike × FFF',
+      'longchamp': 'Longchamp',
+      'askniels': 'AskNiels',
+      'boucheron': 'Boucheron',
+      'olympique-de-marseille': 'Olympique de Marseille',
+      'van-cleef': 'Van Cleef & Arpels',
+      'pierre-hardy': 'Pierre Hardy',
+      'celio': 'Célio',
+      'micromania': 'Micromania',
+      'jaeger-lecoultre': 'Jaeger-LeCoultre',
+    };
+
+    const timer = setTimeout(() => {
+      const ctx = pendingContextRef.current;
+      if (ctx && ctx.slug) {
+        const caseName = caseNames[ctx.slug] || ctx.slug;
+        setSessions({
+          en: [{
+            role: "assistant",
+            parsed: `I can see you're looking at the ${caseName} case. Want me to walk you through it — the approach, the decisions, what actually happened?`,
+            id: 0,
+          }],
+          fr: [{
+            role: "assistant",
+            parsed: `Je vois que tu regardes le case ${caseName}. Tu veux que je t'en parle — l'approche, les décisions, ce qui s'est vraiment passé ?`,
+            id: 1,
+          }],
+        });
+      } else {
+        setSessions({
+          en: [{ role: "assistant", parsed: CONTENT.en.greeting, id: 0 }],
+          fr: [{ role: "assistant", parsed: CONTENT.fr.greeting, id: 1 }],
+        });
+      }
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const injectSilentContext = (contextMessage) => {
     setExternalContext(contextMessage);
@@ -1292,6 +1332,7 @@ export default function TiBot() {
       let contextMessage = contextMap[page] || '';
 
       if (page === 'case' && slug) {
+        pendingContextRef.current = { slug };
         const caseNames = {
           'bank-of-ireland': 'Bank of Ireland — design system and governance across 3 banking branches',
           'nike-fff': 'Nike × FFF — B2B platform for amateur football clubs',
