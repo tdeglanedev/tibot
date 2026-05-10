@@ -1364,7 +1364,7 @@ export default function TiBot() {
 
       if (contextMessage) {
         injectSilentContext(contextMessage);
-        event.source?.postMessage({ type: 'context_received' }, event.origin);
+        window.parent.postMessage({ type: 'context_received' }, '*');
       }
     };
 
