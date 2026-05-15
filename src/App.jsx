@@ -877,6 +877,7 @@ function AnimatedText({ text, lang, onDone }) {
   const [displayed, setDisplayed] = useState("");
   const [done, setDone] = useState(false);
   const intervalRef = useRef(null);
+  const prevTextRef = useRef(null);
 
   const skip = () => {
     if (done) return;
@@ -887,6 +888,9 @@ function AnimatedText({ text, lang, onDone }) {
   };
 
   useEffect(() => {
+    if (text === prevTextRef.current) return;
+    prevTextRef.current = text;
+
     setDisplayed("");
     setDone(false);
     let i = 0;
