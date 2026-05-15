@@ -1496,7 +1496,7 @@ export default function TiBot() {
         return;
       }
       resolveGeneric();
-    }, 3000);
+    }, 8000);
 
     return () => {
       window.removeEventListener(CONTEXT_EVENT, onContextReady);
