@@ -319,9 +319,13 @@ const CONTENT = {
   },
 };
 
-let pendingContextData = null;
-let greetingResolved = false;
-let resolvedSessions = null;
+if (typeof window.__tibot === 'undefined') {
+  window.__tibot = {
+    pendingContextData: null,
+    greetingResolved: false,
+    resolvedSessions: null,
+  };
+}
 const CONTEXT_EVENT = 'tibot-context-ready';
 
 const CASE_SUGGESTIONS = {
@@ -1425,15 +1429,15 @@ export default function TiBot() {
   };
 
   useEffect(() => {
-    if (resolvedSessions) {
-      setSessions(resolvedSessions);
+    if (window.__tibot.resolvedSessions) {
+      setSessions(window.__tibot.resolvedSessions);
       return;
     }
 
     function resolve(slug) {
-      console.log('TiBot resolve — slug:', slug, 'resolved already:', greetingResolved);
-      if (greetingResolved) return;
-      greetingResolved = true;
+      console.log('TiBot resolve — slug:', slug, 'resolved already:', window.__tibot.greetingResolved);
+      if (window.__tibot.greetingResolved) return;
+      window.__tibot.greetingResolved = true;
       console.log('TiBot resolve — setting contextual greeting for', slug);
       const caseName = caseNames[slug] || slug;
       const sessions = {
@@ -1452,30 +1456,30 @@ export default function TiBot() {
           ],
         }, id: 1 }],
       };
-      resolvedSessions = sessions;
+      window.__tibot.resolvedSessions = sessions;
       setSessions(sessions);
     }
 
     function resolveGeneric() {
-      console.log('TiBot resolveGeneric — resolved already:', greetingResolved);
-      if (greetingResolved) return;
-      greetingResolved = true;
+      console.log('TiBot resolveGeneric — resolved already:', window.__tibot.greetingResolved);
+      if (window.__tibot.greetingResolved) return;
+      window.__tibot.greetingResolved = true;
       console.log('TiBot resolveGeneric — setting generic greeting');
       const sessions = {
         en: [{ role: "assistant", parsed: CONTENT.en.greeting, id: 0 }],
         fr: [{ role: "assistant", parsed: CONTENT.fr.greeting, id: 1 }],
       };
-      resolvedSessions = sessions;
+      window.__tibot.resolvedSessions = sessions;
       setSessions(sessions);
     }
 
-    if (pendingContextData?.slug) {
-      console.log('TiBot — contexte déjà disponible au mount:', pendingContextData);
-      resolve(pendingContextData.slug);
+    if (window.__tibot.pendingContextData?.slug) {
+      console.log('TiBot — contexte déjà disponible au mount:', window.__tibot.pendingContextData);
+      resolve(window.__tibot.pendingContextData.slug);
       return;
     }
 
-    console.log('TiBot — en attente de contexte au mount, pendingContextData:', pendingContextData);
+    console.log('TiBot — en attente de contexte au mount, pendingContextData:', window.__tibot.pendingContextData);
 
     function onContextReady(e) {
       console.log('TiBot — onContextReady event reçu:', e.detail);
@@ -1484,11 +1488,11 @@ export default function TiBot() {
 
     window.addEventListener(CONTEXT_EVENT, onContextReady);
     const fallback = setTimeout(() => {
-      console.log('TiBot fallback déclenché — resolvedSessions:', resolvedSessions, 'greetingResolved:', greetingResolved);
-      if (resolvedSessions) {
-        if (greetingResolved) return;
-        greetingResolved = true;
-        setSessions(resolvedSessions);
+      console.log('TiBot fallback déclenché — resolvedSessions:', window.__tibot.resolvedSessions, 'greetingResolved:', window.__tibot.greetingResolved);
+      if (window.__tibot.resolvedSessions) {
+        if (window.__tibot.greetingResolved) return;
+        window.__tibot.greetingResolved = true;
+        setSessions(window.__tibot.resolvedSessions);
         return;
       }
       resolveGeneric();
@@ -1539,7 +1543,7 @@ export default function TiBot() {
 
       if (page === 'case' && slug) {
         console.log('TiBot — context reçu, slug:', slug, 'à T=', Date.now());
-        pendingContextData = { slug };
+        window.__tibot.pendingContextData = { slug };
         window.dispatchEvent(new CustomEvent(CONTEXT_EVENT, { detail: { slug } }));
         setActiveCaseSlug(slug);
         const caseNames = {
