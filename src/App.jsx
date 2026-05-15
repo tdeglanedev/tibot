@@ -319,6 +319,8 @@ const CONTENT = {
   },
 };
 
+let pendingContextData = null;
+
 const CASE_SUGGESTIONS = {
   'bank-of-ireland': {
     fr: [
@@ -1385,9 +1387,7 @@ export default function TiBot() {
   const [externalContext, setExternalContext] = useState(null);
   const [activeCaseSlug, setActiveCaseSlug] = useState(null);
   const workshopSynthesisRef = useRef("");
-  const pendingContextRef = useRef(null);
   const hasUserSwitchedLang = useRef(false);
-  const greetingSetRef = useRef(false);
   const animatedIds = useRef(new Set());
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
@@ -1422,23 +1422,18 @@ export default function TiBot() {
   };
 
   useEffect(() => {
-    if (greetingSetRef.current) return;
-
     const startTime = Date.now();
     const maxWait = 3000;
     const interval = 50;
 
     const poll = setInterval(() => {
-      const ctx = pendingContextRef.current;
+      const ctx = pendingContextData;
       const elapsed = Date.now() - startTime;
       console.log(`TiBot poll — elapsed: ${elapsed}ms, ctx:`, ctx);
 
       if (ctx !== null || elapsed >= maxWait) {
         console.log(`TiBot poll — résolution à ${elapsed}ms, ctx:`, ctx);
         clearInterval(poll);
-
-        if (greetingSetRef.current) return;
-        greetingSetRef.current = true;
 
         if (ctx && ctx.slug) {
           const caseName = caseNames[ctx.slug] || ctx.slug;
@@ -1509,7 +1504,7 @@ export default function TiBot() {
 
       if (page === 'case' && slug) {
         console.log('TiBot — context reçu, slug:', slug, 'à T=', Date.now());
-        pendingContextRef.current = { slug };
+        pendingContextData = { slug };
         setActiveCaseSlug(slug);
         const caseNames = {
           'bank-of-ireland': 'Bank of Ireland — design system and governance across 3 banking branches',
