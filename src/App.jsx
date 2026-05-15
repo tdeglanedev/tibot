@@ -320,6 +320,7 @@ const CONTENT = {
 };
 
 let pendingContextData = null;
+let greetingResolved = false;
 const CONTEXT_EVENT = 'tibot-context-ready';
 
 const CASE_SUGGESTIONS = {
@@ -1423,12 +1424,10 @@ export default function TiBot() {
   };
 
   useEffect(() => {
-    let resolved = false;
-
     function resolve(slug) {
-      console.log('TiBot resolve — slug:', slug, 'resolved already:', resolved);
-      if (resolved) return;
-      resolved = true;
+      console.log('TiBot resolve — slug:', slug, 'resolved already:', greetingResolved);
+      if (greetingResolved) return;
+      greetingResolved = true;
       console.log('TiBot resolve — setting contextual greeting for', slug);
       const caseName = caseNames[slug] || slug;
       setSessions({
@@ -1450,9 +1449,9 @@ export default function TiBot() {
     }
 
     function resolveGeneric() {
-      console.log('TiBot resolveGeneric — resolved already:', resolved);
-      if (resolved) return;
-      resolved = true;
+      console.log('TiBot resolveGeneric — resolved already:', greetingResolved);
+      if (greetingResolved) return;
+      greetingResolved = true;
       console.log('TiBot resolveGeneric — setting generic greeting');
       setSessions({
         en: [{ role: "assistant", parsed: CONTENT.en.greeting, id: 0 }],
