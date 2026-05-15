@@ -1483,7 +1483,15 @@ export default function TiBot() {
     }
 
     window.addEventListener(CONTEXT_EVENT, onContextReady);
-    const fallback = setTimeout(resolveGeneric, 3000);
+    const fallback = setTimeout(() => {
+      if (resolvedSessions) {
+        if (greetingResolved) return;
+        greetingResolved = true;
+        setSessions(resolvedSessions);
+        return;
+      }
+      resolveGeneric();
+    }, 3000);
 
     return () => {
       window.removeEventListener(CONTEXT_EVENT, onContextReady);
