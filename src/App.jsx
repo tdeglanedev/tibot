@@ -320,6 +320,10 @@ const CONTENT = {
 };
 
 let pendingContextData = null;
+function setPendingContext(value) {
+  console.log('TiBot — setPendingContext:', value, new Error().stack);
+  pendingContextData = value;
+}
 
 const CASE_SUGGESTIONS = {
   'bank-of-ireland': {
@@ -1504,7 +1508,7 @@ export default function TiBot() {
 
       if (page === 'case' && slug) {
         console.log('TiBot — context reçu, slug:', slug, 'à T=', Date.now());
-        pendingContextData = { slug };
+        setPendingContext({ slug });
         setActiveCaseSlug(slug);
         const caseNames = {
           'bank-of-ireland': 'Bank of Ireland — design system and governance across 3 banking branches',
