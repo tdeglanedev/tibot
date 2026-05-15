@@ -321,6 +321,7 @@ const CONTENT = {
 
 let pendingContextData = null;
 let greetingResolved = false;
+let resolvedSessions = null;
 const CONTEXT_EVENT = 'tibot-context-ready';
 
 const CASE_SUGGESTIONS = {
@@ -1424,13 +1425,18 @@ export default function TiBot() {
   };
 
   useEffect(() => {
+    if (resolvedSessions) {
+      setSessions(resolvedSessions);
+      return;
+    }
+
     function resolve(slug) {
       console.log('TiBot resolve — slug:', slug, 'resolved already:', greetingResolved);
       if (greetingResolved) return;
       greetingResolved = true;
       console.log('TiBot resolve — setting contextual greeting for', slug);
       const caseName = caseNames[slug] || slug;
-      setSessions({
+      const sessions = {
         en: [{ role: "assistant", parsed: {
           message: `I can see you're looking at the ${caseName} case.\nWant me to walk you through it — the approach, the key decisions, what actually happened?`,
           actions: [
@@ -1445,7 +1451,9 @@ export default function TiBot() {
             { type: "send", label: "Quelles décisions clés ?", text: `Quelles ont été les décisions clés sur le projet ${caseName} ?` },
           ],
         }, id: 1 }],
-      });
+      };
+      resolvedSessions = sessions;
+      setSessions(sessions);
     }
 
     function resolveGeneric() {
@@ -1453,10 +1461,12 @@ export default function TiBot() {
       if (greetingResolved) return;
       greetingResolved = true;
       console.log('TiBot resolveGeneric — setting generic greeting');
-      setSessions({
+      const sessions = {
         en: [{ role: "assistant", parsed: CONTENT.en.greeting, id: 0 }],
         fr: [{ role: "assistant", parsed: CONTENT.fr.greeting, id: 1 }],
-      });
+      };
+      resolvedSessions = sessions;
+      setSessions(sessions);
     }
 
     if (pendingContextData?.slug) {
