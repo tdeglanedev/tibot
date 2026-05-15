@@ -1406,58 +1406,60 @@ export default function TiBot() {
     }
   }, []);
 
-  useEffect(() => {
-    const caseNames = {
-      'bank-of-ireland': 'Bank of Ireland',
-      'nike-fff': 'Nike × FFF',
-      'longchamp': 'Longchamp',
-      'askniels': 'AskNiels',
-      'boucheron': 'Boucheron',
-      'olympique-de-marseille': 'Olympique de Marseille',
-      'van-cleef': 'Van Cleef & Arpels',
-      'pierre-hardy': 'Pierre Hardy',
-      'celio': 'Célio',
-      'micromania': 'Micromania',
-      'jaeger-lecoultre': 'Jaeger-LeCoultre',
-    };
+  const caseNames = {
+    'bank-of-ireland': 'Bank of Ireland',
+    'nike-fff': 'Nike × FFF',
+    'longchamp': 'Longchamp',
+    'askniels': 'AskNiels',
+    'boucheron': 'Boucheron',
+    'olympique-de-marseille': 'Olympique de Marseille',
+    'van-cleef': 'Van Cleef & Arpels',
+    'pierre-hardy': 'Pierre Hardy',
+    'celio': 'Célio',
+    'micromania': 'Micromania',
+    'jaeger-lecoultre': 'Jaeger-LeCoultre',
+  };
 
-    const timer = setTimeout(() => {
+  useEffect(() => {
+    const startTime = Date.now();
+    const maxWait = 3000;
+    const interval = 50;
+
+    const poll = setInterval(() => {
       const ctx = pendingContextRef.current;
-      if (ctx && ctx.slug) {
-        const caseName = caseNames[ctx.slug] || ctx.slug;
-        setSessions({
-          en: [{
-            role: "assistant",
-            parsed: {
+      const elapsed = Date.now() - startTime;
+
+      if (ctx !== null || elapsed >= maxWait) {
+        clearInterval(poll);
+
+        if (ctx && ctx.slug) {
+          const caseName = caseNames[ctx.slug] || ctx.slug;
+          setSessions({
+            en: [{ role: "assistant", parsed: {
               message: `I can see you're looking at the ${caseName} case.\nWant me to walk you through it — the approach, the key decisions, what actually happened?`,
               actions: [
                 { type: "send", label: "Tell me about this project", text: `Tell me about the ${caseName} project` },
                 { type: "send", label: "What were the key decisions?", text: `What were the key decisions on the ${caseName} project?` },
               ],
-            },
-            id: 0,
-          }],
-          fr: [{
-            role: "assistant",
-            parsed: {
+            }, id: 0 }],
+            fr: [{ role: "assistant", parsed: {
               message: `Je vois que tu consultes le case ${caseName}.\nTu veux que je t'en parle — l'approche, les décisions clés, ce qui s'est vraiment passé ?`,
               actions: [
                 { type: "send", label: "Raconte-moi ce projet", text: `Parle-moi du projet ${caseName}` },
                 { type: "send", label: "Quelles décisions clés ?", text: `Quelles ont été les décisions clés sur le projet ${caseName} ?` },
               ],
-            },
-            id: 1,
-          }],
-        });
-      } else {
-        setSessions({
-          en: [{ role: "assistant", parsed: CONTENT.en.greeting, id: 0 }],
-          fr: [{ role: "assistant", parsed: CONTENT.fr.greeting, id: 1 }],
-        });
+            }, id: 1 }],
+          });
+        } else {
+          setSessions({
+            en: [{ role: "assistant", parsed: CONTENT.en.greeting, id: 0 }],
+            fr: [{ role: "assistant", parsed: CONTENT.fr.greeting, id: 1 }],
+          });
+        }
       }
-    }, 1000);
+    }, interval);
 
-    return () => clearTimeout(timer);
+    return () => clearInterval(poll);
   }, []);
 
   const injectSilentContext = (contextMessage) => {
