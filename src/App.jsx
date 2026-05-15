@@ -1494,6 +1494,13 @@ export default function TiBot() {
     }
 
     window.addEventListener(CONTEXT_EVENT, onContextReady);
+
+    const quickFallback = setTimeout(() => {
+      if (!window.__tibot.greetingResolved) {
+        resolveGeneric();
+      }
+    }, 400);
+
     const fallback = setTimeout(() => {
       console.log('TiBot fallback déclenché — resolvedSessions:', window.__tibot.resolvedSessions, 'greetingResolved:', window.__tibot.greetingResolved);
       if (window.__tibot.resolvedSessions) {
@@ -1507,6 +1514,7 @@ export default function TiBot() {
 
     return () => {
       window.removeEventListener(CONTEXT_EVENT, onContextReady);
+      clearTimeout(quickFallback);
       clearTimeout(fallback);
     };
   }, []);
