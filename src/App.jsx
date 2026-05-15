@@ -1400,6 +1400,12 @@ export default function TiBot() {
   }, [messages, loading, lang]);
 
   useEffect(() => {
+    if (window.parent !== window) {
+      window.parent.postMessage({ type: 'ready' }, '*');
+    }
+  }, []);
+
+  useEffect(() => {
     const caseNames = {
       'bank-of-ireland': 'Bank of Ireland',
       'nike-fff': 'Nike × FFF',
