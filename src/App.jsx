@@ -1532,6 +1532,19 @@ export default function TiBot() {
         'http://localhost:3000',
       ];
       if (!allowedOrigins.includes(event.origin)) return;
+      if (event.data?.type === 'reset') {
+        window.__tibot = {
+          pendingContextData: null,
+          greetingResolved: false,
+          resolvedSessions: null,
+        };
+        setSessions({
+          en: [{ role: "assistant", parsed: CONTENT.en.greeting, id: Date.now() }],
+          fr: [{ role: "assistant", parsed: CONTENT.fr.greeting, id: Date.now() + 1 }],
+        });
+        return;
+      }
+
       if (event.data?.type !== 'context') return;
 
       const { page, slug, lang: incomingLang } = event.data;
