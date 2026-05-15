@@ -1400,6 +1400,7 @@ export default function TiBot() {
   }, [messages, loading, lang]);
 
   useEffect(() => {
+    console.log('TiBot — envoi signal ready, parent:', window.parent !== window);
     if (window.parent !== window) {
       window.parent.postMessage({ type: 'ready' }, '*');
     }
