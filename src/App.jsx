@@ -320,10 +320,7 @@ const CONTENT = {
 };
 
 let pendingContextData = null;
-function setPendingContext(value) {
-  console.log('TiBot — setPendingContext:', value, new Error().stack);
-  pendingContextData = value;
-}
+const CONTEXT_EVENT = 'tibot-context-ready';
 
 const CASE_SUGGESTIONS = {
   'bank-of-ireland': {
@@ -1426,47 +1423,55 @@ export default function TiBot() {
   };
 
   useEffect(() => {
-    const startTime = Date.now();
-    const maxWait = 3000;
-    const interval = 50;
+    let resolved = false;
 
-    const poll = setInterval(() => {
-      const ctx = pendingContextData;
-      const elapsed = Date.now() - startTime;
-      console.log(`TiBot poll — elapsed: ${elapsed}ms, ctx:`, ctx);
+    function resolve(slug) {
+      if (resolved) return;
+      resolved = true;
+      const caseName = caseNames[slug] || slug;
+      setSessions({
+        en: [{ role: "assistant", parsed: {
+          message: `I can see you're looking at the ${caseName} case.\nWant me to walk you through it — the approach, the key decisions, what actually happened?`,
+          actions: [
+            { type: "send", label: "Tell me about this project", text: `Tell me about the ${caseName} project` },
+            { type: "send", label: "What were the key decisions?", text: `What were the key decisions on the ${caseName} project?` },
+          ],
+        }, id: 0 }],
+        fr: [{ role: "assistant", parsed: {
+          message: `Je vois que tu consultes le case ${caseName}.\nTu veux que je t'en parle — l'approche, les décisions clés, ce qui s'est vraiment passé ?`,
+          actions: [
+            { type: "send", label: "Raconte-moi ce projet", text: `Parle-moi du projet ${caseName}` },
+            { type: "send", label: "Quelles décisions clés ?", text: `Quelles ont été les décisions clés sur le projet ${caseName} ?` },
+          ],
+        }, id: 1 }],
+      });
+    }
 
-      if (ctx !== null || elapsed >= maxWait) {
-        console.log(`TiBot poll — résolution à ${elapsed}ms, ctx:`, ctx);
-        clearInterval(poll);
+    function resolveGeneric() {
+      if (resolved) return;
+      resolved = true;
+      setSessions({
+        en: [{ role: "assistant", parsed: CONTENT.en.greeting, id: 0 }],
+        fr: [{ role: "assistant", parsed: CONTENT.fr.greeting, id: 1 }],
+      });
+    }
 
-        if (ctx && ctx.slug) {
-          const caseName = caseNames[ctx.slug] || ctx.slug;
-          setSessions({
-            en: [{ role: "assistant", parsed: {
-              message: `I can see you're looking at the ${caseName} case.\nWant me to walk you through it — the approach, the key decisions, what actually happened?`,
-              actions: [
-                { type: "send", label: "Tell me about this project", text: `Tell me about the ${caseName} project` },
-                { type: "send", label: "What were the key decisions?", text: `What were the key decisions on the ${caseName} project?` },
-              ],
-            }, id: 0 }],
-            fr: [{ role: "assistant", parsed: {
-              message: `Je vois que tu consultes le case ${caseName}.\nTu veux que je t'en parle — l'approche, les décisions clés, ce qui s'est vraiment passé ?`,
-              actions: [
-                { type: "send", label: "Raconte-moi ce projet", text: `Parle-moi du projet ${caseName}` },
-                { type: "send", label: "Quelles décisions clés ?", text: `Quelles ont été les décisions clés sur le projet ${caseName} ?` },
-              ],
-            }, id: 1 }],
-          });
-        } else {
-          setSessions({
-            en: [{ role: "assistant", parsed: CONTENT.en.greeting, id: 0 }],
-            fr: [{ role: "assistant", parsed: CONTENT.fr.greeting, id: 1 }],
-          });
-        }
-      }
-    }, interval);
+    if (pendingContextData?.slug) {
+      resolve(pendingContextData.slug);
+      return;
+    }
 
-    return () => clearInterval(poll);
+    function onContextReady(e) {
+      resolve(e.detail.slug);
+    }
+
+    window.addEventListener(CONTEXT_EVENT, onContextReady);
+    const fallback = setTimeout(resolveGeneric, 3000);
+
+    return () => {
+      window.removeEventListener(CONTEXT_EVENT, onContextReady);
+      clearTimeout(fallback);
+    };
   }, []);
 
   const injectSilentContext = (contextMessage) => {
@@ -1508,7 +1513,8 @@ export default function TiBot() {
 
       if (page === 'case' && slug) {
         console.log('TiBot — context reçu, slug:', slug, 'à T=', Date.now());
-        setPendingContext({ slug });
+        pendingContextData = { slug };
+        window.dispatchEvent(new CustomEvent(CONTEXT_EVENT, { detail: { slug } }));
         setActiveCaseSlug(slug);
         const caseNames = {
           'bank-of-ireland': 'Bank of Ireland — design system and governance across 3 banking branches',
