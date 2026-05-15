@@ -1426,8 +1426,10 @@ export default function TiBot() {
     let resolved = false;
 
     function resolve(slug) {
+      console.log('TiBot resolve — slug:', slug, 'resolved already:', resolved);
       if (resolved) return;
       resolved = true;
+      console.log('TiBot resolve — setting contextual greeting for', slug);
       const caseName = caseNames[slug] || slug;
       setSessions({
         en: [{ role: "assistant", parsed: {
@@ -1448,8 +1450,10 @@ export default function TiBot() {
     }
 
     function resolveGeneric() {
+      console.log('TiBot resolveGeneric — resolved already:', resolved);
       if (resolved) return;
       resolved = true;
+      console.log('TiBot resolveGeneric — setting generic greeting');
       setSessions({
         en: [{ role: "assistant", parsed: CONTENT.en.greeting, id: 0 }],
         fr: [{ role: "assistant", parsed: CONTENT.fr.greeting, id: 1 }],
@@ -1457,11 +1461,15 @@ export default function TiBot() {
     }
 
     if (pendingContextData?.slug) {
+      console.log('TiBot — contexte déjà disponible au mount:', pendingContextData);
       resolve(pendingContextData.slug);
       return;
     }
 
+    console.log('TiBot — en attente de contexte au mount, pendingContextData:', pendingContextData);
+
     function onContextReady(e) {
+      console.log('TiBot — onContextReady event reçu:', e.detail);
       resolve(e.detail.slug);
     }
 
