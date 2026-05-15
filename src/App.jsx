@@ -1484,6 +1484,7 @@ export default function TiBot() {
 
     window.addEventListener(CONTEXT_EVENT, onContextReady);
     const fallback = setTimeout(() => {
+      console.log('TiBot fallback déclenché — resolvedSessions:', resolvedSessions, 'greetingResolved:', greetingResolved);
       if (resolvedSessions) {
         if (greetingResolved) return;
         greetingResolved = true;
