@@ -1387,6 +1387,7 @@ export default function TiBot() {
   const workshopSynthesisRef = useRef("");
   const pendingContextRef = useRef(null);
   const hasUserSwitchedLang = useRef(false);
+  const greetingSetRef = useRef(false);
   const animatedIds = useRef(new Set());
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
@@ -1421,6 +1422,8 @@ export default function TiBot() {
   };
 
   useEffect(() => {
+    if (greetingSetRef.current) return;
+
     const startTime = Date.now();
     const maxWait = 3000;
     const interval = 50;
@@ -1433,6 +1436,9 @@ export default function TiBot() {
       if (ctx !== null || elapsed >= maxWait) {
         console.log(`TiBot poll — résolution à ${elapsed}ms, ctx:`, ctx);
         clearInterval(poll);
+
+        if (greetingSetRef.current) return;
+        greetingSetRef.current = true;
 
         if (ctx && ctx.slug) {
           const caseName = caseNames[ctx.slug] || ctx.slug;
