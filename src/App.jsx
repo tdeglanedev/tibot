@@ -1428,8 +1428,10 @@ export default function TiBot() {
     const poll = setInterval(() => {
       const ctx = pendingContextRef.current;
       const elapsed = Date.now() - startTime;
+      console.log(`TiBot poll — elapsed: ${elapsed}ms, ctx:`, ctx);
 
       if (ctx !== null || elapsed >= maxWait) {
+        console.log(`TiBot poll — résolution à ${elapsed}ms, ctx:`, ctx);
         clearInterval(poll);
 
         if (ctx && ctx.slug) {
@@ -1500,6 +1502,7 @@ export default function TiBot() {
       let contextMessage = contextMap[page] || '';
 
       if (page === 'case' && slug) {
+        console.log('TiBot — context reçu, slug:', slug, 'à T=', Date.now());
         pendingContextRef.current = { slug };
         setActiveCaseSlug(slug);
         const caseNames = {
