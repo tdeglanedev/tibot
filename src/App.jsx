@@ -320,11 +320,14 @@ const CONTENT = {
 };
 
 if (typeof window.__tibot === 'undefined') {
+  console.log('TiBot — init window.__tibot, timestamp:', Date.now());
   window.__tibot = {
     pendingContextData: null,
     greetingResolved: false,
     resolvedSessions: null,
   };
+} else {
+  console.log('TiBot — window.__tibot déjà existant:', window.__tibot);
 }
 const CONTEXT_EVENT = 'tibot-context-ready';
 
