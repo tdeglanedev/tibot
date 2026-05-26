@@ -119,6 +119,28 @@ Two brands, two audiences, one platform. 8 sprints over 7 months. Two thirds of 
 Results: 140+ screens, 430 stores unified, 4,000+ references integrated.
 URL: https://www.tdeglane.com/work/micromania
 
+### Biologique Recherche (2024) — Mobile App · Brand Experience
+Tagline: "A brand trusted by experts. A digital experience that finally matches it."
+
+BR's entire value is built on precision and trust — diagnosed Skin Instant profiles,
+prescribed routines, expert relationships. The digital presence was a generic service
+layer: a booking embed and PDF care guides. Completely unworthy of the brand.
+For a clientele emotionally invested in their skin, the gap between the in-person
+and digital experience was killing retention and blocking acquisition on younger segments.
+
+Three tracks: brand universe translation (mobile design language holding both
+luxury ritual warmth and clinical authority), skin profile and personalization system
+(analysis flow generating a skin profile before any product recommendation —
+practitioner's language, not algorithmic), acquisition and retention loop
+(routine as the core experience, booking and repurchase as natural next steps).
+
+Key insight: Acquisition and retention are the same problem when the product
+is a ritual. The routine is the hook, the proof, and the repurchase driver simultaneously.
+
+Results: +85% online bookings, +28.7% routine repurchase on under-40 segment,
++12.9% on 45+. App in production with regular UX audit protocol.
+URL: https://www.tdeglane.com/projects/biologique-recherche
+
 ### Longchamp (2018) — UI/UX / Omnichannel
 "Making the Pliage the beginning of the story, not the end."
 The Pliage had become a glass ceiling — capturing all attention online and rendering the rest of the collection invisible. I redesigned the customisation funnel as a discovery mechanism. Introduced editorial navigation over category-based browsing — a decision that created internal friction but was validated by post-launch metrics. Architected a design system and digital brand book governing visual consistency across all markets.
@@ -555,6 +577,14 @@ const PANEL_PROJECTS = [
     question_fr: "Parle-moi du projet Bank of Ireland",
     url: "https://www.tdeglane.com/work/bank-of-ireland",
   },
+  {
+    slug: "biologique-recherche",
+    title: "Biologique Recherche",
+    category: "Mobile · Brand · Retention",
+    question_en: "Tell me about the Biologique Recherche project",
+    question_fr: "Parle-moi du projet Biologique Recherche",
+    url: "https://www.tdeglane.com/projects/biologique-recherche",
+  },
 ];
 
 const PROJECT_DATA = {
@@ -704,6 +734,27 @@ const PROJECT_DATA = {
       fr: "8 sprints design sur 7 mois. Plateforme pensée autour du parcours de décision complet. Navigation gérant 4 000+ références.",
     },
     url: "https://www.tdeglane.com/work/micromania",
+  },
+  "biologique-recherche": {
+    title: "Biologique Recherche",
+    tagline: {
+      en: "A brand trusted by experts. A digital experience that finally matches it.",
+      fr: "Une marque de confiance. Une expérience digitale enfin à sa hauteur.",
+    },
+    category: "Mobile app · Brand experience · Retention",
+    metrics: {
+      en: ["+85% online bookings", "+28.7% repurchase under 40", "App in production"],
+      fr: ["+85% réservations en ligne", "+28.7% réachat moins de 40 ans", "App en production"],
+    },
+    problem: {
+      en: "BR's entire value is built on precision and trust — diagnosed skin profiles, prescribed routines, expert relationships. The digital presence was a generic service layer: a booking embed and PDF care guides. Completely unworthy of the brand.",
+      fr: "Toute la valeur de BR repose sur la précision et la confiance — profils cutanés diagnostiqués, routines prescrites, relations d'experts. La présence digitale se résumait à un embed de réservation et des PDF. Indigne de la marque.",
+    },
+    solution: {
+      en: "Refused to build a service embed. Built a brand experience. Brand universe first, skin profile and personalization system second, acquisition and retention loop third. The routine became the core loop — booking and repurchase emerge from it naturally.",
+      fr: "Refus de construire un simple outil de service. Construction d'une expérience de marque. Univers de marque d'abord, système de profil cutané ensuite, boucle d'acquisition et rétention en troisième. La routine devient le centre — réservation et réachat en découlent naturellement.",
+    },
+    url: "https://www.tdeglane.com/projects/biologique-recherche",
   },
   longchamp: {
     title: "Longchamp",
